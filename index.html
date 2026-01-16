@@ -165,4 +165,30 @@
                 game.ans = (n1 + n2).toString(); html = `<div class="math-wrapper"><div class="math-text">${n1}</div><div class="math-text">+ ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} plus ${n2}`; 
             } else { 
                 n1 = Math.floor(Math.random() * game.range) + 2; n2 = Math.floor(Math.random() * n1); 
-                game.ans = (n1 - n2).toString(); html = `<div class="math-wrapper"><div class="math-text">${n1}</div><div class="math-text">- ${n2}</div>
+                game.ans = (n1 - n2).toString(); html = `<div class="math-wrapper"><div class="math-text">${n1}</div><div class="math-text">- ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} minus ${n2}`; 
+            }
+            document.getElementById('displayArea').innerHTML = html; game.input = ''; document.getElementById('inputBox').textContent = '---'; if(game.voiceOn) speak(speech);
+        }
+
+        function press(v) { if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 6) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
+        
+        function check() { 
+            if (!game.input) return; 
+            if (game.input === game.ans) { 
+                game.score++; if(game.soundOn) happySynth.triggerAttackRelease(["E5","G5"], "16n");
+                document.getElementById('displayArea').innerHTML = '<div class="text-4xl font-black text-green-500 tracking-widest">CORRECT</div>'; 
+                if(game.voiceOn) speak("Correct"); 
+            } else { 
+                if(game.soundOn) sadSynth.triggerAttackRelease("G3", "8n");
+                document.getElementById('displayArea').innerHTML = `<div class="math-text text-red-500">${game.ans}</div>`; 
+                if(game.voiceOn) speak(`No, it was ${game.ans}`); 
+            } 
+            setTimeout(() => { document.getElementById('scoreVal').textContent = game.score; newQuestion(); }, 1200); 
+        }
+
+        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
+        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "SOUND" : "MUTED"; document.getElementById('soundBtn').classList.toggle('active'); }
+        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "VOICE" : "SILENT"; document.getElementById('voiceBtn').classList.toggle('active'); }
+    </script>
+</body>
+</html>
