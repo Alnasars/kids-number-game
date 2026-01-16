@@ -7,6 +7,16 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0ea5e9">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/kids-number-game/sw.js')
+            .then(reg => console.log('Offline Ready!'))
+            .catch(err => console.log('SW Error'));
+        });
+      }
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
@@ -21,7 +31,7 @@
         .game-card {
             background: #ffffff; border-radius: 32px; padding: 16px; 
             width: 95vw; max-width: 380px; height: 92dvh;
-            box-shadow: 0 20px 0 #0c4a6e, 0 30px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 0 #0c4a6e, 0 30px 50px rgba(0,0,0,0.3);
             display: flex; flex-direction: column; position: relative;
         }
         .control-btn {
@@ -29,16 +39,13 @@
             height: 44px; display: flex; align-items: center; justify-content: center;
             border-radius: 16px; font-size: 20px; transition: all 0.1s;
         }
-        .control-btn:active { transform: translateY(2px); border-bottom-width: 0; }
-        .control-btn.active { background: #e0f2fe; border-bottom-color: #7dd3fc; }
-
+        .control-btn.active { background: #e0f2fe; border-bottom-color: #7dd3fc; color: #0ea5e9; }
         .math-container {
             font-family: 'Fredoka One', cursive;
             display: flex; flex-direction: column; align-items: flex-end;
             font-size: 3.5rem; color: #1e293b; line-height: 1.1;
         }
         .math-line { border-top: 6px solid #1e293b; width: 110%; margin-top: 8px; border-radius: 10px; }
-
         .numpad button {
             background: #f8fafc; border-bottom: 4px solid #e2e8f0;
             border-radius: 18px; height: 60px; font-size: 1.8rem; font-weight: 700;
@@ -46,24 +53,35 @@
         }
         .numpad button:active { transform: translateY(3px); border-bottom-width: 0; }
         .enter-btn { background: #22c55e !important; color: white !important; border-bottom-color: #15803d !important; }
-        
-        .mode-btn { border-bottom-width: 4px; border-radius: 12px; font-weight: 700; font-size: 10px; text-transform: uppercase; }
+        .mode-btn { border-bottom-width: 4px; border-radius: 12px; font-weight: 700; font-size: 10px; text-transform: uppercase; padding: 8px 0; }
         .mode-active-add { background: #0ea5e9; color: white; border-bottom-color: #0369a1; }
         .mode-active-count { background: #10b981; color: white; border-bottom-color: #047857; }
         .mode-active-sub { background: #8b5cf6; color: white; border-bottom-color: #6d28d9; }
-        
-        #inputBox { font-family: 'Fredoka One', cursive; text-shadow: 2px 2px #e2e8f0; }
+        #startOverlay, .modal-overlay {
+            position: absolute; inset: 0; background: white; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-radius: 32px; text-align: center;
+        }
     </style>
 </head>
 <body>
-
     <div class="game-card">
         <button onclick="window.close();" class="absolute -top-2 -right-2 bg-red-500 text-white w-8 h-8 rounded-full shadow-lg font-bold z-50">✕</button>
 
-        <div id="startOverlay" onclick="startGame()" class="absolute inset-0 bg-white z-[100] flex flex-col justify-center items-center rounded-[32px] text-center p-6">
+        <div id="startOverlay" onclick="startGame()">
             <div class="text-8xl mb-6 animate-bounce">🚀</div>
-            <h1 style="font-family: 'Fredoka One';" class="text-4xl text-sky-600 mb-2">NUMBER FUN</h1>
-            <p class="text-slate-400 font-bold tracking-widest uppercase text-sm">Tap to Blast Off!</p>
+            <h1 style="font-family: 'Fredoka One';" class="text-4xl text-sky-600 mb-2 uppercase">Play Math</h1>
+            <p class="text-slate-400 font-bold tracking-widest uppercase text-sm">Tap to Start</p>
+        </div>
+
+        <div id="helpModal" class="modal-overlay hidden p-8">
+            <h2 class="text-2xl font-black text-sky-600 mb-4">HELP ❓</h2>
+            <ul class="text-left space-y-4 text-slate-600 font-bold">
+                <li>⚙️ SET RANGE (Difficulty)</li>
+                <li>🔊 TOGGLE SOUND EFFECTS</li>
+                <li>🗣️ TOGGLE TEACHER VOICE</li>
+            </ul>
+            <button onclick="toggleHelp()" class="mt-8 bg-sky-500 text-white w-full py-4 rounded-2xl font-bold shadow-lg">CLOSE</button>
         </div>
 
         <div class="grid grid-cols-4 gap-2 mb-4">
@@ -75,15 +93,14 @@
 
         <div class="flex justify-between items-center mb-4">
             <div class="flex gap-1 flex-1 mr-3">
-                <button id="btn-counting" onclick="setMode('counting')" class="mode-btn flex-1 py-2 bg-slate-100 text-slate-400">Count</button>
-                <button id="btn-addition" onclick="setMode('addition')" class="mode-btn flex-1 py-2 mode-active-add">Add</button>
-                <button id="btn-subtraction" onclick="setMode('subtraction')" class="mode-btn flex-1 py-2 bg-slate-100 text-slate-400">Sub</button>
+                <button id="btn-counting" onclick="setMode('counting')" class="mode-btn flex-1 bg-slate-100 text-slate-400">Count</button>
+                <button id="btn-addition" onclick="setMode('addition')" class="mode-btn flex-1 mode-active-add">Add</button>
+                <button id="btn-subtraction" onclick="setMode('subtraction')" class="mode-btn flex-1 bg-slate-100 text-slate-400">Sub</button>
             </div>
             <div id="scoreLabel" class="bg-yellow-400 text-white px-4 py-2 rounded-2xl font-black shadow-inner">⭐ 0</div>
         </div>
 
-        <div id="displayArea" class="bg-slate-50 rounded-[24px] flex-1 flex items-center justify-center mb-3 border-4 border-dashed border-slate-100 relative overflow-hidden">
-             </div>
+        <div id="displayArea" class="bg-slate-50 rounded-[24px] flex-1 flex items-center justify-center mb-3 border-4 border-dashed border-slate-100 min-h-[120px]"></div>
 
         <div id="inputBox" class="text-center text-5xl font-black text-sky-500 mb-4 h-12 tracking-widest">---</div>
         
@@ -95,20 +112,8 @@
             <button onclick="press('0')">0</button>
             <button onclick="press('enter')" class="enter-btn">OK</button>
         </div>
-
-        <button onclick="alert('EasyPaisa/JazzCash: 03XX-XXXXXXX')" class="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">🎁 Support Teacher</button>
-    </div>
-
-    <div id="helpModal" class="fixed inset-0 bg-black/60 z-[200] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[32px] p-8 w-full max-w-[320px] text-center shadow-2xl">
-            <h2 class="text-2xl font-black text-sky-600 mb-4">HOW TO PLAY</h2>
-            <ul class="text-left space-y-4 text-slate-600 font-medium">
-                <li>🎯 Solve the math to earn stars!</li>
-                <li>⚙️ Tap Gear to make it harder.</li>
-                <li>📱 Get 5 stars to install the app.</li>
-            </ul>
-            <button onclick="toggleHelp()" class="mt-8 bg-sky-500 text-white w-full py-3 rounded-2xl font-bold shadow-lg">GOT IT!</button>
-        </div>
+        
+        <p class="mt-2 text-[9px] text-center font-bold text-slate-300 uppercase">🎁 Support Teacher: JazzCash 03XX-XXXXXXX</p>
     </div>
 
     <script>
@@ -116,28 +121,23 @@
         const happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
         const sadSynth = new Tone.MonoSynth({ oscillator: { type: "sawtooth" }, envelope: { attack: 0.1, decay: 0.3, sustain: 0, release: 0.4 } }).toDestination();
 
-        function startGame() { 
-            Tone.start(); game.active = true; 
+        async function startGame() { 
+            await Tone.start(); 
+            game.active = true; 
             document.getElementById('startOverlay').style.display = 'none'; 
             newQuestion(); 
         }
 
         function changeRange() {
-            let r = prompt("Set Difficulty (Max Number):", game.range);
+            let r = prompt("Set Max Number:", game.range);
             if (r && !isNaN(r)) { game.range = parseInt(r); game.score = 0; document.getElementById('scoreLabel').textContent = `⭐ 0`; newQuestion(); }
         }
 
         function setMode(m) {
             game.mode = m;
-            const btnC = document.getElementById('btn-counting');
-            const btnA = document.getElementById('btn-addition');
-            const btnS = document.getElementById('btn-subtraction');
-            
-            [btnC, btnA, btnS].forEach(b => b.className = "mode-btn flex-1 py-2 bg-slate-100 text-slate-400");
-            
-            if(m === 'counting') btnC.className = "mode-btn flex-1 py-2 mode-active-count";
-            if(m === 'addition') btnA.className = "mode-btn flex-1 py-2 mode-active-add";
-            if(m === 'subtraction') btnS.className = "mode-btn flex-1 py-2 mode-active-sub";
+            document.getElementById('btn-counting').className = "mode-btn flex-1 " + (m==='counting'?'mode-active-count':'bg-slate-100 text-slate-400');
+            document.getElementById('btn-addition').className = "mode-btn flex-1 " + (m==='addition'?'mode-active-add':'bg-slate-100 text-slate-400');
+            document.getElementById('btn-subtraction').className = "mode-btn flex-1 " + (m==='subtraction'?'mode-active-sub':'bg-slate-100 text-slate-400');
             newQuestion();
         }
 
@@ -145,7 +145,7 @@
             let n1, n2, html = '', speech = '';
             if (game.mode === 'counting') { 
                 n1 = Math.floor(Math.random() * game.range) + 1; game.ans = n1.toString(); 
-                html = `<div class="text-8xl animate-pulse"> ${n1} </div>`; speech = `${n1}`; 
+                html = `<div class="text-8xl font-black text-slate-700 animate-pulse">${n1}</div>`; speech = `${n1}`; 
             } else if (game.mode === 'addition') { 
                 n1 = Math.floor(Math.random() * (game.range/2)) + 1; n2 = Math.floor(Math.random() * (game.range/2)) + 1; 
                 game.ans = (n1 + n2).toString(); html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span>+</span>${n2}</div><div class="math-line"></div></div>`; speech = `${n1} plus ${n2}`; 
@@ -153,7 +153,10 @@
                 n1 = Math.floor(Math.random() * game.range) + 2; n2 = Math.floor(Math.random() * n1); 
                 game.ans = (n1 - n2).toString(); html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span>-</span>${n2}</div><div class="math-line"></div></div>`; speech = `${n1} minus ${n2}`; 
             }
-            document.getElementById('displayArea').innerHTML = html; game.input = ''; document.getElementById('inputBox').textContent = '---'; if(game.voiceOn) speak(speech);
+            document.getElementById('displayArea').innerHTML = html; 
+            game.input = ''; 
+            document.getElementById('inputBox').textContent = '---'; 
+            if(game.voiceOn) speak(speech);
         }
 
         function press(v) { 
@@ -166,20 +169,21 @@
         function check() { 
             if (!game.input) return; 
             if (game.input === game.ans) { 
-                game.score++; if(game.soundOn) happySynth.triggerAttackRelease("C5", "8n");
+                game.score++; 
+                if(game.soundOn) happySynth.triggerAttackRelease(["C5","E5","G5"], "8n");
                 document.getElementById('displayArea').innerHTML = '<div class="text-8xl">🌟</div>'; 
-                if(game.voiceOn) speak("Great!"); 
+                if(game.voiceOn) speak("Correct!"); 
             } else { 
                 if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n");
                 document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-500 font-black">${game.ans}</div>`; 
-                if(game.voiceOn) speak("Oops!"); 
+                if(game.voiceOn) speak(`Answer was ${game.ans}`); 
             } 
             setTimeout(() => { document.getElementById('scoreLabel').textContent = `⭐ ${game.score}`; newQuestion(); }, 1500); 
         }
 
-        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.2; window.speechSynthesis.speak(m); }
-        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
-        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
+        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
+        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; document.getElementById('soundBtn').classList.toggle('active'); }
+        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; document.getElementById('voiceBtn').classList.toggle('active'); }
         function toggleHelp() { document.getElementById('helpModal').classList.toggle('hidden'); }
     </script>
 </body>
