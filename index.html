@@ -9,41 +9,41 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation; }
         
+        /* THE STRETCH FIX: Using a container with fixed internal ratios */
         .game-card { 
             background: #ffffff; border-radius: 32px; 
             width: 95vw; max-width: 380px; 
-            height: 94dvh; max-height: 750px;
+            height: 94dvh; max-height: 720px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
             position: relative; display: flex; flex-direction: column;
             padding: 16px; overflow: hidden; border: 1px solid #e2e8f0;
         }
 
-        /* Top Controls Area */
-        .controls-grid { display: grid; grid-template-cols: 1fr 1fr; gap: 8px; margin-bottom: 12px; height: 50px; }
-        .btn-ui { background: #f1f5f9; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 11px; font-weight: 800; color: #64748b; border: 1px solid transparent; cursor: pointer; }
-        .btn-ui.active { background: #3b82f6; color: white; border-color: #2563eb; }
+        /* 1. TOP SECTION (15% height) */
+        .top-section { height: 15%; display: flex; flex-direction: column; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .controls-row { display: grid; grid-template-cols: 1fr 1fr; gap: 8px; }
+        .btn-ui { background: #f1f5f9; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 10px; font-weight: 800; color: #64748b; border: 1px solid transparent; }
+        .btn-ui.active { background: #3b82f6; color: white; }
 
-        /* Stats Bar */
-        .stats-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; margin-bottom: 8px; }
-
-        /* Math Display Area - Locked Ratio */
+        /* 2. MATH SECTION (45% height) - Locked for center alignment */
         .math-box { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            background: #f8fafc; border-radius: 24px; margin-bottom: 16px; min-height: 180px;
+            height: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            background: #f8fafc; border-radius: 24px; margin-bottom: 12px;
         }
         .math-stack { display: flex; flex-direction: column; align-items: flex-end; }
-        .math-digit { font-size: clamp(3rem, 10vh, 4.5rem); font-weight: 300; line-height: 1; color: #1e293b; }
+        .math-digit { font-size: clamp(3rem, 8vh, 4.5rem); font-weight: 300; line-height: 1; color: #1e293b; }
         .math-line { border-top: 4px solid #1e293b; width: 130%; margin: 8px 0; }
-        
         #inputBox { font-size: 3rem; color: #3b82f6; font-weight: 700; height: 50px; display: flex; align-items: center; justify-content: center; letter-spacing: 5px; }
 
-        /* Numpad Area - Fixed at Bottom */
-        .numpad { display: grid; grid-template-cols: repeat(3, 1fr); gap: 8px; height: 45%; max-height: 300px; }
-        .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; font-size: 1.5rem; font-weight: 600; color: #334155; box-shadow: 0 3px 0 #f1f5f9; }
+        /* 3. KEYBOARD SECTION (40% height) - Fixed at bottom */
+        .numpad { 
+            height: 40%; display: grid; grid-template-cols: repeat(3, 1fr); gap: 6px; 
+        }
+        .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; font-size: 1.4rem; font-weight: 600; color: #334155; box-shadow: 0 3px 0 #f1f5f9; }
         .numpad button:active { transform: translateY(2px); box-shadow: 0 1px 0 #f1f5f9; }
         .ok-btn { background: #22c55e !important; color: white !important; box-shadow: 0 3px 0 #166534 !important; }
 
-        /* Start Overlay */
+        /* Overlay */
         .overlay { position: absolute; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; }
         .hidden { display: none !important; }
     </style>
@@ -51,19 +51,20 @@
 <body>
     <div class="game-card">
         <div id="startScreen" class="overlay">
-            <div class="text-8xl mb-6">🚀</div>
+            <div class="text-7xl mb-6">🚀</div>
             <h1 class="text-4xl font-black text-slate-900 mb-8 tracking-tighter">MATH KIDS</h1>
-            <button onclick="initGame()" class="bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl active:scale-95 transition-transform">START GAME</button>
+            <button onclick="initGame()" class="bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl active:scale-95 transition-transform">START</button>
         </div>
 
-        <div class="controls-grid">
-            <div id="modeBtn" onclick="toggleMode()" class="btn-ui active uppercase tracking-wider">Mode: Add</div>
-            <div id="levelBtn" onclick="toggleLevel()" class="btn-ui uppercase tracking-wider">Level: 20</div>
-        </div>
-
-        <div class="stats-bar">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Stars Gained</span>
-            <span id="score" class="text-2xl font-black text-blue-500">0</span>
+        <div class="top-section">
+            <div class="controls-row">
+                <div id="modeBtn" onclick="toggleMode()" class="btn-ui active uppercase">Mode: Add</div>
+                <div id="levelBtn" onclick="toggleLevel()" class="btn-ui uppercase">Level: 20</div>
+            </div>
+            <div class="flex justify-between items-center px-1">
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Stars Gained</span>
+                <span id="score" class="text-xl font-black text-blue-500">0</span>
+            </div>
         </div>
 
         <div class="math-box">
@@ -138,7 +139,7 @@
             if (state.input === '') return;
             if (parseInt(state.input) === state.ans) {
                 state.score++; playBeep(880);
-                document.getElementById('problemArea').innerHTML = '<div class="text-4xl font-black text-green-500 uppercase tracking-tighter">Correct!</div>';
+                document.getElementById('problemArea').innerHTML = '<div class="text-3xl font-black text-green-500 uppercase">Correct!</div>';
             } else {
                 playBeep(220);
                 document.getElementById('problemArea').innerHTML = `<div class="text-6xl font-light text-red-500">${state.ans}</div>`;
