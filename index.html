@@ -2,67 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Number Fun Kids Math</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-    
     <style>
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100dvh; margin: 0; overflow: hidden; touch-action: manipulation; }
-        
-        .game-card { 
-            background: #ffffff; border-radius: 32px; padding: 16px; 
-            width: 360px; height: 680px; /* FIXED WIDTH AND HEIGHT - DO NOT CHANGE */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            display: flex; flex-direction: column; position: relative; border: 1px solid #e2e8f0; 
-        }
-        
-        /* FIXED SPACE FOR MATH */
-        .math-stage { 
-            height: 220px; /* Locked height */
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            width: 100%; border-bottom: 1px solid #f1f5f9;
-        }
-
+        .game-card { background: #ffffff; border-radius: 32px; padding: 20px; width: 360px; height: 680px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; border: 1px solid #e2e8f0; }
+        .math-stage { height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; border-bottom: 1px solid #f8fafc; margin: 10px 0; }
         .math-stack { display: flex; flex-direction: column; align-items: flex-end; width: fit-content; }
-        .math-text { font-weight: 200; letter-spacing: -2px; line-height: 1; font-size: 4rem; color: #0f172a; }
-        .math-line { border-top: 2px solid #0f172a; width: 130%; margin-top: 8px; margin-bottom: 12px; }
-        
-        #inputBox { width: 100%; text-align: center; color: #3b82f6; font-size: 3rem; font-weight: 300; letter-spacing: 4px; height: 60px; display: flex; align-items: center; justify-content: center; }
-
-        /* FIXED NUMPAD */
-        .numpad { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .numpad button { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px; height: 65px; font-size: 1.5rem; color: #334155; box-shadow: 0 2px 0 #f1f5f9; }
-        .enter-btn { background: #22c55e !important; color: white !important; font-weight: 700 !important; }
-
-        /* OVERLAYS */
-        #startOverlay { position: absolute; inset: 0; background: #ffffff; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; text-align: center; }
-        .modal-box { position: absolute; inset: 0; background: #ffffff; z-index: 800; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 20px; text-align: center; }
-        
+        .math-text { font-weight: 300; letter-spacing: -2px; line-height: 1; font-size: 4rem; color: #0f172a; }
+        .math-line { border-top: 3px solid #0f172a; width: 130%; margin-top: 8px; margin-bottom: 12px; }
+        #inputBox { width: 100%; text-align: center; color: #3b82f6; font-size: 3.5rem; font-weight: 400; letter-spacing: 4px; height: 60px; display: flex; align-items: center; justify-content: center; }
+        .numpad { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; margin-top: auto; }
+        .numpad button { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 18px; height: 65px; font-size: 1.6rem; color: #334155; box-shadow: 0 2px 0 #f1f5f9; }
+        .enter-btn { background: #22c55e !important; color: white !important; font-weight: 800 !important; }
+        #startOverlay { position: absolute; inset: 0; background: #ffffff; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; text-align: center; }
+        .modal-box { position: absolute; inset: 0; background: #ffffff; z-index: 900; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 20px; text-align: center; }
         .control-btn { background: #f8fafc; border: 1px solid #e2e8f0; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 10px; font-weight: 800; color: #64748b; }
         .control-btn.active { background: #eff6ff; border-color: #bae6fd; color: #3b82f6; }
-        .close-trigger { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 10px; z-index: 1000; border: none; }
         .lvl-opt { width: 90%; padding: 15px; margin: 5px 0; border-radius: 12px; border: 2px solid #f1f5f9; font-weight: 700; color: #64748b; }
         .lvl-opt.active { background: #3b82f6; color: white; border-color: #3b82f6; }
     </style>
 </head>
 <body>
     <div class="game-card">
-        <button onclick="window.close();" class="close-trigger">X</button>
-
         <div id="startOverlay">
             <div class="text-7xl mb-6">🚀</div>
-            <h1 class="text-4xl font-black text-slate-900 mb-2 uppercase">READY?</h1>
+            <h1 class="text-4xl font-black text-slate-900 mb-2">READY?</h1>
             <p id="startLvlLabel" class="text-sky-500 text-sm font-bold uppercase mb-10">Level: 1-20</p>
             <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-5 rounded-2xl font-black shadow-xl">START GAME</button>
         </div>
 
         <div id="helpBox" class="modal-box hidden">
-            <h2 class="text-2xl font-black mb-6">GUIDE</h2>
+            <h2 class="text-2xl font-black mb-6 uppercase">Guide</h2>
             <div class="text-left space-y-4 text-slate-600 font-medium mb-10 text-sm">
                 <div>• Choose ADD, SUB, or COUNT</div>
                 <div>• Set Level to 20, 100, or 500</div>
@@ -72,14 +46,14 @@
         </div>
 
         <div id="levelBox" class="modal-box hidden">
-            <h2 class="text-2xl font-black mb-6">LEVELS</h2>
+            <h2 class="text-2xl font-black mb-6 uppercase">Levels</h2>
             <button onclick="setLevel(20)" id="l20" class="lvl-opt active">Level 20</button>
             <button onclick="setLevel(100)" id="l100" class="lvl-opt">Level 100</button>
             <button onclick="setLevel(500)" id="l500" class="lvl-opt">Level 500</button>
             <button onclick="toggleBox('levelBox')" class="mt-8 text-slate-400 font-bold uppercase text-xs">Cancel</button>
         </div>
 
-        <div class="grid grid-cols-4 gap-2 mb-4 pt-4">
+        <div class="grid grid-cols-4 gap-2 pt-2 mb-4">
             <button onclick="toggleBox('helpBox')" class="control-btn">HELP</button>
             <button onclick="toggleBox('levelBox')" class="control-btn active">LEVEL</button>
             <button id="soundBtn" onclick="toggleSound()" class="control-btn active">SOUND</button>
@@ -92,7 +66,7 @@
                 <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-2 rounded-xl text-[9px] font-black bg-slate-100 text-slate-900 border border-slate-200">ADD</button>
                 <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-2 rounded-xl text-[9px] font-black bg-slate-50 text-slate-400">SUB</button>
             </div>
-            <div class="text-slate-900 text-[10px] font-black uppercase whitespace-nowrap">STAR: <span id="scoreVal" class="text-sky-500 text-sm">0</span></div>
+            <div class="text-slate-900 text-[10px] font-black uppercase">STAR: <span id="scoreVal" class="text-sky-500 text-sm">0</span></div>
         </div>
 
         <div class="math-stage">
@@ -114,23 +88,13 @@
         let game = { mode: 'addition', range: 20, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
         let hSynth, sSynth;
 
-        function initAudio() {
+        async function startGame() {
+            await Tone.start();
             hSynth = new Tone.PolySynth(Tone.Synth).toDestination();
             sSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
-        }
-
-        async function startGame() {
-            try {
-                await Tone.start();
-                initAudio();
-                game.active = true;
-                document.getElementById('startOverlay').style.display = 'none';
-                newQuestion();
-            } catch (e) {
-                document.getElementById('startOverlay').style.display = 'none';
-                game.active = true;
-                newQuestion();
-            }
+            game.active = true;
+            document.getElementById('startOverlay').style.display = 'none';
+            newQuestion();
         }
 
         function toggleBox(id) { document.getElementById(id).classList.toggle('hidden'); }
