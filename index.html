@@ -3,176 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Number Fun Kids Math</title>
+    <title>Math Kids Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
-        
-        /* Fixed Game Card Dimensions */
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation; }
         .game-card { 
             background: #ffffff; border-radius: 32px; 
             width: 360px; height: 680px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            position: relative; border: 1px solid #e2e8f0;
-            display: grid;
-            grid-template-rows: 140px 180px 1fr; /* Locked Sections: Header, Math, Keyboard */
-            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
+            position: relative; display: grid;
+            grid-template-rows: 140px 220px 1fr; /* Rigid Structure: Controls, Math, Keys */
+            padding: 20px; overflow: hidden; border: 1px solid #e2e8f0;
         }
-
-        /* Section 1: Header & Controls */
-        .header-section { display: flex; flex-direction: column; gap: 10px; }
-        .control-btn { background: #f8fafc; border: 1px solid #e2e8f0; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 10px; font-weight: 800; color: #64748b; }
-        .control-btn.active { background: #eff6ff; border-color: #bae6fd; color: #3b82f6; }
-        .mode-btn { flex: 1; padding: 6px 0; border-radius: 10px; font-size: 9px; font-weight: 900; background: #f8fafc; color: #94a3b8; }
-        .mode-btn.active { background: #f1f5f9; color: #0f172a; border: 1px solid #e2e8f0; }
-
-        /* Section 2: Math Stage (LOCKED) */
-        .math-stage { display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid #f8fafc; }
-        .math-stack { display: flex; flex-direction: column; align-items: flex-end; width: fit-content; }
-        .math-text { font-weight: 300; letter-spacing: -2px; line-height: 1; font-size: 4rem; color: #0f172a; }
-        .math-line { border-top: 3px solid #0f172a; width: 130%; margin-top: 5px; margin-bottom: 10px; }
-        #inputBox { width: 100%; text-align: center; color: #3b82f6; font-size: 3.5rem; font-weight: 400; letter-spacing: 4px; height: 50px; display: flex; align-items: center; justify-content: center; }
-
-        /* Section 3: Keyboard (LOCKED AT BOTTOM) */
-        .numpad { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; padding-top: 10px; }
-        .numpad button { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 18px; height: 60px; font-size: 1.6rem; color: #334155; box-shadow: 0 2px 0 #f1f5f9; }
-        .enter-btn { background: #22c55e !important; color: white !important; font-weight: 800 !important; }
-
+        /* Fixed Math Area */
+        .math-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border-radius: 24px; margin: 10px 0; }
+        .math-stack { display: flex; flex-direction: column; align-items: flex-end; }
+        .math-digit { font-size: 4.5rem; font-weight: 300; line-height: 1; color: #1e293b; }
+        .math-line { border-top: 4px solid #1e293b; width: 130%; margin: 10px 0; }
+        #inputBox { font-size: 3.5rem; color: #3b82f6; font-weight: 700; height: 60px; display: flex; align-items: center; justify-content: center; letter-spacing: 5px; }
+        /* Keyboard */
+        .numpad { display: grid; grid-template-cols: repeat(3, 1fr); gap: 12px; }
+        .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; height: 65px; font-size: 1.8rem; font-weight: 600; color: #334155; transition: all 0.1s; box-shadow: 0 4px 0 #f1f5f9; }
+        .numpad button:active { transform: translateY(2px); box-shadow: 0 2px 0 #f1f5f9; }
+        .ok-btn { background: #22c55e !important; color: white !important; box-shadow: 0 4px 0 #166534 !important; }
         /* Overlays */
-        #startOverlay { position: absolute; inset: 0; background: #ffffff; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; }
-        .modal-box { position: absolute; inset: 0; background: #ffffff; z-index: 900; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 20px; text-align: center; }
-        .close-trigger { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 10px; z-index: 1100; border: none; }
-        .lvl-opt { width: 90%; padding: 14px; margin: 5px 0; border-radius: 12px; border: 2px solid #f1f5f9; font-weight: 700; }
-        .lvl-opt.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .overlay { position: absolute; inset: 0; background: white; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; }
+        .hidden { display: none !important; }
+        .btn-ui { background: #f1f5f9; padding: 10px; border-radius: 12px; font-size: 10px; font-weight: 800; color: #64748b; text-align: center; }
+        .btn-ui.active { background: #3b82f6; color: white; }
     </style>
 </head>
 <body>
     <div class="game-card">
-        <button onclick="window.close();" class="close-trigger">X</button>
-
-        <div id="startOverlay">
-            <div class="text-7xl mb-6">🚀</div>
-            <h1 class="text-4xl font-black mb-2">READY?</h1>
-            <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-5 rounded-2xl font-black shadow-xl">START GAME</button>
+        <div id="startScreen" class="overlay">
+            <div class="text-8xl mb-6">🚀</div>
+            <h1 class="text-4xl font-black text-slate-900 mb-8">MATH KIDS</h1>
+            <button onclick="initGame()" class="bg-blue-600 text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl">START</button>
         </div>
 
-        <div id="helpBox" class="modal-box hidden">
-            <h2 class="text-2xl font-black mb-6 uppercase">Guide</h2>
-            <div class="text-left space-y-4 text-slate-600 font-medium mb-10 text-sm">
-                <div>• Choose ADD, SUB, or COUNT</div>
-                <div>• Set Level to 20, 100, or 500</div>
-                <div>• Get 5 Stars to Install</div>
+        <div class="grid grid-cols-2 gap-2 mb-4">
+            <div id="modeBtn" onclick="toggleMode()" class="btn-ui active">MODE: ADD</div>
+            <div id="levelBtn" onclick="toggleLevel()" class="btn-ui">LVL: 20</div>
+        </div>
+        <div class="flex justify-between items-center mb-2 px-2">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Score</span>
+            <span id="score" class="text-2xl font-black text-blue-500">0</span>
+        </div>
+
+        <div class="math-box">
+            <div id="problemArea" class="math-stack">
+                <div class="math-digit">10</div>
+                <div class="math-digit">+ 5</div>
+                <div class="math-line"></div>
             </div>
-            <button onclick="toggleBox('helpBox')" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold">CLOSE</button>
-        </div>
-
-        <div id="levelBox" class="modal-box hidden">
-            <h2 class="text-2xl font-black mb-6">LEVELS</h2>
-            <button onclick="setLevel(20)" id="l20" class="lvl-opt active">Level 20</button>
-            <button onclick="setLevel(100)" id="l100" class="lvl-opt">Level 100</button>
-            <button onclick="setLevel(500)" id="l500" class="lvl-opt">Level 500</button>
-            <button onclick="toggleBox('levelBox')" class="mt-8 text-slate-400 font-bold uppercase text-xs">Cancel</button>
-        </div>
-
-        <div class="header-section">
-            <div class="grid grid-cols-4 gap-2">
-                <button onclick="toggleBox('helpBox')" class="control-btn">HELP</button>
-                <button onclick="toggleBox('levelBox')" class="control-btn active">LEVEL</button>
-                <button id="soundBtn" onclick="toggleSound()" class="control-btn active">SOUND</button>
-                <button id="voiceBtn" onclick="toggleVoice()" class="control-btn active">VOICE</button>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex gap-2 flex-1 mr-4">
-                    <button id="btn-counting" onclick="setMode('counting')" class="mode-btn">COUNT</button>
-                    <button id="btn-addition" onclick="setMode('addition')" class="mode-btn active">ADD</button>
-                    <button id="btn-subtraction" onclick="setMode('subtraction')" class="mode-btn">SUB</button>
-                </div>
-                <div class="text-[10px] font-black uppercase">STAR: <span id="scoreVal" class="text-sky-500 text-sm">0</span></div>
-            </div>
-        </div>
-
-        <div class="math-stage">
-            <div id="displayArea"></div>
             <div id="inputBox">---</div>
         </div>
-        
+
         <div class="numpad">
-            <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
-            <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
-            <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
-            <button onclick="press('clear')" class="text-slate-300 font-bold">C</button>
-            <button onclick="press('0')">0</button>
-            <button onclick="press('enter')" class="enter-btn">OK</button>
+            <button onclick="type(1)">1</button><button onclick="type(2)">2</button><button onclick="type(3)">3</button>
+            <button onclick="type(4)">4</button><button onclick="type(5)">5</button><button onclick="type(6)">6</button>
+            <button onclick="type(7)">7</button><button onclick="type(8)">8</button><button onclick="type(9)">9</button>
+            <button onclick="type('C')" class="text-red-500">C</button><button onclick="type(0)">0</button>
+            <button onclick="check()" class="ok-btn">OK</button>
         </div>
     </div>
 
     <script>
-        let game = { mode: 'addition', range: 20, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
-        let hSynth, sSynth;
+        let state = { mode: 'ADD', lvl: 20, score: 0, ans: 0, input: '', active: false };
+        const audio = new (window.AudioContext || window.webkitAudioContext)();
 
-        async function startGame() {
-            await Tone.start();
-            hSynth = new Tone.PolySynth(Tone.Synth).toDestination();
-            sSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
-            game.active = true;
-            document.getElementById('startOverlay').style.display = 'none';
-            newQuestion();
+        function beep(freq) {
+            const osc = audio.createOscillator();
+            const gain = audio.createGain();
+            osc.connect(gain); gain.connect(audio.destination);
+            osc.frequency.value = freq; osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.5);
+            setTimeout(() => osc.stop(), 500);
         }
 
-        function toggleBox(id) { document.getElementById(id).classList.toggle('hidden'); }
-        
-        function setLevel(val) {
-            game.range = val; game.score = 0; document.getElementById('scoreVal').textContent = '0';
-            document.querySelectorAll('.lvl-opt').forEach(b => b.classList.remove('active'));
-            document.getElementById('l'+val).classList.add('active');
-            if(game.voiceOn) speak("Level " + val); toggleBox('levelBox'); if(game.active) newQuestion();
+        function initGame() {
+            state.active = true;
+            document.getElementById('startScreen').classList.add('hidden');
+            next();
         }
 
-        function setMode(m) {
-            game.mode = m;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-'+m).classList.add('active');
-            if(game.active) newQuestion();
+        function toggleMode() {
+            state.mode = state.mode === 'ADD' ? 'SUB' : 'ADD';
+            document.getElementById('modeBtn').innerText = 'MODE: ' + state.mode;
+            if(state.active) next();
         }
 
-        function newQuestion() {
-            let n1 = Math.floor(Math.random() * (game.range/2)) + 5;
-            let n2 = Math.floor(Math.random() * (game.range/2)) + 1;
-            let html = '', speech = '';
-            
-            if (game.mode === 'counting') { 
-                game.ans = n1.toString(); html = `<div class="math-text text-slate-900">${n1}</div>`; speech = `${n1}`; 
-            } else if (game.mode === 'addition') { 
-                game.ans = (n1 + n2).toString(); html = `<div class="math-stack"><div class="math-text">${n1}</div><div class="math-text">+ ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} plus ${n2}`; 
-            } else { 
-                if (n1 < n2) [n1, n2] = [n2, n1];
-                game.ans = (n1 - n2).toString(); html = `<div class="math-stack"><div class="math-text">${n1}</div><div class="math-text">- ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} minus ${n2}`; 
+        function toggleLevel() {
+            const lvls = [20, 100, 500];
+            state.lvl = lvls[(lvls.indexOf(state.lvl) + 1) % 3];
+            document.getElementById('levelBtn').innerText = 'LVL: ' + state.lvl;
+            state.score = 0; document.getElementById('score').innerText = '0';
+            if(state.active) next();
+        }
+
+        function next() {
+            let n1 = Math.floor(Math.random() * (state.lvl / 2)) + 5;
+            let n2 = Math.floor(Math.random() * (state.lvl / 2)) + 1;
+            if (state.mode === 'SUB' && n1 < n2) [n1, n2] = [n2, n1];
+            state.ans = state.mode === 'ADD' ? n1 + n2 : n1 - n2;
+            state.input = '';
+            document.getElementById('problemArea').innerHTML = `
+                <div class="math-digit">${n1}</div>
+                <div class="math-digit">${state.mode === 'ADD' ? '+' : '-'} ${n2}</div>
+                <div class="math-line"></div>
+            `;
+            document.getElementById('inputBox').innerText = '---';
+        }
+
+        function type(val) {
+            if (val === 'C') state.input = '';
+            else if (state.input.length < 3) state.input += val;
+            document.getElementById('inputBox').innerText = state.input || '---';
+        }
+
+        function check() {
+            if (parseInt(state.input) === state.ans) {
+                state.score++; beep(880);
+                document.getElementById('problemArea').innerHTML = '<div class="text-4xl font-black text-green-500 uppercase">Excellent!</div>';
+            } else {
+                beep(220);
+                document.getElementById('problemArea').innerHTML = `<div class="text-6xl font-light text-red-500">${state.ans}</div>`;
             }
-            document.getElementById('displayArea').innerHTML = html; game.input = ''; document.getElementById('inputBox').textContent = '---'; if(game.voiceOn) speak(speech);
+            document.getElementById('score').innerText = state.score;
+            setTimeout(next, 1500);
         }
-
-        function press(v) { if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
-        
-        function check() { 
-            if (!game.input) return; 
-            if (game.input === game.ans) { 
-                game.score++; if(game.soundOn && hSynth) hSynth.triggerAttackRelease(["E5","G5"], "16n");
-                document.getElementById('displayArea').innerHTML = '<div class="text-4xl font-black text-green-500">CORRECT</div>'; 
-                if(game.voiceOn) speak("Correct"); 
-            } else { 
-                if(game.soundOn && sSynth) sSynth.triggerAttackRelease("G3", "8n");
-                document.getElementById('displayArea').innerHTML = `<div class="math-text text-red-500">${game.ans}</div>`; 
-                if(game.voiceOn) speak(`No, it was ${game.ans}`); 
-            } 
-            document.getElementById('scoreVal').textContent = game.score;
-            setTimeout(() => { newQuestion(); }, 1200); 
-        }
-
-        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
-        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "SOUND" : "MUTED"; document.getElementById('soundBtn').classList.toggle('active'); }
-        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "VOICE" : "SILENT"; document.getElementById('voiceBtn').classList.toggle('active'); }
     </script>
 </body>
 </html>
