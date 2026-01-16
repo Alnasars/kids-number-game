@@ -13,32 +13,40 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100dvh; margin: 0; overflow: hidden; touch-action: manipulation; }
-        .game-card { background: #ffffff; border-radius: 32px; padding: 16px; width: 95vw; max-width: 380px; height: 94dvh; max-height: 820px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; border: 1px solid #e2e8f0; }
         
-        /* Fixed Display Area to prevent UI jumping */
-        .game-main-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 180px; }
-        #displayArea { height: 130px; display: flex; align-items: center; justify-content: center; width: 100%; }
+        .game-card { 
+            background: #ffffff; border-radius: 32px; padding: 16px; 
+            width: 360px; height: 680px; /* FIXED WIDTH AND HEIGHT - DO NOT CHANGE */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            display: flex; flex-direction: column; position: relative; border: 1px solid #e2e8f0; 
+        }
         
-        /* Sleek Math Alignment */
+        /* FIXED SPACE FOR MATH */
+        .math-stage { 
+            height: 220px; /* Locked height */
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            width: 100%; border-bottom: 1px solid #f1f5f9;
+        }
+
         .math-stack { display: flex; flex-direction: column; align-items: flex-end; width: fit-content; }
-        .math-text { font-weight: 200; letter-spacing: -2px; line-height: 1; font-size: clamp(3rem, 9vh, 4.5rem); color: #0f172a; }
-        .math-line { border-top: 2px solid #0f172a; width: 120%; margin-top: 8px; margin-bottom: 8px; }
+        .math-text { font-weight: 200; letter-spacing: -2px; line-height: 1; font-size: 4rem; color: #0f172a; }
+        .math-line { border-top: 2px solid #0f172a; width: 130%; margin-top: 8px; margin-bottom: 12px; }
         
-        #inputBox { width: 100%; text-align: center; color: #3b82f6; font-size: clamp(2.5rem, 6vh, 3.5rem); font-weight: 300; letter-spacing: 4px; height: 60px; display: flex; align-items: center; justify-content: center; }
+        #inputBox { width: 100%; text-align: center; color: #3b82f6; font-size: 3rem; font-weight: 300; letter-spacing: 4px; height: 60px; display: flex; align-items: center; justify-content: center; }
 
-        /* Unified Overlays */
-        #startOverlay { position: absolute; inset: 0; background: #ffffff; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 20px; text-align: center; }
-        .modal-box { position: absolute; inset: 0; background: #ffffff; z-index: 800; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 32px; text-align: center; }
+        /* FIXED NUMPAD */
+        .numpad { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .numpad button { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px; height: 65px; font-size: 1.5rem; color: #334155; box-shadow: 0 2px 0 #f1f5f9; }
+        .enter-btn { background: #22c55e !important; color: white !important; font-weight: 700 !important; }
+
+        /* OVERLAYS */
+        #startOverlay { position: absolute; inset: 0; background: #ffffff; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; text-align: center; }
+        .modal-box { position: absolute; inset: 0; background: #ffffff; z-index: 800; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 20px; text-align: center; }
         
-        .control-btn { background: #f8fafc; border: 1px solid #e2e8f0; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 14px; font-size: 11px; font-weight: 800; color: #64748b; }
+        .control-btn { background: #f8fafc; border: 1px solid #e2e8f0; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 10px; font-weight: 800; color: #64748b; }
         .control-btn.active { background: #eff6ff; border-color: #bae6fd; color: #3b82f6; }
-        .close-trigger { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; z-index: 1000; border: none; }
-
-        .numpad { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; margin-top: auto; }
-        .numpad button { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 20px; height: clamp(55px, 9vh, 72px); font-size: 1.5rem; font-weight: 400; color: #334155; box-shadow: 0 2px 0 #f1f5f9; }
-        .enter-btn { background: #22c55e !important; color: white !important; font-weight: 700 !important; box-shadow: 0 4px 0 #15803d !important; }
-        
-        .lvl-opt { width: 100%; padding: 16px; margin: 6px 0; border-radius: 16px; border: 2px solid #f1f5f9; font-weight: 700; color: #64748b; }
+        .close-trigger { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 10px; z-index: 1000; border: none; }
+        .lvl-opt { width: 90%; padding: 15px; margin: 5px 0; border-radius: 12px; border: 2px solid #f1f5f9; font-weight: 700; color: #64748b; }
         .lvl-opt.active { background: #3b82f6; color: white; border-color: #3b82f6; }
     </style>
 </head>
@@ -46,14 +54,21 @@
     <div class="game-card">
         <button onclick="window.close();" class="close-trigger">X</button>
 
+        <div id="startOverlay">
+            <div class="text-7xl mb-6">🚀</div>
+            <h1 class="text-4xl font-black text-slate-900 mb-2 uppercase">READY?</h1>
+            <p id="startLvlLabel" class="text-sky-500 text-sm font-bold uppercase mb-10">Level: 1-20</p>
+            <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-5 rounded-2xl font-black shadow-xl">START GAME</button>
+        </div>
+
         <div id="helpBox" class="modal-box hidden">
             <h2 class="text-2xl font-black mb-6">GUIDE</h2>
-            <div class="text-left space-y-4 text-slate-600 font-medium mb-10">
-                <div>MODE: Add, Sub, or Count</div>
-                <div>LEVEL: 20, 100, or 500</div>
-                <div>GOAL: 5 Stars to Install</div>
+            <div class="text-left space-y-4 text-slate-600 font-medium mb-10 text-sm">
+                <div>• Choose ADD, SUB, or COUNT</div>
+                <div>• Set Level to 20, 100, or 500</div>
+                <div>• Get 5 Stars to Install</div>
             </div>
-            <button onclick="toggleBox('helpBox')" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold">CLOSE</button>
+            <button onclick="toggleBox('helpBox')" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold">CLOSE</button>
         </div>
 
         <div id="levelBox" class="modal-box hidden">
@@ -64,13 +79,6 @@
             <button onclick="toggleBox('levelBox')" class="mt-8 text-slate-400 font-bold uppercase text-xs">Cancel</button>
         </div>
 
-        <div id="startOverlay">
-            <div class="text-7xl mb-6">🚀</div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter mb-2 uppercase">Ready?</h1>
-            <p id="startLvlLabel" class="text-sky-500 text-sm font-bold uppercase tracking-widest mb-10">Level: 1-20</p>
-            <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-5 rounded-2xl font-black text-sm tracking-widest shadow-xl">START GAME</button>
-        </div>
-
         <div class="grid grid-cols-4 gap-2 mb-4 pt-4">
             <button onclick="toggleBox('helpBox')" class="control-btn">HELP</button>
             <button onclick="toggleBox('levelBox')" class="control-btn active">LEVEL</button>
@@ -79,15 +87,15 @@
         </div>
 
         <div class="flex justify-between items-center mb-4">
-            <div class="flex gap-2 flex-1 mr-4">
-                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400">COUNT</button>
-                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-100 text-slate-900 border border-slate-200">ADD</button>
-                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400">SUB</button>
+            <div class="flex gap-1.5 flex-1 mr-4">
+                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-2 rounded-xl text-[9px] font-black bg-slate-50 text-slate-400">COUNT</button>
+                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-2 rounded-xl text-[9px] font-black bg-slate-100 text-slate-900 border border-slate-200">ADD</button>
+                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-2 rounded-xl text-[9px] font-black bg-slate-50 text-slate-400">SUB</button>
             </div>
-            <div class="text-slate-900 text-[10px] font-black uppercase">STAR: <span id="scoreVal" class="text-sky-500 text-sm">0</span></div>
+            <div class="text-slate-900 text-[10px] font-black uppercase whitespace-nowrap">STAR: <span id="scoreVal" class="text-sky-500 text-sm">0</span></div>
         </div>
 
-        <div class="game-main-area">
+        <div class="math-stage">
             <div id="displayArea"></div>
             <div id="inputBox">---</div>
         </div>
@@ -137,8 +145,8 @@
 
         function setMode(m) {
             game.mode = m;
-            document.querySelectorAll('[id^="btn-"]').forEach(b => { b.className = "flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400"; });
-            document.getElementById('btn-'+m).className = "flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-100 text-slate-900 border border-slate-200";
+            document.querySelectorAll('[id^="btn-"]').forEach(b => { b.className = "flex-1 py-2 rounded-xl text-[9px] font-black bg-slate-50 text-slate-400"; });
+            document.getElementById('btn-'+m).className = "flex-1 py-2 rounded-xl text-[9px] font-black bg-slate-100 text-slate-900 border border-slate-200";
             if(game.active) newQuestion();
         }
 
@@ -163,7 +171,7 @@
             if (!game.input) return; 
             if (game.input === game.ans) { 
                 game.score++; if(game.soundOn && hSynth) hSynth.triggerAttackRelease(["E5","G5"], "16n");
-                document.getElementById('displayArea').innerHTML = '<div class="text-4xl font-black text-green-500 tracking-widest">CORRECT</div>'; 
+                document.getElementById('displayArea').innerHTML = '<div class="text-4xl font-black text-green-500">CORRECT</div>'; 
                 if(game.voiceOn) speak("Correct"); 
             } else { 
                 if(game.soundOn && sSynth) sSynth.triggerAttackRelease("G3", "8n");
