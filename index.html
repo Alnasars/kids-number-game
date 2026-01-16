@@ -26,14 +26,12 @@
             display: flex; flex-direction: column; position: relative;
             border: 1px solid #f1f5f9;
         }
-        /* ENHANCED CLOSE BUTTON */
         .close-trigger {
             position: absolute; top: 10px; right: 10px;
             background: #ef4444; color: white;
             width: 32px; height: 32px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-weight: 800; font-size: 14px; z-index: 200;
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
         }
         .control-btn {
             background: #f8fafc; border: 1px solid #f1f5f9;
@@ -44,7 +42,7 @@
         
         .math-container {
             font-weight: 300; display: flex; flex-direction: column; align-items: flex-end;
-            font-size: clamp(2.5rem, 10vh, 4rem); color: #0f172a; line-height: 1; letter-spacing: -2px;
+            font-size: clamp(2.5rem, 8vh, 4rem); color: #0f172a; line-height: 1; letter-spacing: -2px;
         }
         .math-line { border-top: 1px solid #e2e8f0; width: 110%; margin-top: 8px; }
 
@@ -69,13 +67,14 @@
 
         <div id="startOverlay" onclick="startGame()">
             <div class="text-5xl mb-6">✨</div>
-            <h1 class="text-3xl font-extralight text-slate-900 tracking-tighter mb-2">PLAY MATH</h1>
+            <h1 class="text-3xl font-extralight text-slate-900 tracking-tighter mb-2 uppercase">Ready?</h1>
+            <p id="currentRangeLabel" class="text-sky-500 text-xs font-bold uppercase tracking-widest mb-4">Level: 1-20</p>
             <p class="text-slate-400 text-xs tracking-widest uppercase font-semibold">Tap to Start</p>
         </div>
 
         <div class="grid grid-cols-4 gap-2 mb-4 pt-4">
             <button onclick="toggleHelp()" class="control-btn">❓</button>
-            <button onclick="changeRange()" class="control-btn">⚙️</button>
+            <button onclick="changeLevel()" class="control-btn active" id="levelBtn">⚙️</button>
             <button id="soundBtn" onclick="toggleSound()" class="control-btn active">🔊</button>
             <button id="voiceBtn" onclick="toggleVoice()" class="control-btn active">🗣️</button>
         </div>
@@ -90,7 +89,6 @@
         </div>
 
         <div id="displayArea" class="flex-1 flex items-center justify-center min-h-[100px]"></div>
-
         <div id="inputBox" class="text-center mb-4 h-10 tracking-tighter">---</div>
         
         <div class="numpad grid grid-cols-3 gap-2">
@@ -104,15 +102,31 @@
     </div>
 
     <script>
-        let game = { mode: 'addition', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
+        // Start with range 20 (Level 1)
+        let game = { mode: 'addition', range: 20, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
         const happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
         const sadSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
 
         async function startGame() { await Tone.start(); game.active = true; document.getElementById('startOverlay').style.display = 'none'; newQuestion(); }
-        function changeRange() {
-            let r = prompt("Max Number:", game.range);
-            if (r && !isNaN(r)) { game.range = parseInt(r); game.score = 0; document.getElementById('scoreVal').textContent = '0'; newQuestion(); }
+
+        // FIXED RANGE SELECTOR (LEVELS)
+        function changeLevel() {
+            if (game.range === 20) {
+                game.range = 100;
+                speak("Level 100");
+            } else if (game.range === 100) {
+                game.range = 500;
+                speak("Level 500");
+            } else {
+                game.range = 20;
+                speak("Level 20");
+            }
+            game.score = 0;
+            document.getElementById('scoreVal').textContent = '0';
+            document.getElementById('currentRangeLabel').textContent = "Level: 1-" + game.range;
+            newQuestion();
         }
+
         function setMode(m) {
             game.mode = m;
             document.querySelectorAll('[id^="btn-"]').forEach(b => {
@@ -121,6 +135,7 @@
             document.getElementById('btn-'+m).className = "flex-1 py-1.5 rounded-xl text-[10px] font-semibold bg-slate-100 text-slate-900 border border-slate-200";
             newQuestion();
         }
+
         function newQuestion() {
             let n1, n2, html = '', speech = '';
             if (game.mode === 'counting') { 
@@ -137,7 +152,7 @@
         }
         function press(v) { 
             if (v === 'clear') game.input = ''; else if (v === 'enter') check(); 
-            else if (game.input.length < 4) game.input += v; 
+            else if (game.input.length < 5) game.input += v; 
             document.getElementById('inputBox').textContent = game.input || '---'; 
         }
         function check() { 
@@ -156,7 +171,7 @@
         function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; document.getElementById('soundBtn').classList.toggle('active'); }
         function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; document.getElementById('voiceBtn').classList.toggle('active'); }
-        function toggleHelp() { alert("⚙️ Settings: Change Max Number\n🔊/🗣️: Toggle Audio\n⭐ 5: Install App"); }
+        function toggleHelp() { alert("⚙️ Settings: Change Level (20, 100, 500)\n🔊/🗣️: Toggle Audio\n⭐ 5: Install App"); }
     </script>
 </body>
 </html>
