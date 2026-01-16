@@ -1,4 +1,4 @@
-const cacheName = 'math-v16'; 
+const cacheName = 'math-v17'; 
 const assets = [
   '/kids-number-game/',
   '/kids-number-game/index.html',
@@ -21,3 +21,4 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
 });
+
