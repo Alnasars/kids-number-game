@@ -6,24 +6,34 @@
     <title>Number Fun Kids Math</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f8fafc">
+    <meta name="theme-color" content="#ffffff">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     
     <style>
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100dvh; margin: 0; overflow: hidden; }
-        .game-card { background: #ffffff; border-radius: 32px; padding: 16px; width: 95vw; max-width: 380px; height: 92dvh; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; border: 1px solid #e2e8f0; }
+        .game-card { background: #ffffff; border-radius: 32px; padding: 20px; width: 95vw; max-width: 380px; height: 94dvh; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; border: 1px solid #e2e8f0; }
         .close-trigger { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; z-index: 200; }
+        
         .control-btn { background: #f8fafc; border: 1px solid #e2e8f0; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 11px; font-weight: 800; color: #64748b; }
         .control-btn.active { background: #eff6ff; border-color: #bae6fd; color: #3b82f6; }
-        .math-container { font-weight: 300; display: flex; flex-direction: column; align-items: flex-end; font-size: clamp(3rem, 10vh, 4.5rem); color: #0f172a; line-height: 1; letter-spacing: -2px; }
+        
+        /* UNIFIED FONT FOR MATH AND INPUT */
+        .math-text { font-family: 'Inter', sans-serif; font-weight: 300; letter-spacing: -2px; line-height: 1; }
+        .math-container { display: flex; flex-direction: column; align-items: flex-end; font-size: clamp(3rem, 10vh, 4.5rem); color: #0f172a; }
         .math-line { border-top: 2px solid #0f172a; width: 115%; margin-top: 8px; }
+        #inputBox { font-family: 'Inter', sans-serif; font-weight: 400; color: #3b82f6; font-size: clamp(2.5rem, 6vh, 3.5rem); letter-spacing: 2px; }
+
         .numpad button { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 20px; height: clamp(55px, 8.5vh, 70px); font-size: 1.5rem; font-weight: 400; color: #334155; box-shadow: 0 2px 0 #f1f5f9; }
         .enter-btn { background: #22c55e !important; color: white !important; font-weight: 700 !important; box-shadow: 0 4px 0 #15803d !important; }
-        .modal-box { position: absolute; inset: 0; background: rgba(255,255,255,0.98); z-index: 300; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 24px; text-align: center; }
-        .lvl-opt { width: 100%; padding: 14px; margin: 4px 0; border-radius: 14px; border: 2px solid #f1f5f9; font-weight: 700; color: #64748b; }
+
+        /* UNIFIED UI FOR POP-UPS */
+        .modal-box { position: absolute; inset: 0; background: #ffffff; z-index: 300; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 32px; padding: 32px; text-align: center; }
+        .modal-title { font-size: 1.5rem; font-weight: 800; color: #1e293b; margin-bottom: 24px; text-transform: uppercase; }
+        .lvl-opt { width: 100%; padding: 16px; margin: 6px 0; border-radius: 16px; border: 2px solid #f1f5f9; font-weight: 700; color: #64748b; transition: 0.2s; }
         .lvl-opt.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .modal-close { margin-top: 32px; width: 100%; py-4; background: #0f172a; color: white; border-radius: 16px; font-weight: 700; height: 56px; }
     </style>
 </head>
 <body>
@@ -31,27 +41,27 @@
         <button onclick="window.close();" class="close-trigger">X</button>
 
         <div id="helpBox" class="modal-box hidden">
-            <h2 class="text-2xl font-black text-slate-900 mb-6">GUIDE</h2>
-            <ul class="text-left space-y-4 mb-8 text-slate-600 font-medium">
-                <li>⭐ Choose <b>ADD, SUB</b>, or <b>COUNT</b>.</li>
-                <li>⚙️ Set Level to <b>20, 100</b>, or <b>500</b>.</li>
-                <li>📱 Get <b>5 Stars</b> to Install!</li>
-            </ul>
-            <button onclick="toggleBox('helpBox')" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold">CLOSE</button>
+            <h2 class="modal-title">Guide</h2>
+            <div class="text-left space-y-5 text-slate-600 font-medium mb-4">
+                <div class="flex items-center gap-3"><span>⭐</span> Choose <b>ADD, SUB,</b> or <b>COUNT</b></div>
+                <div class="flex items-center gap-3"><span>⚙️</span> Set Level to <b>20, 100,</b> or <b>500</b></div>
+                <div class="flex items-center gap-3"><span>📱</span> Get <b>5 Stars</b> to Install!</div>
+            </div>
+            <button onclick="toggleBox('helpBox')" class="modal-close">CLOSE</button>
         </div>
 
         <div id="levelBox" class="modal-box hidden">
-            <h2 class="text-xl font-black mb-6">SELECT LEVEL</h2>
+            <h2 class="modal-title">Select Level</h2>
             <button onclick="setLevel(20)" id="l20" class="lvl-opt active">Level 20 (Easy)</button>
             <button onclick="setLevel(100)" id="l100" class="lvl-opt">Level 100 (Medium)</button>
             <button onclick="setLevel(500)" id="l500" class="lvl-opt">Level 500 (Hard)</button>
-            <button onclick="toggleBox('levelBox')" class="mt-8 text-slate-400 font-bold uppercase text-xs">Cancel</button>
+            <button onclick="toggleBox('levelBox')" class="mt-6 text-slate-400 font-bold uppercase text-xs tracking-widest">Cancel</button>
         </div>
 
-        <div id="startOverlay" onclick="startGame()">
+        <div id="startOverlay" onclick="startGame()" class="absolute inset-0 bg-white z-[100] flex flex-direction column justify-center items-center rounded-[32px] text-center">
             <div class="text-6xl mb-8">🚀</div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter mb-2">PLAY MATH</h1>
-            <p id="startLvlLabel" class="text-sky-500 text-sm font-bold uppercase tracking-widest mb-6">Level: 1-20</p>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter mb-2 uppercase">Ready?</h1>
+            <p id="startLvlLabel" class="text-sky-500 text-sm font-bold uppercase tracking-widest mb-8">Level: 1-20</p>
             <button class="bg-sky-500 text-white px-10 py-4 rounded-2xl font-black text-sm tracking-widest shadow-lg">START GAME</button>
         </div>
 
@@ -64,15 +74,15 @@
 
         <div class="flex justify-between items-center mb-4">
             <div class="flex gap-2 flex-1 mr-4">
-                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400 border border-transparent">COUNT</button>
+                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400">COUNT</button>
                 <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-100 text-slate-900 border border-slate-200">ADD</button>
-                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400 border border-transparent">SUB</button>
+                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400">SUB</button>
             </div>
             <div class="text-slate-900 text-[10px] font-black uppercase">STAR: <span id="scoreVal" class="text-sky-500 text-sm">0</span></div>
         </div>
 
-        <div id="displayArea" class="flex-1 flex items-center justify-center min-h-[140px]"></div>
-        <div id="inputBox" class="text-center mb-4 h-12 flex items-center justify-center text-4xl text-sky-500 font-black">---</div>
+        <div id="displayArea" class="flex-1 flex items-center justify-center min-h-[140px] math-text"></div>
+        <div id="inputBox" class="text-center mb-4 h-12 flex items-center justify-center">---</div>
         
         <div class="numpad grid grid-cols-3 gap-3">
             <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
@@ -82,8 +92,6 @@
             <button onclick="press('0')">0</button>
             <button onclick="press('enter')" class="enter-btn">OK</button>
         </div>
-        
-        <p class="mt-4 text-[9px] text-center font-bold text-slate-300 uppercase tracking-widest">Support: JazzCash 03XXXXXXXXX</p>
     </div>
 
     <script>
@@ -97,58 +105,4 @@
         function setLevel(val) {
             game.range = val; game.score = 0; document.getElementById('scoreVal').textContent = '0';
             document.getElementById('startLvlLabel').textContent = "Level: 1-" + val;
-            document.querySelectorAll('.lvl-opt').forEach(b => b.classList.remove('active'));
-            document.getElementById('l'+val).classList.add('active');
-            if(game.voiceOn) speak("Level " + val); 
-            toggleBox('levelBox'); newQuestion();
-        }
-
-        function setMode(m) {
-            game.mode = m;
-            document.querySelectorAll('[id^="btn-"]').forEach(b => { b.className = "flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-50 text-slate-400 border border-transparent"; });
-            document.getElementById('btn-'+m).className = "flex-1 py-2 rounded-xl text-[10px] font-black bg-slate-100 text-slate-900 border border-slate-200";
-            newQuestion();
-        }
-
-        function newQuestion() {
-            let n1, n2, html = '', speech = '';
-            if (game.mode === 'counting') { 
-                n1 = Math.floor(Math.random() * game.range) + 1; game.ans = n1.toString(); 
-                html = `<div class="text-8xl font-light text-slate-900 tracking-tighter">${n1}</div>`; speech = `${n1}`; 
-            } else if (game.mode === 'addition') { 
-                n1 = Math.floor(Math.random() * (game.range/2)) + 1; n2 = Math.floor(Math.random() * (game.range/2)) + 1; 
-                game.ans = (n1 + n2).toString(); html = `<div class="math-container"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} plus ${n2}`; 
-            } else { 
-                n1 = Math.floor(Math.random() * game.range) + 2; n2 = Math.floor(Math.random() * n1); 
-                game.ans = (n1 - n2).toString(); html = `<div class="math-container"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} minus ${n2}`; 
-            }
-            document.getElementById('displayArea').innerHTML = html; game.input = ''; document.getElementById('inputBox').textContent = '---'; if(game.voiceOn) speak(speech);
-        }
-
-        function press(v) { 
-            if (v === 'clear') game.input = ''; 
-            else if (v === 'enter') check(); 
-            else if (game.input.length < 6) game.input += v; 
-            document.getElementById('inputBox').textContent = game.input || '---'; 
-        }
-
-        function check() { 
-            if (!game.input) return; 
-            if (game.input === game.ans) { 
-                game.score++; if(game.soundOn) happySynth.triggerAttackRelease(["E5","G5"], "16n");
-                document.getElementById('displayArea').innerHTML = '<div class="text-5xl font-black text-green-500 tracking-widest">CORRECT</div>'; 
-                if(game.voiceOn) speak("Correct"); 
-            } else { 
-                if(game.soundOn) sadSynth.triggerAttackRelease("G3", "8n");
-                document.getElementById('displayArea').innerHTML = `<div class="text-6xl font-light text-red-500">${game.ans}</div>`; 
-                if(game.voiceOn) speak(`No, it was ${game.ans}`); 
-            } 
-            setTimeout(() => { document.getElementById('scoreVal').textContent = game.score; newQuestion(); }, 1200); 
-        }
-
-        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
-        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "SOUND" : "MUTED"; document.getElementById('soundBtn').classList.toggle('active'); }
-        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "VOICE" : "SILENT"; document.getElementById('voiceBtn').classList.toggle('active'); }
-    </script>
-</body>
-</html>
+            document.querySelectorAll('.lvl-opt').forEach(b
