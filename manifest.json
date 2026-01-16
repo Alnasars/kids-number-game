@@ -1,16 +1,16 @@
 {
   "name": "Number Fun Kids Math",
-  "short_name": "NumberFun",
-  "start_url": "index.html",
+  "short_name": "Number Fun",
+  "start_url": "/kids-number-game/",
+  "scope": "/kids-number-game/",
   "display": "standalone",
-  "background_color": "#f0f9ff",
+  "background_color": "#ffffff",
   "theme_color": "#0ea5e9",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
