@@ -22,7 +22,9 @@
         .math-text { font-family: 'Inter', sans-serif; font-weight: 300; letter-spacing: -2px; line-height: 1.1; }
         .math-container { display: flex; flex-direction: column; align-items: flex-end; font-size: clamp(3rem, 10vh, 4.5rem); color: #0f172a; }
         .math-line { border-top: 2px solid #0f172a; width: 115%; margin-top: 8px; }
-        #inputBox { font-family: 'Inter', sans-serif; font-weight: 400; color: #3b82f6; font-size: clamp(2.5rem, 6vh, 3.5rem); letter-spacing: 2px; }
+        
+        /* Fixed InputBox CSS for alignment */
+        #inputBox { font-family: 'Inter', sans-serif; font-weight: 400; color: #3b82f6; font-size: clamp(2.5rem, 6vh, 3.5rem); letter-spacing: 2px; height: 60px; display: flex; align-items: center; justify-content: center; width: 100%; }
 
         .numpad button { background: #ffffff; border: 1px solid #f1f5f9; border-radius: 20px; height: clamp(55px, 8.5vh, 70px); font-size: 1.5rem; font-weight: 400; color: #334155; box-shadow: 0 2px 0 #f1f5f9; }
         .enter-btn { background: #22c55e !important; color: white !important; font-weight: 700 !important; box-shadow: 0 4px 0 #15803d !important; }
@@ -80,7 +82,6 @@
         </div>
 
         <div id="displayArea" class="flex-1 flex items-center justify-center min-h-[140px] math-text"></div>
-        <div id="inputBox" class="text-center mb-4 h-12 flex items-center justify-center">---</div>
         
         <div class="numpad grid grid-cols-3 gap-3">
             <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
@@ -120,18 +121,32 @@
             let n1, n2, html = '', speech = '';
             if (game.mode === 'counting') { 
                 n1 = Math.floor(Math.random() * game.range) + 1; game.ans = n1.toString(); 
-                html = `<div class="text-8xl math-text text-slate-900">${n1}</div>`; speech = `${n1}`; 
+                html = `<div class="text-8xl math-text text-slate-900">${n1}</div><div id="inputBox">---</div>`; 
+                speech = `${n1}`; 
             } else if (game.mode === 'addition') { 
                 n1 = Math.floor(Math.random() * (game.range/2)) + 1; n2 = Math.floor(Math.random() * (game.range/2)) + 1; 
-                game.ans = (n1 + n2).toString(); html = `<div class="math-container math-text"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} plus ${n2}`; 
+                game.ans = (n1 + n2).toString(); 
+                html = `<div class="math-container math-text"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div><div id="inputBox">---</div></div>`; 
+                speech = `${n1} plus ${n2}`; 
             } else { 
                 n1 = Math.floor(Math.random() * game.range) + 2; n2 = Math.floor(Math.random() * n1); 
-                game.ans = (n1 - n2).toString(); html = `<div class="math-container math-text"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`; speech = `${n1} minus ${n2}`; 
+                game.ans = (n1 - n2).toString(); 
+                html = `<div class="math-container math-text"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div><div id="inputBox">---</div></div>`; 
+                speech = `${n1} minus ${n2}`; 
             }
-            document.getElementById('displayArea').innerHTML = html; game.input = ''; document.getElementById('inputBox').textContent = '---'; if(game.voiceOn) speak(speech);
+            document.getElementById('displayArea').innerHTML = html; 
+            game.input = ''; 
+            if(game.voiceOn) speak(speech);
         }
 
-        function press(v) { if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 6) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
+        function press(v) { 
+            if (v === 'clear') game.input = ''; 
+            else if (v === 'enter') check(); 
+            else if (game.input.length < 6) game.input += v; 
+            
+            const box = document.getElementById('inputBox');
+            if(box) box.textContent = game.input || '---';
+        }
         
         function check() { 
             if (!game.input) return; 
