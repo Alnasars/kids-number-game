@@ -1,4 +1,4 @@
-const cacheName = 'math-kids-v32'; // Change this number to force update
+const cacheName = 'math-kids-v35'; // Change this number to force update
 
 self.addEventListener('install', (event) => {
     // Force the waiting service worker to become the active service worker
@@ -40,4 +40,5 @@ self.addEventListener('fetch', (event) => {
         })
     );
 });
+
 
