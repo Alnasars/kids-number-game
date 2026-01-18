@@ -6,132 +6,117 @@
     <title>Math Kids Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation; }
-        .game-card { background: white; width: 95vw; max-width: 380px; height: 92vh; border-radius: 40px; display: flex; flex-direction: column; padding: 20px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        body { font-family: sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
         
-        .header { height: 15%; display: flex; flex-direction: column; justify-content: space-between; }
-        .math-box { height: 45%; background: #f8fafc; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 10px 0; border: 1px solid #f1f5f9; }
-        .keys { height: 40%; display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; }
-
-        /* THE BRUTE FORCE FIX: HTML TABLE */
-        table { border-collapse: collapse; margin: 0 auto; }
-        .math-cell { 
-            font-size: 4.5rem; 
-            font-weight: 300; 
-            text-align: right; 
-            color: #1e293b; 
-            font-variant-numeric: tabular-nums; 
-            line-height: 1;
-            padding: 0 5px;
-        }
-        .symbol-cell { font-size: 2.5rem; font-weight: 800; color: #94a3b8; text-align: center; width: 40px; }
-        .math-border { border-top: 4px solid #1e293b; height: 4px; border-radius: 2px; }
-        
-        #inputBox { 
-            font-size: 3.5rem; 
-            color: #3b82f6; 
-            font-weight: 700; 
-            text-align: right; 
-            letter-spacing: 4px;
-            min-width: 100px;
+        .game-card { 
+            background: white; width: 95vw; max-width: 380px; height: 92vh; 
+            border-radius: 30px; display: flex; flex-direction: column; 
+            padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative;
         }
 
-        .key { background: white; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 1.6rem; font-weight: 600; color: #334155; box-shadow: 0 4px 0 #f1f5f9; }
-        .key:active { transform: translateY(2px); box-shadow: 0 1px 0 #f1f5f9; }
-        .ok-btn { background: #22c55e !important; color: white !important; box-shadow: 0 4px 0 #166534 !important; }
+        /* Fixed Section Heights to prevent stretching */
+        .top-bar { height: 60px; display: flex; justify-content: space-between; align-items: center; }
+        .math-display { 
+            flex: 1; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            background: #f8fafc; border-radius: 20px; margin: 10px 0;
+        }
 
-        .overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 40px; text-align: center; }
+        /* THE ALIGNMENT FIX */
+        .math-stack { display: inline-block; text-align: right; min-width: 120px; }
+        .num { font-size: 5rem; font-weight: 300; line-height: 1; color: #1e293b; font-family: monospace; }
+        .op-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .symbol { font-size: 2.5rem; font-weight: bold; color: #94a3b8; }
+        .line { border-top: 5px solid #1e293b; width: 100%; margin: 5px 0; }
+        
+        #ans { font-size: 4rem; color: #3b82f6; font-weight: bold; min-height: 60px; text-align: right; font-family: monospace; }
+
+        /* Keyboard */
+        .grid-keys { display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; height: 40%; }
+        .key { 
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 15px; 
+            font-size: 1.8rem; font-weight: bold; color: #334155; 
+            box-shadow: 0 4px 0 #f1f5f9; cursor: pointer;
+        }
+        .key:active { transform: translateY(2px); box-shadow: 0 2px 0 #f1f5f9; }
+        .ok { background: #22c55e !important; color: white !important; box-shadow: 0 4px 0 #166534 !important; }
+
+        .start-btn { background: #3b82f6; color: white; padding: 20px 40px; border-radius: 20px; font-weight: 900; font-size: 1.5rem; }
+        .overlay { position: absolute; inset: 0; background: white; z-index: 100; display: flex; justify-content: center; align-items: center; border-radius: 30px; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
+
     <div class="game-card">
-        <div id="startScreen" class="overlay">
-            <div class="text-8xl mb-6">🚀</div>
-            <h1 class="text-4xl font-black text-slate-900 mb-8 uppercase">Math Kids</h1>
-            <button onclick="start()" class="bg-blue-600 text-white px-12 py-5 rounded-3xl font-black text-xl shadow-2xl active:scale-95">START</button>
+        <div id="boot" class="overlay">
+            <button onclick="init()" class="start-btn shadow-2xl">🚀 START GAME</button>
         </div>
 
-        <div class="header">
-            <div class="grid grid-cols-2 gap-2">
-                <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-bold text-center text-slate-400 uppercase">LVL: 20</div>
-                <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-bold text-center text-slate-400 uppercase">MODE: ADD</div>
-            </div>
-            <div class="flex justify-between items-center px-1">
-                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Score</span>
-                <span class="text-xl font-black text-blue-500">⭐ <span id="score">0</span></span>
-            </div>
+        <div class="top-bar">
+            <div class="text-xs font-bold text-slate-400">LVL 20</div>
+            <div class="text-xl font-black text-blue-500">⭐ <span id="pts">0</span></div>
         </div>
 
-        <div class="math-box">
-            <div id="stage">
+        <div class="math-display">
+            <div id="wrap" class="math-stack">
                 </div>
         </div>
 
-        <div class="keys">
-            <button class="key" onclick="tap(1)">1</button><button class="key" onclick="tap(2)">2</button><button class="key" onclick="tap(3)">3</button>
-            <button class="key" onclick="tap(4)">4</button><button class="key" onclick="tap(5)">5</button><button class="key" onclick="tap(6)">6</button>
-            <button class="key" onclick="tap(7)">7</button><button class="key" onclick="tap(8)">8</button><button class="key" onclick="tap(9)">9</button>
-            <button class="key text-slate-300" onclick="tap('C')">C</button><button class="key" onclick="tap(0)">0</button>
-            <button class="key ok-btn" onclick="check()">OK</button>
+        <div class="grid-keys">
+            <button class="key" onclick="press(1)">1</button><button class="key" onclick="press(2)">2</button><button class="key" onclick="press(3)">3</button>
+            <button class="key" onclick="press(4)">4</button><button class="key" onclick="press(5)">5</button><button class="key" onclick="press(6)">6</button>
+            <button class="key" onclick="press(7)">7</button><button class="key" onclick="press(8)">8</button><button class="key" onclick="press(9)">9</button>
+            <button class="key text-slate-300" onclick="press('C')">C</button><button class="key" onclick="press(0)">0</button>
+            <button class="key ok" onclick="check()">OK</button>
         </div>
     </div>
 
     <script>
-        let s = { score: 0, ans: 0, in: '' };
+        let score = 0, answer = 0, currentInput = "";
         let synth;
 
-        async function start() {
+        async function init() {
             await Tone.start();
             synth = new Tone.PolySynth().toDestination();
-            document.getElementById('startScreen').classList.add('hidden');
-            next();
+            document.getElementById('boot').classList.add('hidden');
+            generate();
         }
 
-        function next() {
+        function generate() {
             let n1 = Math.floor(Math.random() * 10) + 5;
             let n2 = Math.floor(Math.random() * 9) + 1;
-            s.ans = n1 + n2; s.in = '';
+            answer = n1 + n2;
+            currentInput = "";
             
-            // USING A TABLE FOR 100% ALIGNMENT CERTAINTY
-            document.getElementById('stage').innerHTML = `
-                <table>
-                    <tr>
-                        <td></td>
-                        <td class="math-cell">${n1}</td>
-                    </tr>
-                    <tr>
-                        <td class="symbol-cell">+</td>
-                        <td class="math-cell">${n2}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="math-border"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" id="inputBox">---</td>
-                    </tr>
-                </table>
+            document.getElementById('wrap').innerHTML = `
+                <div class="num">${n1}</div>
+                <div class="op-row">
+                    <span class="symbol">+</span>
+                    <span class="num">${n2}</span>
+                </div>
+                <div class="line"></div>
+                <div id="ans">---</div>
             `;
         }
 
-        function tap(v) {
-            if(v === 'C') s.in = '';
-            else if(s.in.length < 3) s.in += v;
-            document.getElementById('inputBox').innerText = s.in || '---';
+        function press(v) {
+            if(v === 'C') currentInput = "";
+            else if(currentInput.length < 3) currentInput += v;
+            document.getElementById('ans').innerText = currentInput || "---";
         }
 
         function check() {
-            if(s.in === '') return;
-            if(parseInt(s.in) === s.ans) {
-                s.score++; if(synth) synth.triggerAttackRelease("C5", "8n");
-                document.getElementById('stage').innerHTML = '<div class="text-4xl font-black text-green-500 uppercase text-center">Correct!</div>';
+            if(currentInput === "") return;
+            if(parseInt(currentInput) === answer) {
+                score++; if(synth) synth.triggerAttackRelease("C5", "8n");
+                document.getElementById('wrap').innerHTML = '<div class="text-4xl font-bold text-green-500">CORRECT!</div>';
             } else {
-                document.getElementById('stage').innerHTML = `<div class="math-cell text-red-500 text-center" style="font-size: 6rem">${s.ans}</div>`;
+                document.getElementById('wrap').innerHTML = `<div class="num text-red-500" style="text-align:center">${answer}</div>`;
             }
-            document.getElementById('score').innerText = s.score;
-            setTimeout(next, 1500);
+            document.getElementById('pts').innerText = score;
+            setTimeout(generate, 1500);
         }
     </script>
 </body>
