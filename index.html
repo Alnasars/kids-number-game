@@ -12,28 +12,30 @@
         .game-card { background: white; width: 95vw; max-width: 380px; height: 92vh; border-radius: 40px; display: flex; flex-direction: column; padding: 20px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
         
         .header { height: 15%; display: flex; flex-direction: column; justify-content: space-between; }
-        .math-box { height: 45%; background: #f8fafc; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 10px 0; border: 1px solid #f1f5f9; }
+        .math-box { height: 45%; background: #f8fafc; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 10px 0; border: 1px solid #f1f5f9; }
         .keys { height: 40%; display: grid; grid-template-cols: repeat(3, 1fr); gap: 10px; }
 
-        /* THE MASTER ALIGNMENT FIX */
-        .math-grid { 
-            display: grid; 
-            grid-template-columns: 40px 80px; /* Column 1 for +/-, Column 2 for Digits */
-            width: 120px; /* LOCKED WIDTH - NO DRIFTING */
-            justify-content: center;
-            align-items: center;
+        /* THE BRUTE FORCE FIX: HTML TABLE */
+        table { border-collapse: collapse; margin: 0 auto; }
+        .math-cell { 
+            font-size: 4.5rem; 
+            font-weight: 300; 
+            text-align: right; 
+            color: #1e293b; 
+            font-variant-numeric: tabular-nums; 
+            line-height: 1;
+            padding: 0 5px;
         }
-        .digit { font-size: 4.5rem; font-weight: 300; text-align: right; color: #1e293b; font-variant-numeric: tabular-nums; line-height: 1; grid-column: 2; }
-        .symbol { font-size: 2.5rem; font-weight: 800; color: #94a3b8; text-align: center; grid-column: 1; grid-row: 2; }
-        .line { grid-column: 1 / span 2; border-top: 4px solid #1e293b; width: 100%; margin: 8px 0; border-radius: 2px; }
+        .symbol-cell { font-size: 2.5rem; font-weight: 800; color: #94a3b8; text-align: center; width: 40px; }
+        .math-border { border-top: 4px solid #1e293b; height: 4px; border-radius: 2px; }
         
-        /* Answer Dashes Right-Aligned */
         #inputBox { 
-            grid-column: 1 / span 2; 
-            font-size: 3.5rem; color: #3b82f6; font-weight: 700; 
-            height: 60px; text-align: right; 
-            display: flex; align-items: center; justify-content: flex-end; 
-            letter-spacing: 4px; padding-right: 5px;
+            font-size: 3.5rem; 
+            color: #3b82f6; 
+            font-weight: 700; 
+            text-align: right; 
+            letter-spacing: 4px;
+            min-width: 100px;
         }
 
         .key { background: white; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 1.6rem; font-weight: 600; color: #334155; box-shadow: 0 4px 0 #f1f5f9; }
@@ -48,7 +50,7 @@
     <div class="game-card">
         <div id="startScreen" class="overlay">
             <div class="text-8xl mb-6">🚀</div>
-            <h1 class="text-4xl font-black text-slate-900 mb-8 tracking-tighter uppercase">Math Kids</h1>
+            <h1 class="text-4xl font-black text-slate-900 mb-8 uppercase">Math Kids</h1>
             <button onclick="start()" class="bg-blue-600 text-white px-12 py-5 rounded-3xl font-black text-xl shadow-2xl active:scale-95">START</button>
         </div>
 
@@ -58,13 +60,14 @@
                 <div class="bg-slate-50 p-2 rounded-xl text-[10px] font-bold text-center text-slate-400 uppercase">MODE: ADD</div>
             </div>
             <div class="flex justify-between items-center px-1">
-                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Progress</span>
+                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Score</span>
                 <span class="text-xl font-black text-blue-500">⭐ <span id="score">0</span></span>
             </div>
         </div>
 
         <div class="math-box">
-            <div id="stage" class="math-grid"></div>
+            <div id="stage">
+                </div>
         </div>
 
         <div class="keys">
@@ -88,15 +91,28 @@
         }
 
         function next() {
-            let n1 = Math.floor(Math.random() * 12) + 5;
+            let n1 = Math.floor(Math.random() * 10) + 5;
             let n2 = Math.floor(Math.random() * 9) + 1;
             s.ans = n1 + n2; s.in = '';
+            
+            // USING A TABLE FOR 100% ALIGNMENT CERTAINTY
             document.getElementById('stage').innerHTML = `
-                <div class="digit">${n1}</div>
-                <div class="symbol">+</div>
-                <div class="digit">${n2}</div>
-                <div class="line"></div>
-                <div id="inputBox">---</div>
+                <table>
+                    <tr>
+                        <td></td>
+                        <td class="math-cell">${n1}</td>
+                    </tr>
+                    <tr>
+                        <td class="symbol-cell">+</td>
+                        <td class="math-cell">${n2}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="math-border"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="inputBox">---</td>
+                    </tr>
+                </table>
             `;
         }
 
@@ -110,9 +126,9 @@
             if(s.in === '') return;
             if(parseInt(s.in) === s.ans) {
                 s.score++; if(synth) synth.triggerAttackRelease("C5", "8n");
-                document.getElementById('stage').innerHTML = '<div style="grid-column: 1/span 2" class="text-4xl font-black text-green-500 uppercase tracking-tighter text-center">Correct!</div>';
+                document.getElementById('stage').innerHTML = '<div class="text-4xl font-black text-green-500 uppercase text-center">Correct!</div>';
             } else {
-                document.getElementById('stage').innerHTML = `<div style="grid-column: 1/span 2" class="digit text-red-500 text-center w-full">${s.ans}</div>`;
+                document.getElementById('stage').innerHTML = `<div class="math-cell text-red-500 text-center" style="font-size: 6rem">${s.ans}</div>`;
             }
             document.getElementById('score').innerText = s.score;
             setTimeout(next, 1500);
