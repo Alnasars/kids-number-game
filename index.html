@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Number Fun Kids Math</title>
     
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0ea5e9">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,26 +18,17 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; justify-content: center; align-items: center; height: 100dvh; margin: 0; overflow: hidden; -webkit-user-select: none; }
         .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 95dvh; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; }
-        
-        /* EXIT BUTTON */
         .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; z-index: 2000; border: 2px solid white; }
-
-        /* CONTROLS GRID */
         .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 88%; margin-bottom: 12px; padding-top: 5px; }
         .control-btn { background: #f1f5f9; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 16px; border: 1px solid #e2e8f0; }
         .share-btn { background: #25D366 !important; color: white !important; border: none !important; box-shadow: 0 3px 0 #128C7E; }
-        
-        /* MATH UI - LOCKED RIGHT ALIGNMENT */
         .math-container { display: flex; flex-direction: column; align-items: flex-end; font-family: 'Courier New', Courier, monospace; font-weight: 900; font-size: 3.2rem; color: #334155; line-height: 1; padding-right: 20px; }
         .math-line { border-top: 5px solid #334155; width: 120%; margin-top: 4px; }
         .operator { align-self: flex-start; margin-right: 15px; font-size: 2.5rem; }
-        
-        /* NUMPAD */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
         .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; height: clamp(50px, 8vh, 60px); font-size: 1.5rem; font-weight: 700; box-shadow: 0 3px 0 #e2e8f0; }
         .numpad button:active { transform: translateY(2px); box-shadow: none; }
         .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 3px 0 #065f46 !important; }
-        
         #startOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; }
         .hidden { display: none !important; }
         .lvl-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; }
@@ -82,103 +78,4 @@
             <div class="flex gap-1 flex-1 mr-2">
                 <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Count</button>
                 <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase">Add</button>
-                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Sub</button>
-            </div>
-            <div id="scoreLabel" class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-black">⭐ 0</div>
-        </div>
-
-        <div id="displayArea" class="bg-slate-50 rounded-2xl flex-1 flex items-center justify-center mb-2 border-2 border-slate-100"></div>
-        <div id="inputBox" class="text-center text-3xl font-black text-sky-500 mb-2 h-10 tracking-widest">---</div>
-        
-        <div class="numpad">
-            <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
-            <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
-            <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
-            <button onclick="press('clear')" class="text-slate-300 font-bold">C</button>
-            <button onclick="press('0')">0</button>
-            <button onclick="press('enter')" class="enter-btn">OK</button>
-        </div>
-    </div>
-
-    <script>
-        let game = { mode: 'addition', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
-        let happySynth, sadSynth;
-
-        function exitGame() { if(window.history.length > 1) window.history.back(); else window.location.href = "https://www.google.com"; }
-        function toggleSettings() { if(!game.active) return; document.getElementById('settingsModal').classList.toggle('hidden'); }
-        function toggleHelp() { if(!game.active) return; document.getElementById('helpModal').classList.toggle('hidden'); }
-        function setLevel(lvl) { game.range = lvl; game.score = 0; document.getElementById('scoreLabel').textContent = `⭐ 0`; document.querySelectorAll('.lvl-btn').forEach(btn => btn.classList.remove('selected')); document.getElementById('l'+lvl).classList.add('selected'); newQuestion(); }
-        
-        // INTEGRATED VERCEL LINK FOR SHARING
-        async function shareGame() {
-            const gameUrl = "https://kids-number-game.vercel.app/"; 
-            const shareText = "Hey! Check out this free, ad-free math game for kids. It's fast and easy: ";
-
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'Number Fun Kids Math',
-                        text: shareText,
-                        url: gameUrl
-                    });
-                } catch (err) { console.log("Share cancelled"); }
-            } else {
-                const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + gameUrl)}`;
-                window.location.href = waUrl;
-            }
-        }
-
-        async function startGame() { 
-            await Tone.start(); 
-            happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
-            sadSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-            game.active = true; 
-            document.getElementById('startOverlay').classList.add('hidden'); 
-            newQuestion(); 
-        }
-
-        function setMode(m) { if(!game.active) return; game.mode = m; document.querySelectorAll('[id^="btn-"]').forEach(b => { b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase"; }); newQuestion(); }
-
-        function newQuestion() {
-            let n1, n2, html = '', speech = '';
-            if (game.mode === 'counting') { 
-                n1 = Math.floor(Math.random() * game.range) + 1; game.ans = n1.toString(); 
-                html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; speech = `${n1}`; 
-            } else if (game.mode === 'addition') { 
-                n1 = Math.floor(Math.random() * (game.range/2)) + 1; n2 = Math.floor(Math.random() * (game.range/2)) + 1; 
-                game.ans = (n1 + n2).toString(); 
-                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">+</span>${n2}</div><div class="math-line"></div></div>`; speech = `${n1} plus ${n2}`; 
-            } else { 
-                n1 = Math.floor(Math.random() * game.range) + 2; n2 = Math.floor(Math.random() * n1); 
-                game.ans = (n1 - n2).toString(); 
-                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">-</span>${n2}</div><div class="math-line"></div></div>`; speech = `${n1} minus ${n2}`; 
-            }
-            document.getElementById('displayArea').innerHTML = html; 
-            game.input = ''; document.getElementById('inputBox').textContent = '---'; 
-            if(game.voiceOn) speak(speech);
-        }
-
-        function press(v) { if(!game.active) return; if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
-
-        function check() { 
-            if (!game.input) return; 
-            if (game.input === game.ans) { 
-                game.score++; 
-                if(game.soundOn && happySynth) happySynth.triggerAttackRelease(["C5", "E5", "G5"], "8n");
-                document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
-                if(game.voiceOn) speak("Correct!"); 
-            } else { 
-                if(game.soundOn && sadSynth) sadSynth.triggerAttackRelease("G2", "2n");
-                document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`; 
-                if(game.voiceOn) speak(`No, it was ${game.ans}`); 
-            } 
-            setTimeout(() => { document.getElementById('scoreLabel').textContent = `⭐ ${game.score}`; newQuestion(); }, 1800); 
-        }
-
-        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
-        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
-        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
-    </script>
-</body>
-</html>
+                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-1 rounded-lg font-bold
