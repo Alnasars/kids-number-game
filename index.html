@@ -11,19 +11,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; justify-content: center; align-items: center; height: 100dvh; margin: 0; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; justify-content: center; align-items: center; height: 100dvh; margin: 0; overflow: hidden; -webkit-user-select: none; }
         .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 95dvh; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; }
         
-        /* THE TRUE EXIT BUTTON - Placed Safely */
-        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; z-index: 2000; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        /* EXIT BUTTON */
+        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; z-index: 2000; border: 2px solid white; }
 
-        .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 80%; margin-bottom: 12px; padding-top: 5px; }
-        .control-btn { background: #f1f5f9; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 18px; border: 1px solid #e2e8f0; }
+        /* CONTROLS GRID */
+        .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 88%; margin-bottom: 12px; padding-top: 5px; }
+        .control-btn { background: #f1f5f9; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 16px; border: 1px solid #e2e8f0; }
+        .share-btn { background: #25D366 !important; color: white !important; border: none !important; box-shadow: 0 3px 0 #128C7E; }
         
+        /* MATH UI - LOCKED RIGHT ALIGNMENT */
         .math-container { display: flex; flex-direction: column; align-items: flex-end; font-family: 'Courier New', Courier, monospace; font-weight: 900; font-size: 3.2rem; color: #334155; line-height: 1; padding-right: 20px; }
         .math-line { border-top: 5px solid #334155; width: 120%; margin-top: 4px; }
         .operator { align-self: flex-start; margin-right: 15px; font-size: 2.5rem; }
         
+        /* NUMPAD */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
         .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; height: clamp(50px, 8vh, 60px); font-size: 1.5rem; font-weight: 700; box-shadow: 0 3px 0 #e2e8f0; }
         .numpad button:active { transform: translateY(2px); box-shadow: none; }
@@ -51,20 +55,23 @@
             <button onclick="setLevel(10)" id="l10" class="lvl-btn selected">Level 10</button>
             <button onclick="setLevel(20)" id="l20" class="lvl-btn">Level 20</button>
             <button onclick="setLevel(100)" id="l100" class="lvl-btn">Level 100</button>
-            <button onclick="toggleSettings()" class="mt-8 bg-sky-500 text-white px-12 py-3 rounded-2xl font-bold">DONE</button>
+            <button onclick="toggleSettings()" class="mt-8 bg-sky-500 text-white px-12 py-3 rounded-2xl font-bold uppercase">Done</button>
         </div>
 
         <div id="helpModal" class="modal-overlay hidden p-6">
             <h2 class="text-xl font-black text-sky-600 mb-6 uppercase">Help ❓</h2>
             <div class="text-left text-sm text-slate-600 space-y-4 mb-8">
-                <p>🔢 <b>Type</b> the answer using keys.</p>
-                <p>⚙️ <b>Change Level</b> in settings.</p>
-                <p>🗣️ <b>Voice</b> reads the numbers.</p>
+                <p>🔢 Type answer and press <b>OK</b>.</p>
+                <p>🗣️ <b>Voice</b> reads the problem.</p>
+                <p>📲 <b>Share</b> with friends via WhatsApp.</p>
             </div>
-            <button onclick="toggleHelp()" class="bg-slate-800 text-white px-12 py-3 rounded-2xl font-bold">BACK</button>
+            <button onclick="toggleHelp()" class="bg-slate-800 text-white px-12 py-3 rounded-2xl font-bold uppercase">Back</button>
         </div>
 
         <div class="controls-grid mt-4">
+            <button onclick="shareGame()" class="control-btn share-btn">
+                <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.82 0 4.54-3.7 8.24-8.24 8.24-1.53 0-3.03-.43-4.33-1.24l-.31-.18-3.22.84.86-3.14-.2-.32A8.183 8.183 0 0 1 3.82 11.9c0-4.54 3.7-8.24 8.23-8.24m-3.95 4.73c-.22 0-.37.1-.49.25-.13.13-.5.49-.5 1.18 0 .7.51 1.37.58 1.47.07.1 1 1.53 2.42 2.15.34.14.61.23.82.3.35.11.66.1.91.06.28-.04.86-.35 1.01-.71.12-.32.12-.6.08-.66-.04-.06-.13-.1-.28-.17-.15-.07-.86-.43-.99-.48-.13-.05-.23-.07-.33.07-.1.15-.39.49-.48.6-.08.1-.16.12-.31.05-.14-.07-.61-.22-1.16-.72-.43-.38-.71-.85-.8-1-.08-.14-.01-.22.06-.3.06-.06.14-.15.21-.23.07-.08.1-.14.15-.24.05-.1.03-.18-.02-.25-.03-.08-.33-.8-.45-1.08-.12-.28-.24-.24-.33-.24Z"/></svg>
+            </button>
             <button onclick="toggleHelp()" class="control-btn">❓</button>
             <button onclick="toggleSettings()" class="control-btn">⚙️</button>
             <button id="soundBtn" onclick="toggleSound()" class="control-btn">🔊</button>
@@ -97,46 +104,41 @@
         let game = { mode: 'addition', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
         let happySynth, sadSynth;
 
-        function exitGame() {
-            // Smart Exit Logic
-            if (window.history.length > 1) {
-                window.history.back(); // Goes to previous page
-            } else {
-                window.location.href = "https://www.google.com"; // Redirects if no history
-            }
-            window.close(); // Tries to close tab
-        }
-
+        function exitGame() { if(window.history.length > 1) window.history.back(); else window.location.href = "https://www.google.com"; }
         function toggleSettings() { if(!game.active) return; document.getElementById('settingsModal').classList.toggle('hidden'); }
         function toggleHelp() { if(!game.active) return; document.getElementById('helpModal').classList.toggle('hidden'); }
+        function setLevel(lvl) { game.range = lvl; game.score = 0; document.getElementById('scoreLabel').textContent = `⭐ 0`; document.querySelectorAll('.lvl-btn').forEach(btn => btn.classList.remove('selected')); document.getElementById('l'+lvl).classList.add('selected'); newQuestion(); }
         
-        function setLevel(lvl) {
-            game.range = lvl; game.score = 0;
-            document.getElementById('scoreLabel').textContent = `⭐ 0`;
-            document.querySelectorAll('.lvl-btn').forEach(btn => btn.classList.remove('selected'));
-            document.getElementById('l'+lvl).classList.add('selected');
-            newQuestion();
+        // INTEGRATED VERCEL LINK FOR SHARING
+        async function shareGame() {
+            const gameUrl = "https://kids-number-game.vercel.app/"; 
+            const shareText = "Hey! Check out this free, ad-free math game for kids. It's fast and easy: ";
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Number Fun Kids Math',
+                        text: shareText,
+                        url: gameUrl
+                    });
+                } catch (err) { console.log("Share cancelled"); }
+            } else {
+                const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + gameUrl)}`;
+                window.location.href = waUrl;
+            }
         }
 
         async function startGame() { 
             await Tone.start(); 
             happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
             sadSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
-            const unlockVoice = new SpeechSynthesisUtterance("");
-            window.speechSynthesis.speak(unlockVoice);
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
             game.active = true; 
             document.getElementById('startOverlay').classList.add('hidden'); 
             newQuestion(); 
         }
 
-        function setMode(m) { 
-            if(!game.active) return;
-            game.mode = m; 
-            document.querySelectorAll('[id^="btn-"]').forEach(b => { 
-                b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase"; 
-            }); 
-            newQuestion(); 
-        }
+        function setMode(m) { if(!game.active) return; game.mode = m; document.querySelectorAll('[id^="btn-"]').forEach(b => { b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase"; }); newQuestion(); }
 
         function newQuestion() {
             let n1, n2, html = '', speech = '';
@@ -146,33 +148,25 @@
             } else if (game.mode === 'addition') { 
                 n1 = Math.floor(Math.random() * (game.range/2)) + 1; n2 = Math.floor(Math.random() * (game.range/2)) + 1; 
                 game.ans = (n1 + n2).toString(); 
-                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">+</span>${n2}</div><div class="math-line"></div></div>`; 
-                speech = `${n1} plus ${n2}`; 
+                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">+</span>${n2}</div><div class="math-line"></div></div>`; speech = `${n1} plus ${n2}`; 
             } else { 
                 n1 = Math.floor(Math.random() * game.range) + 2; n2 = Math.floor(Math.random() * n1); 
                 game.ans = (n1 - n2).toString(); 
-                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">-</span>${n2}</div><div class="math-line"></div></div>`; 
-                speech = `${n1} minus ${n2}`; 
+                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">-</span>${n2}</div><div class="math-line"></div></div>`; speech = `${n1} minus ${n2}`; 
             }
             document.getElementById('displayArea').innerHTML = html; 
             game.input = ''; document.getElementById('inputBox').textContent = '---'; 
             if(game.voiceOn) speak(speech);
         }
 
-        function press(v) { 
-            if(!game.active) return;
-            if (v === 'clear') game.input = ''; 
-            else if (v === 'enter') check(); 
-            else if (game.input.length < 4) game.input += v; 
-            document.getElementById('inputBox').textContent = game.input || '---'; 
-        }
+        function press(v) { if(!game.active) return; if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
 
         function check() { 
             if (!game.input) return; 
             if (game.input === game.ans) { 
                 game.score++; 
                 if(game.soundOn && happySynth) happySynth.triggerAttackRelease(["C5", "E5", "G5"], "8n");
-                document.getElementById('displayArea').innerHTML = '<div class="text-7xl">🌟</div>'; 
+                document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
                 if(game.voiceOn) speak("Correct!"); 
             } else { 
                 if(game.soundOn && sadSynth) sadSynth.triggerAttackRelease("G2", "2n");
