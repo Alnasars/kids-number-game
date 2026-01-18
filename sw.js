@@ -1,26 +1,42 @@
-const cacheName = 'math-v21'; 
-const assets = [
-  '/kids-number-game/',
-  '/kids-number-game/index.html',
-  '/kids-number-game/manifest.json',
-  '/kids-number-game/icon.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js'
-];
+const cacheName = 'math-kids-v31'; // Change this number to force update
 
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));
-  self.skipWaiting();
+self.addEventListener('install', (event) => {
+    // Force the waiting service worker to become the active service worker
+    self.skipWaiting();
+    event.waitUntil(
+        caches.open(cacheName).then((cache) => {
+            return cache.addAll([
+                './',
+                './index.html',
+                './manifest.json'
+                // Add icons here if you have them
+            ]);
+        })
+    );
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => {
-    return Promise.all(keys.filter(key => key !== cacheName).map(key => caches.delete(key)));
-  }));
+self.addEventListener('activate', (event) => {
+    // Immediately take control of all open tabs
+    event.waitUntil(clients.claim());
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((name) => {
+                    if (name !== cacheName) {
+                        console.log('Clearing old cache:', name);
+                        return caches.delete(name);
+                    }
+                })
+            );
+        })
+    );
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+self.addEventListener('fetch', (event) => {
+    // Network first, then cache (Best for development/updates)
+    event.respondWith(
+        fetch(event.request).catch(() => {
+            return caches.match(event.request);
+        })
+    );
 });
-
-
-
