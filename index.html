@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Number Fun Kids Math</title>
     
+    <meta property="og:title" content="Number Fun Kids Math" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kids-number-game.vercel.app/" />
+    <meta property="og:video:type" content="text/html" />
+    <meta property="og:description" content="Fun and Ad-Free Math Learning for Kids" />
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0ea5e9">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,20 +20,16 @@
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; justify-content: center; align-items: center; height: 100dvh; margin: 0; overflow: hidden; -webkit-user-select: none; }
         .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 95dvh; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; }
         .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; z-index: 2000; border: 2px solid white; }
-        
         .math-container { display: flex; flex-direction: column; align-items: flex-end; font-family: 'Courier New', Courier, monospace; font-weight: 900; font-size: 3.2rem; color: #334155; line-height: 1; padding-right: 20px; }
         .math-line { border-top: 5px solid #334155; width: 120%; margin-top: 4px; }
         .operator { align-self: flex-start; margin-right: 15px; font-size: 2.5rem; }
-        
         .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 88%; margin-bottom: 12px; padding-top: 5px; }
         .control-btn { background: #f1f5f9; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 16px; border: 1px solid #e2e8f0; }
         .share-btn { background: #25D366 !important; color: white !important; border: none !important; box-shadow: 0 3px 0 #128C7E; }
-        
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
         .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; height: clamp(50px, 8vh, 60px); font-size: 1.5rem; font-weight: 700; box-shadow: 0 3px 0 #e2e8f0; }
         .numpad button:active { transform: translateY(2px); box-shadow: none; }
         .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 3px 0 #065f46 !important; }
-        
         #startOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; }
         .hidden { display: none !important; }
     </style>
@@ -81,12 +83,17 @@
         function exitGame() { window.location.href = "https://www.google.com"; }
         
         async function startGame() { 
-            await Tone.start(); 
-            happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
-            sadSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+            // AGGRESSIVE AUDIO START FOR MOBILE
+            try {
+                await Tone.start(); 
+                happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+                sadSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+            } catch(e) { console.log("Audio skipped"); }
+            
             game.active = true; 
-            document.getElementById('startOverlay').classList.add('hidden'); 
+            // FORCE REMOVE OVERLAY
+            document.getElementById('startOverlay').style.display = 'none'; 
             newQuestion(); 
         }
 
@@ -123,7 +130,5 @@
         function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
         async function shareGame() { const url = "https://kids-number-game.vercel.app/"; if (navigator.share) await navigator.share({ title: 'Math Game', url: url }); else window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`; }
     </script>
-    <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
