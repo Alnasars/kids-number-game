@@ -29,17 +29,17 @@
         .lvl-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; }
         .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
 
-        /* SAFE-LAYER POPUP CSS - WILL NOT TOUCH YOUR OTHER STYLES */
-        #fbAlertOverlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
+        /* FACEBOOK ALERT STYLES - SAFE OVERLAY */
+        #fbAlertOverlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
     </style>
 </head>
 <body>
     <div class="game-card">
         <div id="fbAlertOverlay" class="hidden">
             <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
-                <div class="text-5xl mb-4">📢</div>
-                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase tracking-tighter">Mobile Fix</h2>
-                <p class="text-slate-600 text-sm mb-6">Facebook blocks sounds. Please click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
+                <div class="text-5xl mb-4">🔊</div>
+                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Audio Fix</h2>
+                <p class="text-slate-600 text-sm mb-6 px-2">Facebook blocks sounds. Click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
                 <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs shadow-lg">Got it!</button>
             </div>
         </div>
@@ -107,7 +107,9 @@
         let game = { mode: 'addition', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
         let happySynth, sadSynth;
 
-        function exitGame() { if(window.history.length > 1) window.history.back(); else window.location.href = "https://www.google.com"; }
+        // SMART EXIT - REFRESHES GAME TO AVOID FREEZING
+        function exitGame() { window.location.reload(); }
+
         function toggleSettings() { if(!game.active) return; document.getElementById('settingsModal').classList.toggle('hidden'); }
         function toggleHelp() { if(!game.active) return; document.getElementById('helpModal').classList.toggle('hidden'); }
         function setLevel(lvl) { game.range = lvl; game.score = 0; document.getElementById('scoreLabel').textContent = `⭐ 0`; document.querySelectorAll('.lvl-btn').forEach(btn => btn.classList.remove('selected')); document.getElementById('l'+lvl).classList.add('selected'); newQuestion(); }
@@ -158,7 +160,7 @@
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
 
-        // DETECTION LOGIC - ADDED AT THE VERY END
+        // FACEBOOK DETECTION LOGIC - ONLY TRIGGER POPUP IF IN FB APP
         window.addEventListener('load', function() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;
             if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1) {
