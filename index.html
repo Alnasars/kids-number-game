@@ -29,18 +29,18 @@
         .lvl-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; }
         .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
 
-        /* FACEBOOK ALERT STYLES - SAFE OVERLAY */
-        #fbAlertOverlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
+        /* FB ALERT OVERLAY */
+        #fbAlertOverlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
     </style>
 </head>
 <body>
     <div class="game-card">
         <div id="fbAlertOverlay" class="hidden">
             <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
-                <div class="text-5xl mb-4">🔊</div>
+                <div class="text-5xl mb-4">📢</div>
                 <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Audio Fix</h2>
-                <p class="text-slate-600 text-sm mb-6 px-2">Facebook blocks sounds. Click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
-                <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs shadow-lg">Got it!</button>
+                <p class="text-slate-600 text-sm mb-6">Facebook blocks sounds. Click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
+                <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Got it!</button>
             </div>
         </div>
 
@@ -96,7 +96,7 @@
         <div class="numpad">
             <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
             <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
-            <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
+            <button onclick="press('7')">7</button><button onclick="press('8')')">8</button><button onclick="press('9')">9</button>
             <button onclick="press('clear')" class="text-slate-300 font-bold">C</button>
             <button onclick="press('0')">0</button>
             <button onclick="press('enter')" class="enter-btn">OK</button>
@@ -107,8 +107,20 @@
         let game = { mode: 'addition', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
         let happySynth, sadSynth;
 
-        // SMART EXIT - REFRESHES GAME TO AVOID FREEZING
-        function exitGame() { window.location.reload(); }
+        function exitGame() {
+            try { Tone.Destination.mute = true; window.speechSynthesis.cancel(); } catch (e) {}
+            game.active = false;
+            document.body.innerHTML = `
+                <div style="background:#0ea5e9; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif; text-align:center; padding:20px;">
+                    <div style="font-size:60px; margin-bottom:20px;">👋</div>
+                    <h1 style="font-weight:900; text-transform:uppercase;">Game Closed</h1>
+                    <p style="opacity:0.8;">Memory Cleared.</p>
+                    <button onclick="window.location.reload()" style="margin-top:30px; background:white; color:#0ea5e9; padding:15px 30px; border-radius:15px; border:none; font-weight:bold;">REPLAY</button>
+                </div>
+            `;
+            window.open('', '_self').close();
+            setTimeout(() => { window.location.replace("about:blank"); }, 300);
+        }
 
         function toggleSettings() { if(!game.active) return; document.getElementById('settingsModal').classList.toggle('hidden'); }
         function toggleHelp() { if(!game.active) return; document.getElementById('helpModal').classList.toggle('hidden'); }
@@ -160,7 +172,6 @@
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
 
-        // FACEBOOK DETECTION LOGIC - ONLY TRIGGER POPUP IF IN FB APP
         window.addEventListener('load', function() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;
             if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1) {
