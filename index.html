@@ -7,9 +7,9 @@
     
     <meta property="og:title" content="Number Fun Kids Math" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://kids-number-game.vercel.app/" />
-    <meta property="og:description" content="Ad-Free Math Learning for Kids" />
+    <meta property="og:video" content="https://kids-number-game.vercel.app/" />
     <meta property="og:video:type" content="text/html" />
+    <meta property="og:description" content="Math Learning for Kids" />
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0ea5e9">
@@ -42,7 +42,7 @@
             <div class="text-7xl mb-4">🚀</div>
             <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
             <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95">PLAY NOW</button>
-            <p class="text-slate-400 text-[10px] mt-6 font-bold uppercase tracking-widest">Master Edition </p>
+            <p class="text-slate-400 text-[10px] mt-6 font-bold uppercase tracking-widest">Master Edition</p>
         </div>
 
         <div class="controls-grid mt-4">
@@ -60,7 +60,7 @@
                 <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase">Add</button>
                 <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Sub</button>
             </div>
-            <div id="scoreLabel" class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-black">⭐ 0 </div>
+            <div id="scoreLabel" class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-black">⭐ 0</div>
         </div>
 
         <div id="displayArea" class="bg-slate-50 rounded-2xl flex-1 flex items-center justify-center mb-2 border-2 border-slate-100"></div>
@@ -78,46 +78,34 @@
 
     <script>
         let game = { mode: 'addition', score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
-        let happySynth, sadSynth; 
+        let happySynth, sadSynth;
 
         function exitGame() { window.location.href = "https://www.google.com"; }
         
         async function startGame() { 
-            // FORCE START AUDIO & SPEECH 
-            await Tone.start();
-            happySynth = new Tone.PolySynth(Tone.Synth).toDestination(); 
+            await Tone.start(); 
+            happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
             sadSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
             window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-            
             game.active = true; 
-            // AGGRESSIVE OVERLAY REMOVAL
+            // FIX: Using direct style to force the overlay away
             document.getElementById('startOverlay').style.display = 'none'; 
             newQuestion(); 
         }
 
-        function setMode(m) { if(!game.active) return; 
-            game.mode = m; 
-            document.getElementById('btn-addition').className = m === 'addition' ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase";
-            document.getElementById('btn-subtraction').className = m === 'subtraction' ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase"; 
-            newQuestion(); 
-        }
+        function setMode(m) { if(!game.active) return; game.mode = m; document.getElementById('btn-addition').className = m === 'addition' ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase"; document.getElementById('btn-subtraction').className = m === 'subtraction' ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase"; newQuestion(); }
 
         function newQuestion() {
-            let n1 = Math.floor(Math.random() * 9) + 1; 
+            let n1 = Math.floor(Math.random() * 9) + 1;
             let n2 = Math.floor(Math.random() * 9) + 1;
             if (game.mode === 'subtraction' && n1 < n2) [n1, n2] = [n2, n1];
-            game.ans = game.mode === 'addition' ? (n1 + n2).toString() : (n1 - n2).toString(); 
-            document.getElementById('displayArea').innerHTML = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">${game.mode === 'addition' ? '+' : '-'}</span>${n2}</div><div class="math-line"></div></div>`; 
-            game.input = ''; document.getElementById('inputBox').textContent = '---';
-            if(game.voiceOn) speak(`${n1} ${game.mode === 'addition' ? 'plus' : 'minus'} ${n2}`); 
+            game.ans = game.mode === 'addition' ? (n1 + n2).toString() : (n1 - n2).toString();
+            document.getElementById('displayArea').innerHTML = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">${game.mode === 'addition' ? '+' : '-'}</span>${n2}</div><div class="math-line"></div></div>`;
+            game.input = ''; document.getElementById('inputBox').textContent = '---'; 
+            if(game.voiceOn) speak(`${n1} ${game.mode === 'addition' ? 'plus' : 'minus'} ${n2}`);
         }
 
-        function press(v) { if(!game.active) return; 
-            if (v === 'clear') game.input = '';
-            else if (v === 'enter') check(); 
-            else if (game.input.length < 3) game.input += v; 
-            document.getElementById('inputBox').textContent = game.input || '---'; 
-        }
+        function press(v) { if(!game.active) return; if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 3) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
 
         function check() { 
             if (!game.input) return; 
@@ -127,21 +115,16 @@
                 document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
                 if(game.voiceOn) speak("Correct!"); 
             } else { 
-                if(game.soundOn && sadSynth) sadSynth.triggerAttackRelease("G2", "2n"); 
+                if(game.soundOn && sadSynth) sadSynth.triggerAttackRelease("G2", "2n");
                 document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`; 
             } 
             setTimeout(() => { document.getElementById('scoreLabel').textContent = `⭐ ${game.score}`; newQuestion(); }, 1500); 
         }
 
         function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
-        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; } 
-        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; } 
-        async function shareGame() { const url = "https://kids-number-game.vercel.app/"; 
-            if (navigator.share) await navigator.share({ title: 'Math Game', url: url }); 
-            else window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`; 
-        }
+        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
+        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
+        async function shareGame() { const url = "https://kids-number-game.vercel.app/"; if (navigator.share) await navigator.share({ title: 'Math Game', url: url }); else window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`; }
     </script>
-    <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
