@@ -19,56 +19,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; /* Changed from 100dvh for PC stability */
-            margin: 0; 
-            overflow: hidden; 
-            -webkit-user-select: none; 
-        }
-        .game-card { 
-            background: white; 
-            border-radius: 24px; 
-            padding: 12px; 
-            width: 95vw; 
-            max-width: 360px; 
-            height: 90vh; /* Adjusted for PC visibility */
-            max-height: 700px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            border: 3px solid #bae6fd; 
-            display: flex; 
-            flex-direction: column; 
-            position: relative; 
-            z-index: 10;
-        }
-        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; z-index: 2000; border: 2px solid white; cursor: pointer; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; -webkit-user-select: none; }
+        .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 90vh; max-height: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; z-index: 10; }
+        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; z-index: 2000; border: 2px solid white; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .math-container { display: flex; flex-direction: column; align-items: flex-end; font-family: 'Courier New', Courier, monospace; font-weight: 900; font-size: 3.2rem; color: #334155; line-height: 1; padding-right: 20px; }
         .math-line { border-top: 5px solid #334155; width: 120%; margin-top: 4px; }
         .operator { align-self: flex-start; margin-right: 15px; font-size: 2.5rem; }
         .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; margin-bottom: 12px; padding-top: 5px; }
-        .control-btn { background: #f1f5f9; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 16px; border: 1px solid #e2e8f0; cursor: pointer; }
+        .control-btn { background: #f1f5f9; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 18px; border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.1s; }
+        .control-btn:active { transform: scale(0.9); }
         .share-btn { background: #25D366 !important; color: white !important; border: none !important; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
-        .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; height: clamp(45px, 7vh, 60px); font-size: 1.5rem; font-weight: 700; box-shadow: 0 3px 0 #e2e8f0; cursor: pointer; }
-        .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 3px 0 #065f46 !important; }
-        
-        #startOverlay, .modal-overlay { 
-            position: absolute; 
-            inset: 0; 
-            background: white; 
-            z-index: 1000; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            border-radius: 24px; 
-            text-align: center; 
-            padding: 20px;
-        }
+        .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; height: clamp(45px, 7vh, 60px); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 #e2e8f0; cursor: pointer; color: #334155; }
+        .numpad button:active { transform: translateY(2px); box-shadow: none; }
+        .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; }
+        #startOverlay, #endOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; padding: 20px; }
         .hidden { display: none !important; }
         .lvl-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; cursor: pointer; }
         .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
@@ -77,6 +42,23 @@
 </head>
 <body>
     <div class="game-card">
+        <button id="mainCloseBtn" onclick="exitGame()" class="close-trigger">✕</button>
+
+        <div id="startOverlay">
+            <div class="text-7xl mb-4">🚀</div>
+            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
+            <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 cursor-pointer uppercase">Play Now</button>
+            <p class="text-slate-400 text-[10px] mt-6 font-bold uppercase tracking-widest">Master Edition</p>
+        </div>
+
+        <div id="endOverlay" class="hidden">
+            <div class="text-7xl mb-4">👋</div>
+            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">See You!</h1>
+            <p class="text-slate-500 mb-2">Thanks for playing Number Fun!</p>
+            <p class="text-slate-400 text-xs mb-8 italic">You can now close this tab.</p>
+            <button onclick="window.location.reload()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 cursor-pointer uppercase">Restart Game</button>
+        </div>
+
         <div id="fbAlertOverlay" class="hidden">
             <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
                 <div class="text-5xl mb-4">📢</div>
@@ -95,17 +77,8 @@
             </div>
         </div>
 
-        <button onclick="exitGame()" class="close-trigger">✕</button>
-
-        <div id="startOverlay">
-            <div class="text-7xl mb-4">🚀</div>
-            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
-            <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 cursor-pointer">PLAY NOW</button>
-            <p class="text-slate-400 text-[10px] mt-6 font-bold uppercase tracking-widest">Master Edition</p>
-        </div>
-
         <div id="settingsModal" class="modal-overlay hidden">
-            <h2 class="text-xl font-black text-sky-600 mb-4 uppercase">Settings ⚙️</h2>
+            <h2 class="text-xl font-black text-sky-600 mb-4 uppercase text-sky-600">Settings ⚙️</h2>
             <button onclick="setLevel(10)" id="l10" class="lvl-btn selected">Level 10</button>
             <button onclick="setLevel(20)" id="l20" class="lvl-btn">Level 20</button>
             <button onclick="setLevel(100)" id="l100" class="lvl-btn">Level 100</button>
@@ -113,10 +86,13 @@
         </div>
 
         <div class="controls-grid mt-4">
-            <button onclick="shareGame()" class="control-btn share-btn">🔗</button>
+            <button onclick="shareGame()" class="control-btn share-btn">
+                <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.82 0 4.54-3.7 8.24-8.24 8.24-1.53 0-3.03-.43-4.33-1.24l-.31-.18-3.22.84.86-3.14-.2-.32A8.183 8.183 0 0 1 3.82 11.9c0-4.54 3.7-8.24 8.23-8.24m-3.95 4.73c-.22 0-.37.1-.49.25-.13.13-.5.49-.5 1.18 0 .7.51 1.37.58 1.47.07.1 1 1.53 2.42 2.15.34.14.61.23.82.3.35.11.66.1.91.06.28-.04.86-.35 1.01-.71.12-.32.12-.6.08-.66-.04-.06-.13-.1-.28-.17-.15-.07-.86-.43-.99-.48-.13-.05-.23-.07-.33.07-.1.15-.39.49-.48.6-.08.1-.16.12-.31.05-.14-.07-.61-.22-1.16-.72-.43-.38-.71-.85-.8-1-.08-.14-.01-.22.06-.3.06-.06.14-.15.21-.23.07-.08.1-.14.15-.24.05-.1.03-.18-.02-.25-.03-.08-.33-.8-.45-1.08-.12-.28-.24-.24-.33-.24Z"/></svg>
+            </button>
             <button onclick="toggleSettings()" class="control-btn">⚙️</button>
             <button id="soundBtn" onclick="toggleSound()" class="control-btn">🔊</button>
             <button id="voiceBtn" onclick="toggleVoice()" class="control-btn">🗣️</button>
+            <button onclick="resetGame()" class="control-btn">🔄</button>
         </div>
 
         <div class="flex justify-between items-center mb-2 px-1">
@@ -146,8 +122,16 @@
         let happySynth, sadSynth;
 
         function exitGame() {
+            try { Tone.Destination.mute = true; window.speechSynthesis.cancel(); } catch (e) {}
             game.active = false;
-            document.body.innerHTML = `<div style="background:#0ea5e9; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif; text-align:center;"><h1>Game Closed</h1><button onclick="window.location.reload()" style="padding:10px 20px; border-radius:10px; border:none; margin-top:20px;">REPLAY</button></div>`;
+            document.getElementById('endOverlay').classList.remove('hidden');
+            document.getElementById('mainCloseBtn').classList.add('hidden');
+        }
+
+        function resetGame() {
+            game.score = 0;
+            document.getElementById('scoreLabel').textContent = `⭐ 0`;
+            newQuestion();
         }
 
         function toggleSettings() { if(!game.active) return; document.getElementById('settingsModal').classList.toggle('hidden'); }
@@ -155,16 +139,18 @@
         
         async function shareGame() {
             const gameUrl = window.location.href;
-            if (navigator.share) { try { await navigator.share({ title: 'Number Fun', url: gameUrl }); } catch (err) {} } 
-            else { alert("Copy this link to share: " + gameUrl); }
+            const shareText = "Check out this safe, ad-free math game for kids: ";
+            if (navigator.share) { try { await navigator.share({ title: 'Number Fun', text: shareText, url: gameUrl }); } catch (err) {} } 
+            else { window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + gameUrl)}`; }
         }
 
         async function startGame() { 
-            try { await Tone.start(); } catch(e) { console.log("Audio Init Wait"); }
+            try { await Tone.start(); } catch(e) {}
             happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
             sadSynth = new Tone.MonoSynth().toDestination();
             game.active = true; 
             document.getElementById('startOverlay').classList.add('hidden'); 
+            document.getElementById('mainCloseBtn').classList.remove('hidden');
             newQuestion(); 
         }
 
@@ -203,13 +189,7 @@
             if(game.voiceOn) speak(speech);
         }
 
-        function press(v) { 
-            if(!game.active) return; 
-            if (v === 'clear') game.input = ''; 
-            else if (v === 'enter') check(); 
-            else if (game.input.length < 4) game.input += v; 
-            document.getElementById('inputBox').textContent = game.input || '---'; 
-        }
+        function press(v) { if(!game.active) return; if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
 
         function check() { 
             if (!game.input) return;
@@ -218,9 +198,7 @@
                 if(game.soundOn) happySynth.triggerAttackRelease(["C5", "E5", "G5"], "8n"); 
                 document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
                 if(game.voiceOn) speak("Correct!");
-                if (game.score === 5) {
-                    setTimeout(() => { document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1000);
-                }
+                if (game.score === 5) { setTimeout(() => { document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1000); }
             } else { 
                 if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n"); 
                 document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`; 
