@@ -173,4 +173,27 @@
                 if(game.voiceOn) speak("Correct!");
                 
                 // TRIGGER OFFLINE POPUP AT 5 POINTS
-                if (
+                if (game.score === 5) {
+                    setTimeout(() => { document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1000);
+                }
+            } else { 
+                if(game.soundOn && sadSynth) sadSynth.triggerAttackRelease("G2", "2n"); 
+                document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`; 
+                if(game.voiceOn) speak(`No, it was ${game.ans}`); 
+            } 
+            setTimeout(() => { document.getElementById('scoreLabel').textContent = `⭐ ${game.score}`; newQuestion(); }, 1800);
+        }
+
+        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
+        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
+        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
+
+        window.addEventListener('load', function() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1) {
+                document.getElementById('fbAlertOverlay').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
