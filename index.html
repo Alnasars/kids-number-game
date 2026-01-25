@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Number Fun Kids Math</title>
     
-    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0ea5e9">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
@@ -28,9 +30,7 @@
         .hidden { display: none !important; }
         .lvl-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; }
         .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
-
-        /* FB ALERT OVERLAY */
-        #fbAlertOverlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
+        #fbAlertOverlay, #offlineOverlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
     </style>
 </head>
 <body>
@@ -41,6 +41,15 @@
                 <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Audio Fix</h2>
                 <p class="text-slate-600 text-sm mb-6">Facebook blocks sounds. Click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
                 <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Got it!</button>
+            </div>
+        </div>
+
+        <div id="offlineOverlay" class="hidden">
+            <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
+                <div class="text-5xl mb-4">📲</div>
+                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Play Offline!</h2>
+                <p class="text-slate-600 text-sm mb-6">You're doing great! Tap the browser menu and select <b>'Add to Home Screen'</b> to play anytime without internet!</p>
+                <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Awesome!</button>
             </div>
         </div>
 
@@ -96,7 +105,7 @@
         <div class="numpad">
             <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
             <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
-            <button onclick="press('7')">7</button><button onclick="press('8')')">8</button><button onclick="press('9')">9</button>
+            <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
             <button onclick="press('clear')" class="text-slate-300 font-bold">C</button>
             <button onclick="press('0')">0</button>
             <button onclick="press('enter')" class="enter-btn">OK</button>
@@ -114,7 +123,6 @@
                 <div style="background:#0ea5e9; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif; text-align:center; padding:20px;">
                     <div style="font-size:60px; margin-bottom:20px;">👋</div>
                     <h1 style="font-weight:900; text-transform:uppercase;">Game Closed</h1>
-                    <p style="opacity:0.8;">Memory Cleared.</p>
                     <button onclick="window.location.reload()" style="margin-top:30px; background:white; color:#0ea5e9; padding:15px 30px; border-radius:15px; border:none; font-weight:bold;">REPLAY</button>
                 </div>
             `;
@@ -127,7 +135,7 @@
         function setLevel(lvl) { game.range = lvl; game.score = 0; document.getElementById('scoreLabel').textContent = `⭐ 0`; document.querySelectorAll('.lvl-btn').forEach(btn => btn.classList.remove('selected')); document.getElementById('l'+lvl).classList.add('selected'); newQuestion(); }
         
         async function shareGame() {
-            const gameUrl = "https://kids-number-game.vercel.app/";
+            const gameUrl = window.location.href;
             const shareText = "Hey! Check out this free, ad-free math game for kids: ";
             if (navigator.share) { try { await navigator.share({ title: 'Number Fun Kids Math', text: shareText, url: gameUrl }); } catch (err) {} } else { window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + gameUrl)}`; }
         }
@@ -159,25 +167,10 @@
         function check() { 
             if (!game.input) return;
             if (game.input === game.ans) { 
-                game.score++; if(game.soundOn && happySynth) happySynth.triggerAttackRelease(["C5", "E5", "G5"], "8n"); 
-                document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; if(game.voiceOn) speak("Correct!");
-            } else { 
-                if(game.soundOn && sadSynth) sadSynth.triggerAttackRelease("G2", "2n"); 
-                document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`; if(game.voiceOn) speak(`No, it was ${game.ans}`); 
-            } 
-            setTimeout(() => { document.getElementById('scoreLabel').textContent = `⭐ ${game.score}`; newQuestion(); }, 1800);
-        }
-
-        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
-        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
-        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
-
-        window.addEventListener('load', function() {
-            const ua = navigator.userAgent || navigator.vendor || window.opera;
-            if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1) {
-                document.getElementById('fbAlertOverlay').classList.remove('hidden');
-            }
-        });
-    </script>
-</body>
-</html>
+                game.score++; 
+                if(game.soundOn && happySynth) happySynth.triggerAttackRelease(["C5", "E5", "G5"], "8n"); 
+                document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
+                if(game.voiceOn) speak("Correct!");
+                
+                // TRIGGER OFFLINE POPUP AT 5 POINTS
+                if (
