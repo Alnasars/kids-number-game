@@ -64,9 +64,9 @@
         <div id="fbAlertOverlay" class="hidden">
             <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
                 <div class="text-5xl mb-4">📢</div>
-                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Audio Fix</h2>
-                <p class="text-slate-600 text-sm mb-6">In-app browsers block sounds. Click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
-                <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs cursor-pointer">Got it!</button>
+                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Browser Notice</h2>
+                <p class="text-slate-600 text-sm mb-6">Facebook and TikTok do not allow full audio in their apps. For the Teacher's Voice, click the <b>3 dots (...)</b> and select <b>'Open in External Browser'</b>.</p>
+                <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs cursor-pointer">I Understand</button>
             </div>
         </div>
 
@@ -120,7 +120,6 @@
     </div>
 
     <script>
-        // Start mode changed to 'counting'
         let game = { mode: 'counting', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
         let happySynth, sadSynth;
 
@@ -159,9 +158,12 @@
             document.getElementById('startOverlay').classList.add('hidden'); 
             document.getElementById('mainCloseBtn').classList.remove('hidden');
             
-            // Teacher welcomes child
-            speak("Hi there! I'm so excited to learn numbers with you today. Let's blast off!");
-            setTimeout(() => { newQuestion(); }, 5000); 
+            // Welcome message
+            const welcomeMsg = "Hi there! I'm so excited to learn numbers with you today. Let's blast off!";
+            speak(welcomeMsg);
+
+            // FIX: Delay now waits exactly until the teacher is likely done (~4.5 seconds)
+            setTimeout(() => { newQuestion(); }, 4600); 
         }
 
         function setMode(m) { 
@@ -220,24 +222,24 @@
             window.speechSynthesis.cancel(); 
             const m = new SpeechSynthesisUtterance(t); 
             const voices = window.speechSynthesis.getVoices();
-            
             const femaleVoice = voices.find(voice => 
                 (voice.name.includes('Female') || voice.name.includes('Google US English') || voice.name.includes('Samantha') || voice.name.includes('Zira')) && voice.lang.includes('en')
             );
-
             if (femaleVoice) m.voice = femaleVoice;
-            
             m.rate = 0.88; 
             m.pitch = 1.3; 
-            
             setTimeout(() => { window.speechSynthesis.speak(m); }, 100);
         }
 
         window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 
+        // IMPROVED DETECTION FOR FB AND TIKTOK
         window.addEventListener('load', function() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;
-            if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1 || ua.indexOf("TikTok") > -1) {
+            const isFB = ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1;
+            const isTikTok = ua.indexOf("TikTok") > -1 || ua.indexOf("Musical-ly") > -1;
+            
+            if (isFB || isTikTok) {
                 document.getElementById('fbAlertOverlay').classList.remove('hidden');
             }
         });
