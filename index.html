@@ -74,7 +74,7 @@
             <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
                 <div class="text-5xl mb-4">🏠</div>
                 <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Install App</h2>
-                <p class="text-slate-600 text-sm mb-6">Play offline! Tap menu and click <b>'Add to Home Screen'</b>.</p>
+                <p class="text-slate-600 text-sm mb-6">You are doing great! Tap the browser menu and click <b>'Add to Home Screen'</b> to play anytime!</p>
                 <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs cursor-pointer">Got it!</button>
             </div>
         </div>
@@ -124,7 +124,10 @@
         let happySynth, sadSynth;
 
         function exitGame() {
-            try { Tone.Destination.mute = true; window.speechSynthesis.cancel(); } catch (e) {}
+            try { 
+                Tone.Destination.mute = true; 
+                window.speechSynthesis.cancel(); 
+            } catch (e) {}
             game.active = false;
             document.getElementById('endOverlay').classList.remove('hidden');
             document.getElementById('mainCloseBtn').classList.add('hidden');
@@ -155,9 +158,13 @@
             document.getElementById('startOverlay').classList.add('hidden'); 
             document.getElementById('mainCloseBtn').classList.remove('hidden');
             
-            speak("Hi there! I'm so excited to learn numbers with you today. Let's blast off!", function() {
-                 setTimeout(newQuestion, 500); 
-            });
+            if(game.voiceOn) {
+                speak("Hi there! I'm so excited to learn numbers with you today. Let's blast off!", function() {
+                    setTimeout(newQuestion, 500); 
+                });
+            } else {
+                newQuestion();
+            }
         }
 
         function setMode(m) { 
@@ -203,6 +210,13 @@
                 game.score++; 
                 document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
                 if(game.voiceOn) speak("Correct!");
+                
+                // TRIGGER DOWNLOAD/INSTALL AFTER 5 CORRECT ANSWERS
+                if (game.score === 5) { 
+                    setTimeout(() => { 
+                        document.getElementById('offlineOverlay').classList.remove('hidden'); 
+                    }, 1000); 
+                }
             } else { 
                 if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n"); 
                 document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`; 
@@ -212,6 +226,7 @@
         }
 
         function speak(t, callback) { 
+            if(!game.voiceOn) return; // FIX: Respect the Voice Toggle
             window.speechSynthesis.cancel(); 
             const m = new SpeechSynthesisUtterance(t); 
             const voices = window.speechSynthesis.getVoices();
@@ -222,9 +237,24 @@
             setTimeout(() => { window.speechSynthesis.speak(m); }, 100);
         }
 
+        // FIX: Sound Toggle (Effects)
+        function toggleSound() { 
+            game.soundOn = !game.soundOn; 
+            if(!game.soundOn) { Tone.Destination.mute = true; } 
+            else { Tone.Destination.mute = false; }
+            document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; 
+        }
+
+        // FIX: Voice Toggle (Teacher)
+        function toggleVoice() { 
+            game.voiceOn = !game.voiceOn; 
+            if(!game.voiceOn) { window.speechSynthesis.cancel(); }
+            document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; 
+        }
+
         window.addEventListener('load', function() {
             const ua = navigator.userAgent || navigator.vendor;
-            if (/FBAN|FBAV|TikTok|Musical-ly|Instagram/i.test(ua)) {
+            if (/FBAN|FBAV|TikTok|Musical-ly|Instagram|Messenger/i.test(ua)) {
                 document.getElementById('fbAlertOverlay').classList.remove('hidden');
             }
         });
