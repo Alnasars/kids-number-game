@@ -1,44 +1,26 @@
-const cacheName = 'math-kids-v35'; // Change this number to force update
+// 1. ANTI-HANG SPEECH LOGIC (Optimized for sw.js)
+// We add a listener to ensure speech clears the browser buffer before a new reply
+self.addEventListener('message', (event) => {
+    if (event.data.type === 'SPEAK') {
+        // Clear any previous speech that might be "hanging" the app
+        if ('speechSynthesis' in self) {
+            self.speechSynthesis.cancel();
+        }
+        
+        // Mobile browsers often pause audio; this ensures the teacher's voice wakes up
+        if (self.speechSynthesis && self.speechSynthesis.paused) {
+            self.speechSynthesis.resume();
+        }
+    }
 
-self.addEventListener('install', (event) => {
-    // Force the waiting service worker to become the active service worker
-    self.skipWaiting();
-    event.waitUntil(
-        caches.open(cacheName).then((cache) => {
-            return cache.addAll([
-                './',
-                './index.html',
-                './manifest.json'
-                // Add icons here if you have them
-            ]);
-        })
-    );
+    // 2. MEMORY & TAB CLEAR LOGIC
+    if (event.data.type === 'CLOSE_GAME') {
+        // Stop all speech immediately to free up audio hardware
+        self.speechSynthesis.cancel();
+        
+        // Clear cached game data to free up RAM
+        caches.delete('game-assets').then(() => {
+            console.log('Memory cleared');
+        });
+    }
 });
-
-self.addEventListener('activate', (event) => {
-    // Immediately take control of all open tabs
-    event.waitUntil(clients.claim());
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((name) => {
-                    if (name !== cacheName) {
-                        console.log('Clearing old cache:', name);
-                        return caches.delete(name);
-                    }
-                })
-            );
-        })
-    );
-});
-
-self.addEventListener('fetch', (event) => {
-    // Network first, then cache (Best for development/updates)
-    event.respondWith(
-        fetch(event.request).catch(() => {
-            return caches.match(event.request);
-        })
-    );
-});
-
-
