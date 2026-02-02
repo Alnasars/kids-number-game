@@ -1,49 +1,122 @@
-const CACHE_NAME = 'kids-math-v1.3'; // Only change this when you make BIG updates
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/icon.png',
-  'https://cdn.tailwindcss.com',
-  'https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js'
-];
-
-// 1. Install & Cache (Only runs once)
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
-  );
-  self.skipWaiting();
-});
-
-// 2. Clean up OLD caches (Only runs when CACHE_NAME changes)
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
-  );
-});
-
-// 3. Smart Fetch (Stale-While-Revalidate)
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchedResponse = fetch(event.request).then((networkResponse) => {
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, networkResponse.clone());
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Number Fun Kids Math</title>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; -webkit-user-select: none; }
+        .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 90vh; max-height: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; z-index: 10; }
+        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; z-index: 2000; border: 2px solid white; cursor: pointer; }
+        .math-container { display: flex; flex-direction: column; align-items: flex-end; font-family: 'Courier New', Courier, monospace; font-weight: 900; font-size: 3.2rem; color: #334155; line-height: 1; padding-right: 20px; }
+        .math-line { border-top: 5px solid #334155; width: 120%; margin-top: 4px; }
+        .operator { align-self: flex-start; margin-right: 15px; font-size: 2.5rem; }
+        .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; margin-bottom: 12px; padding-top: 5px; }
+        .control-btn { background: #f1f5f9; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 18px; border: 1px solid #e2e8f0; cursor: pointer; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
+        .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; height: clamp(45px, 7vh, 60px); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 #e2e8f0; color: #334155; }
+        .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; }
+        #startOverlay, #endOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; padding: 20px; }
+        .hidden { display: none !important; }
+        #fbAlertOverlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
+    </style>
+</head>
+<body>
+    <div class="game-card">
+        <button id="mainCloseBtn" onclick="exitGame()" class="close-trigger">✕</button>
+        <div id="startOverlay">
+            <div class="text-7xl mb-4">🚀</div>
+            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
+            <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl uppercase">Play Now</button>
+        </div>
+        <div id="endOverlay" class="hidden">
+            <div class="text-7xl mb-4">👋</div>
+            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">See You!</h1>
+            <button onclick="window.location.reload()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl uppercase">Restart</button>
+        </div>
+        <div id="fbAlertOverlay" class="hidden">
+            <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
+                <div class="text-5xl mb-4">📢</div>
+                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Audio Notice</h2>
+                <p class="text-slate-600 text-sm mb-6">Facebook/TikTok block sounds. Tap <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
+                <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Got it!</button>
+            </div>
+        </div>
+        <div class="controls-grid mt-4">
+            <button onclick="shareGame()" class="control-btn bg-green-500 text-white">Share</button>
+            <button id="soundBtn" onclick="toggleSound()" class="control-btn">🔊</button>
+            <button id="voiceBtn" onclick="toggleVoice()" class="control-btn">🗣️</button>
+            <button onclick="resetGame()" class="control-btn">🔄</button>
+        </div>
+        <div class="flex justify-between items-center mb-2 px-1">
+            <div class="flex gap-1 flex-1 mr-2">
+                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase">Count</button>
+                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Add</button>
+            </div>
+            <div id="scoreLabel" class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-black">⭐ 0</div>
+        </div>
+        <div id="displayArea" class="bg-slate-50 rounded-2xl flex-1 flex items-center justify-center mb-2 border-2 border-slate-100"></div>
+        <div id="inputBox" class="text-center text-3xl font-black text-sky-500 mb-2 h-10 tracking-widest">---</div>
+        <div class="numpad">
+            <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
+            <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
+            <button onclick="press('clear')">C</button><button onclick="press('0')">0</button>
+            <button onclick="press('enter')" class="enter-btn">OK</button>
+        </div>
+    </div>
+    <script>
+        let game = { mode: 'counting', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
+        let happySynth, sadSynth;
+        function exitGame() { window.speechSynthesis.cancel(); game.active = false; document.getElementById('endOverlay').classList.remove('hidden'); setTimeout(() => { window.location.href = "about:blank"; }, 2000); }
+        function resetGame() { game.score = 0; document.getElementById('scoreLabel').textContent = "⭐ 0"; newQuestion(); }
+        async function startGame() { 
+            try { await Tone.start(); } catch(e) {}
+            happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+            sadSynth = new Tone.MonoSynth().toDestination();
+            game.active = true; document.getElementById('startOverlay').classList.add('hidden'); 
+            speak("Hi there! I am so excited to learn numbers with you today. Let's blast off!", function() { setTimeout(newQuestion, 500); });
+        }
+        function setMode(m) { 
+            if(!game.active) return; game.mode = m; 
+            document.querySelectorAll('[id^="btn-"]').forEach(b => { b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase"; }); 
+            newQuestion(); 
+        }
+        function newQuestion() {
+            let n1, n2, html = '', speech = '';
+            if (game.mode === 'counting') { 
+                n1 = Math.floor(Math.random() * game.range) + 1; game.ans = n1.toString(); html = '<div class="text-7xl font-black text-slate-700">' + n1 + '</div>'; speech = n1.toString();
+            } else { 
+                n1 = Math.floor(Math.random() * 5) + 1; n2 = Math.floor(Math.random() * 5) + 1; game.ans = (n1 + n2).toString(); 
+                html = '<div class="math-container"><div>' + n1 + '</div><div class="flex items-center"><span class="operator">+</span>' + n2 + '</div><div class="math-line"></div></div>'; speech = n1 + " plus " + n2; 
+            }
+            document.getElementById('displayArea').innerHTML = html; game.input = ''; document.getElementById('inputBox').textContent = '---'; 
+            if(game.voiceOn) speak(speech);
+        }
+        function press(v) { if(!game.active) return; if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
+        function check() { 
+            if (!game.input) return;
+            if (game.input === game.ans) { game.score++; document.getElementById('displayArea').innerHTML = '<div class="text-7xl">🌟</div>'; if(game.voiceOn) speak("Correct!"); } 
+            else { if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n"); document.getElementById('displayArea').innerHTML = '<div class="text-6xl text-red-400 font-bold">' + game.ans + '</div>'; if(game.voiceOn) speak("No, it was " + game.ans); } 
+            setTimeout(() => { document.getElementById('scoreLabel').textContent = "⭐ " + game.score; newQuestion(); }, 1800);
+        }
+        function speak(t, cb) { 
+            window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); 
+            const vs = window.speechSynthesis.getVoices();
+            const f = vs.find(v => (v.name.includes('Female') || v.name.includes('Google US English') || v.name.includes('Samantha')) && v.lang.includes('en'));
+            if (f) m.voice = f; m.rate = 0.9; m.pitch = 1.3; if (cb) m.onend = cb;
+            setTimeout(() => { window.speechSynthesis.speak(m); }, 100);
+        }
+        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
+        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
+        window.addEventListener('load', function() {
+            if (/FBAN|FBAV|TikTok|Musical-ly|Instagram/i.test(navigator.userAgent)) { document.getElementById('fbAlertOverlay').classList.remove('hidden'); }
+            if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js?v=2'); }
         });
-        return networkResponse;
-      });
-      // Return the cached version immediately, update in background
-      return cachedResponse || fetchedResponse;
-    })
-  );
-});
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+</body>
+</html>
