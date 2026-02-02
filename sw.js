@@ -1,26 +1,46 @@
-// 1. ANTI-HANG SPEECH LOGIC (Optimized for sw.js)
-// We add a listener to ensure speech clears the browser buffer before a new reply
-self.addEventListener('message', (event) => {
-    if (event.data.type === 'SPEAK') {
-        // Clear any previous speech that might be "hanging" the app
-        if ('speechSynthesis' in self) {
-            self.speechSynthesis.cancel();
-        }
-        
-        // Mobile browsers often pause audio; this ensures the teacher's voice wakes up
-        if (self.speechSynthesis && self.speechSynthesis.paused) {
-            self.speechSynthesis.resume();
-        }
-    }
+const CACHE_NAME = 'kids-math-v1.4';
+const ASSETS = [
+  '/',
+  '/index.html',
+  '/icon.png',
+  'https://cdn.tailwindcss.com',
+  'https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js'
+];
 
-    // 2. MEMORY & TAB CLEAR LOGIC
-    if (event.data.type === 'CLOSE_GAME') {
-        // Stop all speech immediately to free up audio hardware
-        self.speechSynthesis.cancel();
-        
-        // Clear cached game data to free up RAM
-        caches.delete('game-assets').then(() => {
-            console.log('Memory cleared');
+// Install & Cache
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    })
+  );
+  self.skipWaiting();
+});
+
+// Clean old versions
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) return caches.delete(key);
+        })
+      );
+    })
+  );
+});
+
+// Stale-While-Revalidate (Stable Loading)
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      const fetchedResponse = fetch(event.request).then((networkResponse) => {
+        return caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
         });
-    }
+      });
+      return cachedResponse || fetchedResponse;
+    })
+  );
 });
