@@ -57,7 +57,7 @@
             <div class="text-7xl mb-4">👋</div>
             <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">See You!</h1>
             <p class="text-slate-500 mb-2">Thanks for playing Number Fun!</p>
-            <p class="text-slate-400 text-xs mb-8 italic">You can now close this tab.</p>
+            <p class="text-slate-400 text-xs mb-8 italic">Memory Cleared Successfully.</p>
             <button onclick="window.location.reload()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 cursor-pointer uppercase">Restart Game</button>
         </div>
 
@@ -65,7 +65,7 @@
             <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
                 <div class="text-5xl mb-4">📢</div>
                 <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Audio Fix</h2>
-                <p class="text-slate-600 text-sm mb-6">Facebook blocks sounds. Click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
+                <p class="text-slate-600 text-sm mb-6">In-app browsers block sounds. Click the <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
                 <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs cursor-pointer">Got it!</button>
             </div>
         </div>
@@ -74,13 +74,13 @@
             <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
                 <div class="text-5xl mb-4">🏠</div>
                 <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Install App</h2>
-                <p class="text-slate-600 text-sm mb-6">Play anytime without internet! Open your browser menu and click <b>'Add to Home Screen'</b> to save the icon.</p>
+                <p class="text-slate-600 text-sm mb-6">Play offline! Tap menu and click <b>'Add to Home Screen'</b>.</p>
                 <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs cursor-pointer">Got it!</button>
             </div>
         </div>
 
         <div id="settingsModal" class="modal-overlay hidden">
-            <h2 class="text-xl font-black text-sky-600 mb-4 uppercase text-sky-600">Settings ⚙️</h2>
+            <h2 class="text-xl font-black text-sky-600 mb-4 uppercase">Settings ⚙️</h2>
             <button onclick="setLevel(10)" id="l10" class="lvl-btn selected">Level 10</button>
             <button onclick="setLevel(20)" id="l20" class="lvl-btn">Level 20</button>
             <button onclick="setLevel(100)" id="l100" class="lvl-btn">Level 100</button>
@@ -99,8 +99,8 @@
 
         <div class="flex justify-between items-center mb-2 px-1">
             <div class="flex gap-1 flex-1 mr-2">
-                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase cursor-pointer">Count</button>
-                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase cursor-pointer">Add</button>
+                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase cursor-pointer">Count</button>
+                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase cursor-pointer">Add</button>
                 <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase cursor-pointer">Sub</button>
             </div>
             <div id="scoreLabel" class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-black">⭐ 0</div>
@@ -120,14 +120,19 @@
     </div>
 
     <script>
-        let game = { mode: 'addition', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
+        // Start mode changed to 'counting'
+        let game = { mode: 'counting', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
         let happySynth, sadSynth;
 
         function exitGame() {
-            try { Tone.Destination.mute = true; window.speechSynthesis.cancel(); } catch (e) {}
+            try { 
+                Tone.Destination.mute = true; 
+                window.speechSynthesis.cancel(); 
+            } catch (e) {}
             game.active = false;
             document.getElementById('endOverlay').classList.remove('hidden');
             document.getElementById('mainCloseBtn').classList.add('hidden');
+            setTimeout(() => { window.location.href = "about:blank"; }, 3000);
         }
 
         function resetGame() {
@@ -153,7 +158,10 @@
             game.active = true; 
             document.getElementById('startOverlay').classList.add('hidden'); 
             document.getElementById('mainCloseBtn').classList.remove('hidden');
-            newQuestion(); 
+            
+            // Teacher welcomes child
+            speak("Hi there! I'm so excited to learn numbers with you today. Let's blast off!");
+            setTimeout(() => { newQuestion(); }, 5000); 
         }
 
         function setMode(m) { 
@@ -197,7 +205,6 @@
             if (!game.input) return;
             if (game.input === game.ans) { 
                 game.score++; 
-                if(game.soundOn) happySynth.triggerAttackRelease(["C5", "E5", "G5"], "8n"); 
                 document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
                 if(game.voiceOn) speak("Correct!");
                 if (game.score === 5) { setTimeout(() => { document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1000); }
@@ -209,13 +216,28 @@
             setTimeout(() => { document.getElementById('scoreLabel').textContent = `⭐ ${game.score}`; newQuestion(); }, 1800);
         }
 
-        function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
-        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
-        function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
+        function speak(t) { 
+            window.speechSynthesis.cancel(); 
+            const m = new SpeechSynthesisUtterance(t); 
+            const voices = window.speechSynthesis.getVoices();
+            
+            const femaleVoice = voices.find(voice => 
+                (voice.name.includes('Female') || voice.name.includes('Google US English') || voice.name.includes('Samantha') || voice.name.includes('Zira')) && voice.lang.includes('en')
+            );
+
+            if (femaleVoice) m.voice = femaleVoice;
+            
+            m.rate = 0.88; 
+            m.pitch = 1.3; 
+            
+            setTimeout(() => { window.speechSynthesis.speak(m); }, 100);
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 
         window.addEventListener('load', function() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;
-            if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1) {
+            if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1 || ua.indexOf("TikTok") > -1) {
                 document.getElementById('fbAlertOverlay').classList.remove('hidden');
             }
         });
