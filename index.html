@@ -21,6 +21,8 @@
         .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; height: clamp(45px, 7vh, 60px); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 #e2e8f0; color: #334155; }
         .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; }
         #startOverlay, #endOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; padding: 20px; }
+        .lvl-btn { width: 100%; padding: 12px; margin: 4px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; cursor: pointer; }
+        .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
         .hidden { display: none !important; }
 
         @keyframes burst-star {
@@ -40,6 +42,17 @@
             <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
             <button onclick="startGame('counting')" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl uppercase mb-4">Play Now</button>
             <button onclick="startGame('toddler')" class="text-sky-400 font-bold text-sm uppercase underline tracking-widest">Toddler Mode</button>
+        </div>
+
+        <div id="settingsModal" class="modal-overlay hidden">
+            <h2 class="text-2xl font-black text-sky-600 mb-6 uppercase">Settings ⚙️</h2>
+            <button onclick="setMode('toddler')" class="lvl-btn bg-yellow-50 mb-4">👶 Toddler Mode</button>
+            <hr class="w-full mb-4 border-slate-100">
+            <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Math Difficulty</p>
+            <button onclick="setLevel(10)" id="l10" class="lvl-btn selected">Level 10</button>
+            <button onclick="setLevel(20)" id="l20" class="lvl-btn">Level 20</button>
+            <button onclick="setLevel(100)" id="l100" class="lvl-btn">Level 100</button>
+            <button onclick="toggleSettings()" class="mt-8 bg-sky-500 text-white px-12 py-3 rounded-2xl font-bold uppercase">Close</button>
         </div>
 
         <div id="offlineOverlay" class="hidden">
@@ -136,7 +149,20 @@
             document.querySelectorAll('[id^="btn-"]').forEach(b => {
                 b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase";
             });
+            document.getElementById('settingsModal').classList.add('hidden'); // Close settings if open
             newQuestion();
+        }
+
+        function setLevel(lvl) {
+            game.range = lvl;
+            document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('l'+lvl).classList.add('selected');
+            if(game.mode === 'toddler') setMode('counting'); else newQuestion();
+            toggleSettings();
+        }
+
+        function toggleSettings() {
+            document.getElementById('settingsModal').classList.toggle('hidden');
         }
 
         function newQuestion() {
