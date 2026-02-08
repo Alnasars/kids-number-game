@@ -4,87 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Number Fun Kids Math</title>
-    
-    <script defer src="/_vercel/insights/script.js"></script>
-    
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Number Fun">
-    <meta name="theme-color" content="#0ea5e9">
-    
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-    
     <style>
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; -webkit-user-select: none; }
-        .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 90vh; max-height: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; z-index: 10; }
-        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; z-index: 2000; border: 2px solid white; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 90vh; max-height: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; z-index: 10; overflow: hidden; }
+        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; z-index: 2000; border: 2px solid white; cursor: pointer; }
         .math-container { display: flex; flex-direction: column; align-items: flex-end; font-family: 'Courier New', Courier, monospace; font-weight: 900; font-size: 3.2rem; color: #334155; line-height: 1; padding-right: 20px; }
         .math-line { border-top: 5px solid #334155; width: 120%; margin-top: 4px; }
         .operator { align-self: flex-start; margin-right: 15px; font-size: 2.5rem; }
         .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; margin-bottom: 12px; padding-top: 5px; }
-        .control-btn { background: #f1f5f9; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 18px; border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.1s; }
-        .control-btn:active { transform: scale(0.9); }
+        .control-btn { background: #f1f5f9; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 18px; border: 1px solid #e2e8f0; cursor: pointer; }
         .share-btn { background: #25D366 !important; color: white !important; border: none !important; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
-        .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; height: clamp(45px, 7vh, 60px); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 #e2e8f0; cursor: pointer; color: #334155; }
-        .numpad button:active { transform: translateY(2px); box-shadow: none; }
+        .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; height: clamp(45px, 7vh, 60px); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 #e2e8f0; color: #334155; }
         .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; }
         #startOverlay, #endOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; padding: 20px; }
         .hidden { display: none !important; }
-        .lvl-btn { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; cursor: pointer; }
-        .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
-        #fbAlertOverlay, #offlineOverlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 5000; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 24px; }
+
+        @keyframes star-party {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+            40% { transform: translate(-50%, -50%) scale(14) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 20px gold); }
+            100% { transform: translate(-50%, -50%) scale(12) rotate(360deg); opacity: 0; }
+        }
+        .mega-star { position: absolute; top: 50%; left: 50%; font-size: 5rem; z-index: 9999; animation: star-party 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: none; }
     </style>
 </head>
 <body>
-    <div class="game-card">
+    <div class="game-card" id="gameCard">
         <button id="mainCloseBtn" onclick="exitGame()" class="close-trigger">✕</button>
 
         <div id="startOverlay">
             <div class="text-7xl mb-4">🚀</div>
             <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
-            <button onclick="startGame()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 cursor-pointer uppercase">Play Now</button>
-            <p class="text-slate-400 text-[10px] mt-6 font-bold uppercase tracking-widest">Master Edition</p>
-        </div>
-
-        <div id="endOverlay" class="hidden">
-            <div class="text-7xl mb-4">👋</div>
-            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">See You!</h1>
-            <p class="text-slate-500 mb-2">Thanks for playing Number Fun!</p>
-            <p class="text-slate-400 text-xs mb-8 italic">You can now close this tab.</p>
-            <button onclick="window.location.reload()" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl active:scale-95 cursor-pointer uppercase">Restart Game</button>
-        </div>
-
-        <div id="fbAlertOverlay" class="hidden">
-            <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
-                <div class="text-5xl mb-4">📢</div>
-                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Audio Fix</h2>
-                <p class="text-slate-600 text-sm mb-6">TikTok and Facebook block sounds. Tap <b>3 dots (...)</b> and select <b>'Open in Browser'</b>.</p>
-                <button onclick="document.getElementById('fbAlertOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs cursor-pointer">Got it!</button>
-            </div>
+            <button onclick="startGame('counting')" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl uppercase mb-4">Play Now</button>
+            <button onclick="startGame('toddler')" class="text-sky-400 font-bold text-sm uppercase underline tracking-widest">Toddler Mode</button>
         </div>
 
         <div id="offlineOverlay" class="hidden">
-            <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px]">
-                <div class="text-5xl mb-4">🏠</div>
-                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Install App</h2>
-                <p class="text-slate-600 text-sm mb-6">Great job! Tap menu and click <b>'Add to Home Screen'</b> to play anytime!</p>
-                <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs cursor-pointer">Got it!</button>
+            <div class="bg-white p-6 rounded-3xl text-center shadow-2xl max-w-[280px] border-4 border-yellow-400">
+                <div class="text-6xl mb-4">🏆</div>
+                <h2 class="text-xl font-black text-sky-600 mb-1 uppercase">YAHOOO!</h2>
+                <p class="text-slate-800 font-bold text-sm mb-4">Install This Game!</p>
+                <p class="text-slate-600 text-[11px] mb-6 leading-tight">Tap the <b>Menu (3 dots)</b> at the top and select <b>"Add to Home Screen"</b> to play anytime!</p>
+                <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Got it!</button>
             </div>
-        </div>
-
-        <div id="settingsModal" class="modal-overlay hidden">
-            <h2 class="text-xl font-black text-sky-600 mb-4 uppercase">Settings ⚙️</h2>
-            <button onclick="setLevel(10)" id="l10" class="lvl-btn selected">Level 10</button>
-            <button onclick="setLevel(20)" id="l20" class="lvl-btn">Level 20</button>
-            <button onclick="setLevel(100)" id="l100" class="lvl-btn">Level 100</button>
-            <button onclick="toggleSettings()" class="mt-8 bg-sky-500 text-white px-12 py-3 rounded-2xl font-bold uppercase cursor-pointer">Done</button>
         </div>
 
         <div class="controls-grid mt-4">
@@ -99,158 +64,163 @@
 
         <div class="flex justify-between items-center mb-2 px-1">
             <div class="flex gap-1 flex-1 mr-2">
-                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase cursor-pointer">Count</button>
-                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase cursor-pointer">Add</button>
-                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase cursor-pointer">Sub</button>
+                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase">Count</button>
+                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Add</button>
+                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Sub</button>
             </div>
             <div id="scoreLabel" class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-black">⭐ 0</div>
         </div>
 
-        <div id="displayArea" class="bg-slate-50 rounded-2xl flex-1 flex items-center justify-center mb-2 border-2 border-slate-100"></div>
+        <div id="displayArea" class="bg-slate-50 rounded-2xl flex-1 flex items-center justify-center mb-2 border-2 border-slate-100 relative"></div>
         <div id="inputBox" class="text-center text-3xl font-black text-sky-500 mb-2 h-10 tracking-widest">---</div>
         
         <div class="numpad">
             <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
             <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
             <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
-            <button onclick="press('clear')" class="text-slate-300 font-bold">C</button>
-            <button onclick="press('0')">0</button>
+            <button onclick="press('clear')">C</button><button onclick="press('0')">0</button>
             <button onclick="press('enter')" class="enter-btn">OK</button>
         </div>
     </div>
 
     <script>
-        let game = { mode: 'counting', range: 10, score: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true };
-        let happySynth, sadSynth;
+        let game = { mode: 'counting', range: 10, score: 0, tMoves: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true, lastAns: '' };
+        let happySynth, sadSynth, femaleVoice = null;
 
-        function exitGame() {
-            try { Tone.Destination.mute = true; window.speechSynthesis.cancel(); } catch (e) {}
-            game.active = false;
-            document.getElementById('endOverlay').classList.remove('hidden');
-            document.getElementById('mainCloseBtn').classList.add('hidden');
-            setTimeout(() => { window.location.href = "about:blank"; }, 2000);
+        function findVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            // Search for specific female/high-pitched names
+            femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Google US English') || v.name.includes('Samantha') || v.name.includes('Zira')) && v.lang.includes('en'));
+            if (!femaleVoice) femaleVoice = voices.find(v => v.lang.includes('en'));
         }
 
-        function resetGame() {
-            game.score = 0;
-            document.getElementById('scoreLabel').textContent = `⭐ 0`;
-            newQuestion();
+        // Handle async voice loading
+        window.speechSynthesis.onvoiceschanged = findVoice;
+
+        function triggerReward() {
+            const card = document.getElementById('gameCard');
+            const fx = document.createElement('div');
+            fx.className = 'mega-star'; fx.innerHTML = '🌟';
+            card.appendChild(fx);
+            speak("YAHOOO! Superstar!");
+            setTimeout(() => {
+                fx.remove();
+                document.getElementById('offlineOverlay').classList.remove('hidden');
+            }, 1400);
         }
 
-        function toggleSettings() { if(!game.active) return; document.getElementById('settingsModal').classList.toggle('hidden'); }
-        function setLevel(lvl) { game.range = lvl; game.score = 0; document.getElementById('scoreLabel').textContent = `⭐ 0`; document.querySelectorAll('.lvl-btn').forEach(btn => btn.classList.remove('selected')); document.getElementById('l'+lvl).classList.add('selected'); newQuestion(); }
-        
-        async function shareGame() {
-            const gameUrl = window.location.href;
-            const shareText = "Check out this safe, ad-free math game for kids: ";
-            if (navigator.share) { try { await navigator.share({ title: 'Number Fun', text: shareText, url: gameUrl }); } catch (err) {} } 
-            else { window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + gameUrl)}`; }
+        function updateStars() {
+            if(game.mode === 'toddler') {
+                document.getElementById('scoreLabel').textContent = "⭐ 0";
+                return;
+            }
+            let stars = '';
+            let count = game.score % 6;
+            if (game.score > 0 && count === 0) count = 5;
+            for(let i=0; i<count; i++) stars += '⭐';
+            document.getElementById('scoreLabel').textContent = stars || '⭐ 0';
         }
 
-        async function startGame() { 
+        async function startGame(m) {
             try { await Tone.start(); } catch(e) {}
             happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
             sadSynth = new Tone.MonoSynth().toDestination();
-            game.active = true; 
-            document.getElementById('startOverlay').classList.add('hidden'); 
-            document.getElementById('mainCloseBtn').classList.remove('hidden');
+            game.active = true;
+            document.getElementById('startOverlay').classList.add('hidden');
+            findVoice();
             
-            if(game.voiceOn) {
-                speak("Hi there! I'm so excited to learn numbers with you today. Let's blast off!", function() {
-                    setTimeout(newQuestion, 500); 
-                });
-            } else {
-                newQuestion();
-            }
+            speak("Hi there! Let's start the game together. Tap any button to start the fun!", () => {
+                setMode(m);
+            });
         }
 
-        function setMode(m) { 
-            if(!game.active) return; 
-            game.mode = m; 
-            document.querySelectorAll('[id^="btn-"]').forEach(b => { 
-                b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase cursor-pointer" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase cursor-pointer"; 
-            }); 
-            newQuestion(); 
+        function setMode(m) {
+            game.mode = m; game.score = 0; game.tMoves = 0; updateStars();
+            document.querySelectorAll('[id^="btn-"]').forEach(b => {
+                b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase";
+            });
+            newQuestion();
         }
 
         function newQuestion() {
-            let n1, n2, html = '', speech = '';
-            if (game.mode === 'counting') { 
-                n1 = Math.floor(Math.random() * game.range) + 1; 
-                game.ans = n1.toString(); 
-                html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; 
-                speech = `${n1}`;
-            } else if (game.mode === 'addition') { 
-                n1 = Math.floor(Math.random() * (game.range/2)) + 1; 
-                n2 = Math.floor(Math.random() * (game.range/2)) + 1; 
-                game.ans = (n1 + n2).toString(); 
-                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">+</span>${n2}</div><div class="math-line"></div></div>`; 
-                speech = `${n1} plus ${n2}`; 
-            } else { 
-                n1 = Math.floor(Math.random() * game.range) + 2; 
-                n2 = Math.floor(Math.random() * n1); 
-                game.ans = (n1 - n2).toString(); 
-                html = `<div class="math-container"><div>${n1}</div><div class="flex items-center"><span class="operator">-</span>${n2}</div><div class="math-line"></div></div>`; 
-                speech = `${n1} minus ${n2}`; 
+            let n1, n2, html = '', speech = '', currentAns = '';
+            if(game.mode === 'toddler') {
+                html = '<div class="text-xl text-slate-300 font-bold uppercase animate-pulse">Tap a Number!</div>';
+            } else {
+                do {
+                    if (game.mode === 'counting') { 
+                        n1 = Math.floor(Math.random() * game.range) + 1; currentAns = n1.toString();
+                        html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; speech = n1.toString();
+                    } else if (game.mode === 'addition') { 
+                        n1 = Math.floor(Math.random() * 5) + 1; n2 = Math.floor(Math.random() * 5) + 1; currentAns = (n1+n2).toString();
+                        html = `<div class="math-container"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; speech = n1 + " plus " + n2;
+                    } else if (game.mode === 'subtraction') {
+                        n1 = Math.floor(Math.random() * 9) + 1; n2 = Math.floor(Math.random() * n1); currentAns = (n1-n2).toString();
+                        html = `<div class="math-container"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`; speech = n1 + " minus " + n2;
+                    }
+                } while (currentAns === game.lastAns);
             }
+            game.ans = currentAns; game.lastAns = currentAns;
             document.getElementById('displayArea').innerHTML = html;
-            game.input = ''; 
-            document.getElementById('inputBox').textContent = '---'; 
-            if(game.voiceOn) speak(speech);
+            game.input = ''; document.getElementById('inputBox').textContent = '---'; 
+            if(game.voiceOn && speech) speak(speech);
         }
 
-        function press(v) { if(!game.active) return; if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v; document.getElementById('inputBox').textContent = game.input || '---'; }
-
-        function check() { 
-            if (!game.input) return;
-            if (game.input === game.ans) { 
-                game.score++; 
-                document.getElementById('displayArea').innerHTML = '<div class="text-7xl animate-bounce">🌟</div>'; 
-                if(game.voiceOn) speak("Correct!");
-                if (game.score === 5) { setTimeout(() => { document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1000); }
-            } else { 
-                if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n"); 
-                document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`; 
-                if(game.voiceOn) speak(`No, it was ${game.ans}`); 
-            } 
-            setTimeout(() => { document.getElementById('scoreLabel').textContent = `⭐ ${game.score}`; newQuestion(); }, 1800);
-        }
-
-        function speak(t, callback) { 
-            if(!game.voiceOn) return;
-            window.speechSynthesis.cancel(); 
-            const m = new SpeechSynthesisUtterance(t); 
-            const voices = window.speechSynthesis.getVoices();
-            const female = voices.find(v => (v.name.includes('Female') || v.name.includes('Google US English') || v.name.includes('Samantha')) && v.lang.includes('en'));
-            if (female) m.voice = female;
-            m.rate = 0.88; m.pitch = 1.3; 
-            if (callback) m.onend = callback;
-            setTimeout(() => { window.speechSynthesis.speak(m); }, 100);
-        }
-
-        function toggleSound() { game.soundOn = !game.soundOn; Tone.Destination.mute = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
-        function toggleVoice() { game.voiceOn = !game.voiceOn; if(!game.voiceOn) window.speechSynthesis.cancel(); document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
-
-        // IMPROVED TIKTOK DETECTION LOGIC
-        window.addEventListener('load', function() {
-            const ua = navigator.userAgent || navigator.vendor || window.opera;
-            
-            // Check for FB markers
-            const isFB = /FBAN|FBAV|Messenger/i.test(ua);
-            
-            // Check for TikTok markers (TikTok uses several different strings)
-            const isTikTok = /TikTok|Musical-ly|ByteLocale|Pangle/i.test(ua);
-            
-            // Check for Instagram
-            const isInstagram = /Instagram/i.test(ua);
-
-            if (isFB || isTikTok || isInstagram) {
-                document.getElementById('fbAlertOverlay').classList.remove('hidden');
+        function press(v) {
+            if(!game.active) return;
+            if(game.mode === 'toddler') {
+                if(v !== 'clear' && v !== 'enter') {
+                    game.tMoves++; 
+                    document.getElementById('displayArea').innerHTML = `<div class="text-8xl font-black text-sky-500 animate-bounce">${v}</div>`;
+                    if(game.tMoves % 5 === 0) {
+                        triggerReward();
+                    } else {
+                        speak(v);
+                    }
+                }
+                return;
             }
-        });
+            if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v;
+            document.getElementById('inputBox').textContent = game.input || '---';
+        }
 
-        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+        function check() {
+            if (game.input === game.ans) {
+                game.score++; updateStars();
+                if(game.score % 5 === 0) {
+                    triggerReward();
+                    setTimeout(newQuestion, 2400);
+                } else {
+                    speak("Correct!");
+                    setTimeout(newQuestion, 1200);
+                }
+            } else {
+                if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n");
+                document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`;
+                speak("No, it was " + game.ans, () => {
+                    setTimeout(newQuestion, 800);
+                });
+            }
+        }
+
+        function speak(t, cb) {
+            if(!game.voiceOn) return;
+            window.speechSynthesis.cancel();
+            setTimeout(() => {
+                const m = new SpeechSynthesisUtterance(t);
+                if (femaleVoice) m.voice = femaleVoice;
+                m.rate = 1.0; m.pitch = 1.45;
+                if(cb) m.onend = cb;
+                window.speechSynthesis.speak(m);
+            }, 50);
+        }
+
+        function toggleSettings() { /* Gear menu placeholder */ }
+        function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
+        function toggleVoice() { game.voiceOn = !game.voiceOn; if(!game.voiceOn) window.speechSynthesis.cancel(); document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
+        function resetGame() { game.score = 0; game.tMoves = 0; updateStars(); newQuestion(); }
+        function exitGame() { window.location.href = "about:blank"; }
+        function shareGame() { window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math!"); }
     </script>
 </body>
 </html>
-
