@@ -23,12 +23,12 @@
         #startOverlay, #endOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; padding: 20px; }
         .hidden { display: none !important; }
 
-        @keyframes star-party {
-            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
-            40% { transform: translate(-50%, -50%) scale(14) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 20px gold); }
-            100% { transform: translate(-50%, -50%) scale(12) rotate(360deg); opacity: 0; }
+        @keyframes burst-star {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(12); opacity: 1; filter: drop-shadow(0 0 15px gold); }
+            100% { transform: translate(-50%, -50%) scale(10); opacity: 0; }
         }
-        .mega-star { position: absolute; top: 50%; left: 50%; font-size: 5rem; z-index: 9999; animation: star-party 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: none; }
+        .mega-star { position: absolute; top: 45%; left: 50%; font-size: 5rem; z-index: 9999; animation: burst-star 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -89,12 +89,10 @@
 
         function findVoice() {
             const voices = window.speechSynthesis.getVoices();
-            // Search for specific female/high-pitched names
             femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Google US English') || v.name.includes('Samantha') || v.name.includes('Zira')) && v.lang.includes('en'));
             if (!femaleVoice) femaleVoice = voices.find(v => v.lang.includes('en'));
         }
 
-        // Handle async voice loading
         window.speechSynthesis.onvoiceschanged = findVoice;
 
         function triggerReward() {
@@ -102,11 +100,11 @@
             const fx = document.createElement('div');
             fx.className = 'mega-star'; fx.innerHTML = '🌟';
             card.appendChild(fx);
-            speak("YAHOOO! Superstar!");
+            speak("YAHOOO! You are a superstar!");
             setTimeout(() => {
                 fx.remove();
                 document.getElementById('offlineOverlay').classList.remove('hidden');
-            }, 1400);
+            }, 1200);
         }
 
         function updateStars() {
@@ -128,7 +126,6 @@
             game.active = true;
             document.getElementById('startOverlay').classList.add('hidden');
             findVoice();
-            
             speak("Hi there! Let's start the game together. Tap any button to start the fun!", () => {
                 setMode(m);
             });
@@ -198,7 +195,7 @@
                 if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n");
                 document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`;
                 speak("No, it was " + game.ans, () => {
-                    setTimeout(newQuestion, 800);
+                    setTimeout(newQuestion, 1000);
                 });
             }
         }
@@ -215,7 +212,6 @@
             }, 50);
         }
 
-        function toggleSettings() { /* Gear menu placeholder */ }
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; if(!game.voiceOn) window.speechSynthesis.cancel(); document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
         function resetGame() { game.score = 0; game.tMoves = 0; updateStars(); newQuestion(); }
