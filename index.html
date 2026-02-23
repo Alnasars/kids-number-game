@@ -7,10 +7,6 @@
 
     <script defer src="/_vercel/insights/script.js"></script>
     
-    <meta property="og:title" content="Number Fun Kids Math">
-    <meta property="og:description" content="Master your numbers!">
-    <meta property="og:image" content="icon.png">
-
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -28,7 +24,6 @@
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); overscroll-behavior: none; }
         .num-card { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); touch-action: manipulation; }
         .num-card:active { transform: scale(0.9) rotate(-3deg); }
-        .progress-bar { transition: width 0.3s ease; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .floating { animation: float 3s ease-in-out infinite; }
     </style>
@@ -127,14 +122,6 @@
         function speak(t) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t); m.rate = 1.1; window.speechSynthesis.speak(m); }
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
-
-        // Minimalist detection that only uses a standard Browser Alert (No UI changes)
-        window.addEventListener('load', function() {
-            const ua = navigator.userAgent || navigator.vendor || window.opera;
-            if (ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1) {
-                alert("Facebook detected! For the best experience (and to hear the sound!), please tap the three dots (...) and select 'Open in Browser'.");
-            }
-        });
     </script>
 </body>
 </html>
