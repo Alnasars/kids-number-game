@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>Number Fun Kids Math - Safe & Ad-Free</title>
-    <meta name="description" content="A 100% ad-free, safe math game for kids. Features Toddler Mode, Counting, and Addition for ages 2-7.">
+    <title>Number Fun Kids Math</title>
+    <meta name="description" content="Play the safest, ad-free math game for toddlers and grade schoolers. No downloads required!">
     <meta property="og:title" content="Number Fun Kids Math">
     <meta property="og:description" content="Play the safest, ad-free math game for toddlers and grade schoolers. No downloads required!">
     <meta property="og:url" content="https://kids-number-game.vercel.app/">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://kids-number-game.vercel.app/og-image.jpg"> <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="https://kids-number-game.vercel.app/og-image.jpg">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
@@ -151,10 +150,7 @@
             fx.className = 'mega-star'; fx.innerHTML = '🌟';
             card.appendChild(fx);
             speak("YAHOOO! Superstar!");
-            setTimeout(() => { 
-                fx.remove(); 
-                document.getElementById('offlineOverlay').classList.remove('hidden'); 
-            }, 1400);
+            setTimeout(() => { fx.remove(); document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1400);
         }
 
         async function startGame(m) {
@@ -189,26 +185,12 @@
 
         function newQuestion() {
             let n1, n2, html = '', speech = '', currentAns = '';
-            if(game.mode === 'toddler') { 
-                html = '<div class="text-xl text-slate-300 font-bold uppercase animate-pulse">Tap a Number!</div>'; 
-            } else {
+            if(game.mode === 'toddler') { html = '<div class="text-xl text-slate-300 font-bold uppercase animate-pulse">Tap a Number!</div>'; }
+            else {
                 do {
-                    if (game.mode === 'counting') { 
-                        n1 = Math.floor(Math.random() * game.range) + 1; 
-                        currentAns = n1.toString(); 
-                        html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; 
-                        speech = n1.toString(); 
-                    } else if (game.mode === 'addition') { 
-                        n1 = Math.floor(Math.random() * 5) + 1; n2 = Math.floor(Math.random() * 5) + 1; 
-                        currentAns = (n1+n2).toString(); 
-                        html = `<div class="math-container"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; 
-                        speech = n1 + " plus " + n2; 
-                    } else if (game.mode === 'subtraction') { 
-                        n1 = Math.floor(Math.random() * 9) + 1; n2 = Math.floor(Math.random() * n1); 
-                        currentAns = (n1-n2).toString(); 
-                        html = `<div class="math-container"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`; 
-                        speech = n1 + " minus " + n2; 
-                    }
+                    if (game.mode === 'counting') { n1 = Math.floor(Math.random() * game.range) + 1; currentAns = n1.toString(); html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; speech = n1.toString(); }
+                    else if (game.mode === 'addition') { n1 = Math.floor(Math.random() * 5) + 1; n2 = Math.floor(Math.random() * 5) + 1; currentAns = (n1+n2).toString(); html = `<div class="math-container"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; speech = n1 + " plus " + n2; }
+                    else if (game.mode === 'subtraction') { n1 = Math.floor(Math.random() * 9) + 1; n2 = Math.floor(Math.random() * n1); currentAns = (n1-n2).toString(); html = `<div class="math-container"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`; speech = n1 + " minus " + n2; }
                 } while (currentAns === game.lastAns);
             }
             game.ans = currentAns; game.lastAns = currentAns;
@@ -227,22 +209,15 @@
                 }
                 return;
             }
-            if (v === 'clear') game.input = ''; 
-            else if (v === 'enter') check(); 
-            else if (game.input.length < 4) game.input += v;
+            if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v;
             document.getElementById('inputBox').textContent = game.input || '---';
         }
 
         function check() {
             if (game.input === game.ans) {
                 game.score++; updateStars();
-                if(game.score % 5 === 0) { 
-                    triggerReward(); 
-                    setTimeout(newQuestion, 2400); 
-                } else { 
-                    speak("Correct!"); 
-                    setTimeout(newQuestion, 1200); 
-                }
+                if(game.score % 5 === 0) { triggerReward(); setTimeout(newQuestion, 2400); }
+                else { speak("Correct!"); setTimeout(newQuestion, 1200); }
             } else {
                 if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n");
                 document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`;
@@ -272,10 +247,7 @@
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; if(!game.voiceOn) window.speechSynthesis.cancel(); document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
         function resetGame() { game.score = 0; game.tMoves = 0; updateStars(); newQuestion(); }
-        
-        function shareGame() { 
-            window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://kids-number-game.vercel.app/"); 
-        }
+        function shareGame() { window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://kids-number-game.vercel.app/"); }
     </script>
 </body>
 </html>
