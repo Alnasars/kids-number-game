@@ -149,8 +149,13 @@
             const fx = document.createElement('div');
             fx.className = 'mega-star'; fx.innerHTML = '🌟';
             card.appendChild(fx);
+            // Instant sound fix: clear speech queue first
+            window.speechSynthesis.cancel();
             speak("YAHOOO! Superstar!");
-            setTimeout(() => { fx.remove(); document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1400);
+            setTimeout(() => { 
+                fx.remove(); 
+                document.getElementById('offlineOverlay').classList.remove('hidden'); 
+            }, 1400);
         }
 
         async function startGame(m) {
@@ -176,7 +181,8 @@
             game.range = lvl;
             document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('selected'));
             document.getElementById('l'+lvl).classList.add('selected');
-            toggleSettings(); newQuestion();
+            toggleSettings(); 
+            newQuestion();
         }
 
         function toggleSettings() { document.getElementById('settingsModal').classList.toggle('hidden'); }
@@ -185,12 +191,34 @@
 
         function newQuestion() {
             let n1, n2, html = '', speech = '', currentAns = '';
-            if(game.mode === 'toddler') { html = '<div class="text-xl text-slate-300 font-bold uppercase animate-pulse">Tap a Number!</div>'; }
-            else {
+            // LEVEL FIX: Calculate max base on game.range
+            let max = game.range;
+
+            if(game.mode === 'toddler') { 
+                html = '<div class="text-xl text-slate-300 font-bold uppercase animate-pulse">Tap a Number!</div>'; 
+            } else {
                 do {
-                    if (game.mode === 'counting') { n1 = Math.floor(Math.random() * game.range) + 1; currentAns = n1.toString(); html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; speech = n1.toString(); }
-                    else if (game.mode === 'addition') { n1 = Math.floor(Math.random() * 5) + 1; n2 = Math.floor(Math.random() * 5) + 1; currentAns = (n1+n2).toString(); html = `<div class="math-container"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; speech = n1 + " plus " + n2; }
-                    else if (game.mode === 'subtraction') { n1 = Math.floor(Math.random() * 9) + 1; n2 = Math.floor(Math.random() * n1); currentAns = (n1-n2).toString(); html = `<div class="math-container"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`; speech = n1 + " minus " + n2; }
+                    if (game.mode === 'counting') { 
+                        n1 = Math.floor(Math.random() * max) + 1; 
+                        currentAns = n1.toString(); 
+                        html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; 
+                        speech = n1.toString(); 
+                    } else if (game.mode === 'addition') { 
+                        // Logic for larger levels in addition
+                        let half = Math.floor(max / 2);
+                        n1 = Math.floor(Math.random() * half) + 1; 
+                        n2 = Math.floor(Math.random() * half) + 1; 
+                        currentAns = (n1+n2).toString(); 
+                        html = `<div class="math-container"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; 
+                        speech = n1 + " plus " + n2; 
+                    } else if (game.mode === 'subtraction') { 
+                        // Logic for larger levels in subtraction
+                        n1 = Math.floor(Math.random() * (max - 1)) + 1; 
+                        n2 = Math.floor(Math.random() * n1); 
+                        currentAns = (n1-n2).toString(); 
+                        html = `<div class="math-container"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`; 
+                        speech = n1 + " minus " + n2; 
+                    }
                 } while (currentAns === game.lastAns);
             }
             game.ans = currentAns; game.lastAns = currentAns;
@@ -209,15 +237,22 @@
                 }
                 return;
             }
-            if (v === 'clear') game.input = ''; else if (v === 'enter') check(); else if (game.input.length < 4) game.input += v;
+            if (v === 'clear') game.input = ''; 
+            else if (v === 'enter') check(); 
+            else if (game.input.length < 4) game.input += v;
             document.getElementById('inputBox').textContent = game.input || '---';
         }
 
         function check() {
             if (game.input === game.ans) {
                 game.score++; updateStars();
-                if(game.score % 5 === 0) { triggerReward(); setTimeout(newQuestion, 2400); }
-                else { speak("Correct!"); setTimeout(newQuestion, 1200); }
+                if(game.score % 5 === 0) { 
+                    triggerReward(); 
+                    setTimeout(newQuestion, 2400); 
+                } else { 
+                    speak("Correct!"); 
+                    setTimeout(newQuestion, 1200); 
+                }
             } else {
                 if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n");
                 document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`;
@@ -227,6 +262,7 @@
 
         function speak(t, cb) {
             if(!game.voiceOn) return;
+            // Clear existing speech to prevent holding/lag
             window.speechSynthesis.cancel();
             setTimeout(() => {
                 const m = new SpeechSynthesisUtterance(t);
@@ -247,7 +283,10 @@
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; if(!game.voiceOn) window.speechSynthesis.cancel(); document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
         function resetGame() { game.score = 0; game.tMoves = 0; updateStars(); newQuestion(); }
-        function shareGame() { window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://kids-number-game.vercel.app/"); }
+        
+        function shareGame() { 
+            window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://kids-number-game.vercel.app/"); 
+        }
     </script>
 </body>
 </html>
