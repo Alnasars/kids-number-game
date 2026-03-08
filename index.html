@@ -30,7 +30,7 @@
             0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
             100% { transform: translate(var(--tw-x), var(--tw-y)) scale(0) rotate(360deg); opacity: 0; }
         }
-        .shooting-star { position: absolute; bottom: 40%; left: 50%; font-size: 2.5rem; z-index: 9999; pointer-events: none; animation: shoot 1.2s ease-out forwards; }
+        .shooting-star { position: absolute; bottom: 40%; left: 50%; font-size: 2rem; z-index: 9999; pointer-events: none; animation: shoot 1.5s ease-out forwards; }
     </style>
 </head>
 <body>
@@ -45,6 +45,26 @@
             <button onclick="startGame('toddler')" class="text-sky-400 font-bold text-sm uppercase underline tracking-widest">Toddler Mode</button>
         </div>
 
+        <div id="exitModal" class="modal-overlay hidden" style="z-index: 5000;">
+            <div class="bg-white p-6 rounded-3xl text-center border-4 border-red-100 shadow-xl max-w-[280px]">
+                <div class="text-6xl mb-4">🛑</div>
+                <h2 class="text-xl font-black text-slate-700 mb-2 uppercase">Exit Game?</h2>
+                <div class="flex gap-2">
+                    <button onclick="document.getElementById('exitModal').classList.add('hidden')" class="flex-1 bg-slate-100 py-3 rounded-xl font-bold uppercase text-xs">Stay</button>
+                    <button onclick="window.location.reload()" class="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold uppercase text-xs">Exit</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="offlineOverlay" class="hidden modal-overlay">
+            <div class="bg-white p-6 rounded-3xl text-center border-4 border-yellow-400 shadow-xl">
+                <div class="text-6xl mb-4">🏆</div>
+                <h2 class="text-xl font-black text-sky-600 mb-1 uppercase">EXCELLENT!</h2>
+                <p class="text-slate-800 font-bold text-sm mb-4 tracking-tighter">You are a Superstar!</p>
+                <button onclick="document.getElementById('offlineOverlay').classList.add('hidden'); newQuestion();" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Keep Playing</button>
+            </div>
+        </div>
+
         <div id="settingsModal" class="modal-overlay hidden">
             <h2 class="text-2xl font-black text-sky-600 mb-4 uppercase">Settings ⚙️</h2>
             <button onclick="setLevel(10)" id="l10" class="lvl-btn selected">Level 10</button>
@@ -53,17 +73,10 @@
             <button onclick="toggleSettings()" class="mt-6 bg-sky-500 text-white px-10 py-3 rounded-2xl font-bold uppercase">Close</button>
         </div>
 
-        <div id="offlineOverlay" class="hidden modal-overlay">
-            <div class="bg-white p-6 rounded-3xl text-center border-4 border-yellow-400 shadow-xl">
-                <div class="text-6xl mb-4">🏆</div>
-                <h2 class="text-xl font-black text-sky-600 mb-1 uppercase">Excellent!</h2>
-                <p class="text-slate-800 font-bold text-sm mb-4">You are a Superstar!</p>
-                <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Keep Playing</button>
-            </div>
-        </div>
-
         <div class="controls-grid mt-4">
-            <button onclick="shareGame()" class="control-btn bg-[#25D366] text-white">WA</button>
+            <button onclick="shareGame()" class="control-btn bg-[#25D366] text-white">
+                <svg width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.82 0 4.54-3.7 8.24-8.24 8.24-1.53 0-3.03-.43-4.33-1.24l-.31-.18-3.22.84.86-3.14-.2-.32A8.183 8.183 0 0 1 3.82 11.9c0-4.54 3.7-8.24 8.23-8.24"/></svg>
+            </button>
             <button onclick="toggleSettings()" class="control-btn">⚙️</button>
             <button id="soundBtn" onclick="toggleSound()" class="control-btn">🔊</button>
             <button id="voiceBtn" onclick="toggleVoice()" class="control-btn">🗣️</button>
@@ -93,7 +106,7 @@
 
     <script>
         let game = { mode: 'counting', range: 10, score: 0, tMoves: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true, lastAns: '' };
-        let happySynth, sadSynth, femaleVoice = null;
+        let happySynth, femaleVoice = null;
 
         function findVoice() {
             const voices = window.speechSynthesis.getVoices();
@@ -102,36 +115,50 @@
         }
         window.speechSynthesis.onvoiceschanged = findVoice;
 
+        /* --- FIXED REWARD: 25 Stars + Chime Sound --- */
         function triggerReward() {
             const card = document.getElementById('gameCard');
-            for (let i = 0; i < 12; i++) {
+            
+            // 1. Play "Superstar Chime"
+            if(game.soundOn) {
+                const now = Tone.now();
+                happySynth.triggerAttackRelease("C5", "8n", now);
+                happySynth.triggerAttackRelease("E5", "8n", now + 0.1);
+                happySynth.triggerAttackRelease("G5", "8n", now + 0.2);
+                happySynth.triggerAttackRelease("C6", "4n", now + 0.3);
+            }
+
+            // 2. Burst 25 stars
+            for (let i = 0; i < 25; i++) {
                 const fx = document.createElement('div');
                 fx.className = 'shooting-star';
                 fx.innerHTML = '⭐';
-                fx.style.setProperty('--tw-x', `${(Math.random() - 0.5) * 450}px`);
-                fx.style.setProperty('--tw-y', `${-Math.random() * 600}px`);
+                fx.style.setProperty('--tw-x', `${(Math.random() - 0.5) * 500}px`);
+                fx.style.setProperty('--tw-y', `${-Math.random() * 650}px`);
                 card.appendChild(fx);
-                setTimeout(() => fx.remove(), 1200);
+                setTimeout(() => fx.remove(), 1500);
             }
-            // Reward speech blocks the next question until finished
+
+            // 3. Teacher Voice & Popup sequence
             speak("Excellent! You are a superstar!", () => {
-                setTimeout(() => { document.getElementById('offlineOverlay').classList.remove('hidden'); }, 500);
+                setTimeout(() => { 
+                    document.getElementById('offlineOverlay').classList.remove('hidden'); 
+                }, 300);
             });
         }
 
         async function startGame(m) {
             try { await Tone.start(); } catch(e) {}
             happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
-            sadSynth = new Tone.MonoSynth().toDestination();
             game.active = true;
             document.getElementById('startOverlay').classList.add('hidden');
             findVoice();
-            speak("Hi there! Let's play!", () => { setMode(m); });
+            speak("Let's play!", () => { setMode(m); });
         }
 
         function setMode(m) {
             game.mode = m;
-            game.score = 0; game.tMoves = 0; updateStars();
+            game.score = 0; updateStars();
             document.querySelectorAll('[id^="btn-"]').forEach(b => {
                 b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase";
             });
@@ -154,7 +181,7 @@
             let n1, n2, html = '', speech = '', currentAns = '';
             let max = game.range;
             if(game.mode === 'toddler') { 
-                html = '<div class="text-xl text-slate-300 font-bold uppercase animate-pulse">Tap a Number!</div>';
+                html = '<div class="text-xl text-slate-300 font-bold uppercase">Tap a Number!</div>';
             } else {
                 do {
                     if (game.mode === 'counting') { 
@@ -181,7 +208,6 @@
             game.ans = currentAns; game.lastAns = currentAns;
             document.getElementById('displayArea').innerHTML = html;
             game.input = ''; document.getElementById('inputBox').textContent = '---'; 
-            // Only speak the new question AFTER the previous speech is done
             if(game.voiceOn && speech) speak(speech);
         }
 
@@ -206,49 +232,29 @@
                 game.score++;
                 updateStars();
                 if(game.score % 5 === 0) { 
-                    triggerReward();
-                    // Question transition is now inside triggerReward callback
+                    triggerReward(); 
                 } else { 
-                    // Sequence: Speak "Correct" -> THEN trigger newQuestion
-                    speak("Correct!", () => {
-                        setTimeout(newQuestion, 400); 
-                    });
+                    speak("Correct!", () => { setTimeout(newQuestion, 500); });
                 }
             } else {
-                if(game.soundOn) sadSynth.triggerAttackRelease("G2", "2n");
-                document.getElementById('displayArea').innerHTML = `<div class="text-6xl text-red-400 font-bold">${game.ans}</div>`;
-                speak("No, it was " + game.ans, () => { 
-                    setTimeout(newQuestion, 800); 
-                });
+                speak("No, it was " + game.ans, () => { setTimeout(newQuestion, 1000); });
             }
         }
 
-        // IMPROVED: Smooth Serial Voice Controller
         function speak(t, cb) {
             if(!game.voiceOn) { if(cb) cb(); return; }
-            
-            // 1. Force stop any current vibration/sound
             window.speechSynthesis.cancel();
-            
-            // 2. Small 200ms delay to allow hardware audio buffer to clear
             setTimeout(() => {
                 const m = new SpeechSynthesisUtterance(t);
                 if (femaleVoice) m.voice = femaleVoice;
-                m.rate = 0.95; 
-                m.pitch = 1.35;
-                
-                // 3. The Callback (cb) only runs once the speech is 100% finished
+                m.rate = 0.9; m.pitch = 1.3;
                 m.onend = () => { if(cb) cb(); };
-                
-                // 4. In case the browser "hangs", we add a safety timeout
-                m.onerror = () => { if(cb) cb(); };
-                
                 window.speechSynthesis.speak(m);
             }, 200);
         }
 
         function updateStars() {
-            if(game.mode === 'toddler') { document.getElementById('scoreLabel').textContent = "⭐ 0"; return; }
+            if(game.mode === 'toddler') return;
             let stars = '';
             let count = game.score % 6; if (game.score > 0 && count === 0) count = 5;
             for(let i=0; i<count; i++) stars += '⭐';
@@ -257,7 +263,7 @@
 
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; if(!game.voiceOn) window.speechSynthesis.cancel(); document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
-        function resetGame() { game.score = 0; game.tMoves = 0; updateStars(); newQuestion(); }
+        function resetGame() { game.score = 0; updateStars(); newQuestion(); }
         function shareGame() { window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://kids-number-game.vercel.app/"); }
     </script>
 </body>
