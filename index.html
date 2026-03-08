@@ -3,18 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <title>Number Fun Kids Math</title>
-    <meta name="description" content="Play the safest, ad-free math game for toddlers and grade schoolers. No downloads required!">
-    <meta property="og:title" content="Number Fun Kids Math">
-    <meta property="og:description" content="Play the safest, ad-free math game for toddlers and grade schoolers. No downloads required!">
-    <meta property="og:url" content="https://kids-number-game.vercel.app/">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://kids-number-game.vercel.app/og-image.jpg">
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+
     <style>
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; -webkit-user-select: none; }
         .game-card { background: white; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 85vh; max-height: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #bae6fd; display: flex; flex-direction: column; position: relative; z-index: 10; overflow: hidden; }
@@ -23,29 +17,21 @@
         .math-line { border-top: 5px solid #334155; width: 120%; margin-top: 4px; }
         .controls-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; margin-bottom: 12px; padding-top: 5px; }
         .control-btn { background: #f1f5f9; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 18px; border: 1px solid #e2e8f0; cursor: pointer; }
-        .share-btn { background: #25D366 !important; color: white !important; border: none !important; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
         .numpad button { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; height: clamp(45px, 7vh, 60px); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 #e2e8f0; color: #334155; }
         .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; }
+        
         #startOverlay, .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; padding: 20px; }
         .lvl-btn { width: 100%; padding: 12px; margin: 4px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; }
         .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
         .hidden { display: none !important; }
 
-        /* --- NEW SHOOTING STAR ANIMATION --- */
+        /* Shooting Star Burst Animation */
         @keyframes shoot {
             0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
             100% { transform: translate(var(--tw-x), var(--tw-y)) scale(0) rotate(360deg); opacity: 0; }
         }
-        .shooting-star { 
-            position: absolute; 
-            bottom: 40%; 
-            left: 50%; 
-            font-size: 2.5rem; 
-            z-index: 9999; 
-            pointer-events: none; 
-            animation: shoot 1.2s ease-out forwards; 
-        }
+        .shooting-star { position: absolute; bottom: 40%; left: 50%; font-size: 2.5rem; z-index: 9999; pointer-events: none; animation: shoot 1.2s ease-out forwards; }
     </style>
 </head>
 <body>
@@ -53,32 +39,22 @@
     <div class="game-card" id="gameCard">
         <button onclick="confirmExit()" class="close-trigger">✕</button>
 
-        <div id="browserModal" class="modal-overlay hidden" style="z-index: 99999;">
-            <div class="bg-white p-6 rounded-3xl text-center border-4 border-sky-400 shadow-xl max-w-[280px]">
-                <div class="text-6xl mb-4">🌐</div>
-                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">Open in Browser</h2>
-                <p class="text-slate-600 text-[11px] mb-6 leading-tight">For the best sound and to <b>Save the Game</b> to your phone:<br><br>Tap the <b>3 dots</b> (top right) and select <b>"Open in Chrome"</b> or <b>"Safari"</b>.</p>
-                <button onclick="document.getElementById('browserModal').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Play Now</button>
-            </div>
+        <div id="startOverlay">
+            <div class="text-7xl mb-4">🚀</div>
+            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
+            <button onclick="startGame('counting')" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl uppercase mb-4">Play Now</button>
+            <button onclick="startGame('toddler')" class="text-sky-400 font-bold text-sm uppercase underline tracking-widest">Toddler Mode</button>
         </div>
 
         <div id="exitModal" class="modal-overlay hidden" style="z-index: 5000;">
             <div class="bg-white p-6 rounded-3xl text-center border-4 border-red-100 shadow-xl max-w-[280px]">
                 <div class="text-6xl mb-4">🛑</div>
                 <h2 class="text-xl font-black text-slate-700 mb-2 uppercase">Exit Game?</h2>
-                <p class="text-slate-500 text-xs mb-6">Your progress will be lost!</p>
                 <div class="flex gap-2">
-                    <button onclick="document.getElementById('exitModal').classList.add('hidden')" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold uppercase text-xs">Stay</button>
-                    <button onclick="exitNow()" class="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold uppercase text-xs">Exit</button>
+                    <button onclick="document.getElementById('exitModal').classList.add('hidden')" class="flex-1 bg-slate-100 py-3 rounded-xl font-bold uppercase text-xs">Stay</button>
+                    <button onclick="window.location.reload()" class="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold uppercase text-xs">Exit</button>
                 </div>
             </div>
-        </div>
-
-        <div id="startOverlay">
-            <div class="text-7xl mb-4">🚀</div>
-            <h1 class="text-3xl font-black text-sky-600 mb-2 uppercase">Ready?</h1>
-            <button onclick="startGame('counting')" class="bg-sky-500 text-white px-12 py-4 rounded-2xl font-black text-lg shadow-xl uppercase mb-4">Play Now</button>
-            <button onclick="startGame('toddler')" class="text-sky-400 font-bold text-sm uppercase underline tracking-widest">Toddler Mode</button>
         </div>
 
         <div id="settingsModal" class="modal-overlay hidden">
@@ -92,17 +68,14 @@
         <div id="offlineOverlay" class="hidden modal-overlay">
             <div class="bg-white p-6 rounded-3xl text-center border-4 border-yellow-400 shadow-xl">
                 <div class="text-6xl mb-4">🏆</div>
-                <h2 class="text-xl font-black text-sky-600 mb-1 uppercase">YAHOOO!</h2>
-                <p class="text-slate-800 font-bold text-sm mb-4">Install This Game!</p>
-                <p class="text-slate-600 text-[11px] mb-6 leading-tight">Tap the <b>Menu (3 dots)</b> & select <b>"Add to Home Screen"</b> to play anytime!</p>
-                <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Got it!</button>
+                <h2 class="text-xl font-black text-sky-600 mb-1 uppercase">Excellent!</h2>
+                <p class="text-slate-800 font-bold text-sm mb-4">You are a Superstar!</p>
+                <button onclick="document.getElementById('offlineOverlay').classList.add('hidden')" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase text-xs">Keep Playing</button>
             </div>
         </div>
 
         <div class="controls-grid mt-4">
-            <button onclick="shareGame()" class="control-btn share-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.82 0 4.54-3.7 8.24-8.24 8.24-1.53 0-3.03-.43-4.33-1.24l-.31-.18-3.22.84.86-3.14-.2-.32A8.183 8.183 0 0 1 3.82 11.9c0-4.54 3.7-8.24 8.23-8.24"/></svg>
-            </button>
+            <button onclick="shareGame()" class="control-btn bg-[#25D366] text-white">WA</button>
             <button onclick="toggleSettings()" class="control-btn">⚙️</button>
             <button id="soundBtn" onclick="toggleSound()" class="control-btn">🔊</button>
             <button id="voiceBtn" onclick="toggleVoice()" class="control-btn">🗣️</button>
@@ -131,51 +104,29 @@
     </div>
 
     <script>
-        // Browser Detection
-        (function checkBrowser() {
-            const ua = navigator.userAgent || navigator.vendor || window.opera;
-            const isInApp = /FBAN|FBAV|Instagram|TikTok|FB_IAB|Messenger/i.test(ua);
-            if (isInApp) {
-                document.addEventListener('DOMContentLoaded', () => {
-                    document.getElementById('browserModal').classList.remove('hidden');
-                });
-            }
-        })();
-
         let game = { mode: 'counting', range: 10, score: 0, tMoves: 0, ans: '', input: '', active: false, soundOn: true, voiceOn: true, lastAns: '' };
         let happySynth, sadSynth, femaleVoice = null;
 
         function findVoice() {
             const voices = window.speechSynthesis.getVoices();
-            femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Google US') || v.name.includes('Samantha')) && v.lang.includes('en'));
+            femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Google US')) && v.lang.includes('en'));
             if (!femaleVoice) femaleVoice = voices.find(v => v.lang.includes('en'));
         }
-
         window.speechSynthesis.onvoiceschanged = findVoice;
 
-        /* --- NEW SHOOTING STAR LOGIC --- */
         function triggerReward() {
             const card = document.getElementById('gameCard');
-            // Create a burst of 12 shooting stars
             for (let i = 0; i < 12; i++) {
                 const fx = document.createElement('div');
                 fx.className = 'shooting-star';
                 fx.innerHTML = '⭐';
-                // Calculate random trajectory for the burst effect
                 fx.style.setProperty('--tw-x', `${(Math.random() - 0.5) * 450}px`);
                 fx.style.setProperty('--tw-y', `${-Math.random() * 600}px`);
                 card.appendChild(fx);
-                // Remove from DOM after animation finishes
                 setTimeout(() => fx.remove(), 1200);
             }
-            
-            window.speechSynthesis.cancel();
             speak("Excellent! You are a superstar!");
-            
-            // Show the "Yahoo" / Install screen after the burst
-            setTimeout(() => { 
-                document.getElementById('offlineOverlay').classList.remove('hidden'); 
-            }, 1500);
+            setTimeout(() => { document.getElementById('offlineOverlay').classList.remove('hidden'); }, 1500);
         }
 
         async function startGame(m) {
@@ -208,7 +159,6 @@
 
         function toggleSettings() { document.getElementById('settingsModal').classList.toggle('hidden'); }
         function confirmExit() { document.getElementById('exitModal').classList.remove('hidden'); }
-        function exitNow() { window.location.href = "about:blank"; }
 
         function newQuestion() {
             let n1, n2, html = '', speech = '', currentAns = '';
@@ -278,21 +228,16 @@
             }
         }
 
-        /* --- FIXED SMOOTH TEACHER VOICE --- */
         function speak(t, cb) {
             if(!game.voiceOn) return;
-            // Immediate cancel of existing audio prevents "shakiness" on mobile
             window.speechSynthesis.cancel();
-            
-            // Increased delay (120ms) allows hardware to fully reset audio buffers
             setTimeout(() => {
                 const m = new SpeechSynthesisUtterance(t);
                 if (femaleVoice) m.voice = femaleVoice;
-                // Slower rate and higher pitch for a clearer, friendlier "Teacher" tone
                 m.rate = 0.95; m.pitch = 1.35;
                 if(cb) m.onend = cb;
                 window.speechSynthesis.speak(m);
-            }, 120);
+            }, 150); // Increased delay for smoother mobile audio
         }
 
         function updateStars() {
@@ -306,10 +251,7 @@
         function toggleSound() { game.soundOn = !game.soundOn; document.getElementById('soundBtn').textContent = game.soundOn ? "🔊" : "🔇"; }
         function toggleVoice() { game.voiceOn = !game.voiceOn; if(!game.voiceOn) window.speechSynthesis.cancel(); document.getElementById('voiceBtn').textContent = game.voiceOn ? "🗣️" : "🤐"; }
         function resetGame() { game.score = 0; game.tMoves = 0; updateStars(); newQuestion(); }
-        
-        function shareGame() { 
-            window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://kids-number-game.vercel.app/");
-        }
+        function shareGame() { window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://kids-number-game.vercel.app/"); }
     </script>
 </body>
 </html>
