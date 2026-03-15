@@ -3,248 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Number Fun Kids Math</title>
-    
+    <title>123 Number Game: Kids Learning</title>
     <script defer src="/_vercel/insights/script.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&display=swap" rel="stylesheet">
-
     <style>
-        body { font-family: 'Inter', sans-serif; background: #94a3b8; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; -webkit-user-select: none; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; -webkit-user-select: none; }
         
-        /* Entry Screen */
-        .entry-portal { position: fixed; inset: 0; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: transform 0.5s ease-in-out; }
-        .play-btn { background: #fbbf24; color: #78350f; padding: 1.2rem 3rem; border-radius: 9999px; font-size: 1.4rem; font-weight: 900; box-shadow: 0 8px 0 #d97706; text-transform: uppercase; cursor: pointer; margin-bottom: 20px; border: none; }
+        /* STARTUP SCREEN */
+        .portal { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.5s; text-align: center; }
+        .play-btn { background: #fbbf24; color: #78350f; padding: 1.2rem 4rem; border-radius: 99px; font-size: 1.5rem; font-weight: 900; box-shadow: 0 8px 0 #d97706; text-transform: uppercase; margin-bottom: 25px; border: none; cursor: pointer; }
         
-        /* Game Layout */
-        .game-card { background: #f1f5f9; border-radius: 24px; padding: 12px; width: 95vw; max-width: 360px; height: 85vh; max-height: 700px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 2px solid #475569; display: flex; flex-direction: column; position: relative; z-index: 10; }
+        /* GAME CARD */
+        .game-card { background: #ffffff; border-radius: 24px; padding: 16px; width: 92vw; max-width: 360px; height: 86vh; max-height: 650px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative; z-index: 10; }
+        .close-trigger { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 3px solid white; cursor: pointer; z-index: 100; }
         
-        /* Small Exit Button */
-        .close-trigger { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 10px; z-index: 2000; border: 1.5px solid white; cursor: pointer; }
-        
-        .math-container { display: flex; flex-direction: column; align-items: flex-end; font-family: 'Courier New', monospace; font-weight: 900; font-size: 3.2rem; color: #1e293b; line-height: 1; padding-right: 20px; }
-        .math-line { border-top: 5px solid #1e293b; width: 120%; margin-top: 4px; }
-        
-        .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; margin-bottom: 12px; }
-        .control-btn { background: #e2e8f0; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 18px; border: 1px solid #cbd5e1; cursor: pointer; }
-        
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-bottom: 5px; }
-        .numpad button { background: white; border: 1px solid #cbd5e1; border-radius: 16px; height: clamp(45px, 7vh, 60px); font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 0 #cbd5e1; color: #1e293b; }
-        
-        /* OK Button Fix */
-        .enter-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; font-size: 1.2rem !important; }
-        
-        .modal-overlay { position: absolute; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 24px; text-align: center; padding: 20px; }
-        .lvl-btn { width: 100%; padding: 12px; margin: 4px 0; border-radius: 12px; font-weight: 800; border: 2px solid #f1f5f9; color: #64748b; }
-        .lvl-btn.selected { background: #e0f2fe; border-color: #0ea5e9; color: #0ea5e9; }
-        .hidden { display: none !important; }
+        /* UTILITY & MODES */
+        .util-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .util-btn { flex: 1; height: 34px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 900; background: #f8fafc; cursor: pointer; color: #1e293b; }
+        .mode-row { display: flex; gap: 4px; margin-bottom: 8px; align-items: center; }
+        .mode-btn { flex: 1; padding: 8px 0; border-radius: 6px; font-size: 9px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; color: #1e293b; }
+        .m-active { background: #0ea5e9; color: white; }
+        .m-inactive { background: #e2e8f0; color: #334155; }
+        .score-box { background: #fef9c3; color: #a16207; padding: 4px 10px; border-radius: 6px; font-size: 9px; font-weight: 900; white-space: nowrap; }
 
-        .shooting-star { position: absolute; bottom: 40%; left: 50%; font-size: 2rem; z-index: 9999; pointer-events: none; animation: shoot 1.5s ease-out forwards; }
-        @keyframes shoot { 0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--tw-x), var(--tw-y)) scale(0) rotate(360deg); opacity: 0; } }
+        .screen { background: #f8fafc; border-radius: 20px; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 2px solid #f1f5f9; position: relative; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
+        .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; height: 50px; font-size: 1.6rem; font-weight: 700; color: #1e293b; box-shadow: 0 3px 0 #f1f5f9; cursor: pointer; }
+        .ok-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; font-size: 1.1rem !important; }
+
+        .hidden { display: none !important; }
+        
+        /* GLOBAL MODAL STYLING */
+        .global-modal { position: fixed; inset: 0; background: white; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
+        .policy-container { width: 100%; max-width: 400px; background: white; border: 4px solid #0ea5e9; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; max-height: 80vh; }
+        .policy-scroll { overflow-y: auto; text-align: left; font-size: 11px; color: #64748b; line-height: 1.5; padding-right: 10px; margin-bottom: 20px; }
+        .policy-scroll b { color: #1e293b; display: block; margin-top: 12px; }
+
+        .star { position: fixed; top: 50vh; left: 50vw; pointer-events: none; z-index: 9999; font-size: 2.5rem; animation: bang 1.5s forwards; }
+        @keyframes bang { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(1.5) rotate(var(--r)); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="entryPortal" class="entry-portal">
+    <div id="welcome" class="portal">
         <div class="text-7xl mb-4">🚀</div>
-        <h1 class="text-3xl font-black mb-6 uppercase tracking-tighter">Number Fun</h1>
-        <button onclick="initializeGame('counting')" class="play-btn">Play Game</button>
-        <button onclick="initializeGame('toddler')" class="text-sky-300 font-bold text-sm uppercase underline tracking-widest">Toddler Mode</button>
-        <div class="absolute bottom-8">
-            <button onclick="document.getElementById('privacyModal').classList.remove('hidden')" class="text-sky-400 text-[10px] underline uppercase">Privacy Policy</button>
-        </div>
-    </div>
-
-    <div id="privacyModal" class="fixed inset-0 bg-black/80 z-[10000] hidden p-6 flex items-center justify-center">
-        <div class="bg-white rounded-3xl p-6 max-w-sm">
-            <h2 class="font-black text-xl mb-2">Privacy Policy</h2>
-            <p class="text-sm text-gray-600 mb-6 leading-relaxed">We protect your child's privacy. We do not collect personal data. This app is COPPA compliant for children's safety.</p>
-            <button onclick="document.getElementById('privacyModal').classList.add('hidden')" class="w-full bg-sky-500 text-white font-bold py-3 rounded-xl">Close</button>
-        </div>
-    </div>
-
-    <div class="game-card" id="gameCard">
-        <button onclick="location.reload()" class="close-trigger">✕</button>
-
-        <div id="installOverlay" class="hidden modal-overlay">
-            <div class="text-6xl mb-4">🏆</div>
-            <h2 class="text-xl font-black text-sky-600 uppercase">Superstar!</h2>
-            <p class="text-slate-600 font-bold text-sm mb-4">Play this game anytime:</p>
-            <div class="bg-blue-50 p-4 rounded-2xl mb-6 text-left text-[10px] leading-tight text-slate-600">
-                1. Tap the <b>3 dots (⋮)</b> or <b>Share</b>.<br>
-                2. Select <b>'Add to Home Screen'</b>.<br>
-                3. Icons will appear on your phone!
-            </div>
-            <button onclick="document.getElementById('installOverlay').classList.add('hidden'); newQuestion();" class="bg-sky-500 text-white w-full py-4 rounded-2xl font-black uppercase">Keep Playing</button>
-        </div>
-
-        <div id="settingsModal" class="modal-overlay hidden">
-            <h2 class="text-2xl font-black text-sky-600 mb-4 uppercase">Settings ⚙️</h2>
-            <button onclick="setLevel(10)" id="l10" class="lvl-btn selected">Level 10</button>
-            <button onclick="setLevel(20)" id="l20" class="lvl-btn">Level 20</button>
-            <button onclick="setLevel(100)" id="l100" class="lvl-btn">Level 100</button>
-            <button onclick="toggleSettings()" class="mt-6 bg-sky-500 text-white px-10 py-3 rounded-2xl font-bold uppercase">Close</button>
-        </div>
-
-        <div class="controls-grid mt-4">
-            <button onclick="shareGame()" class="control-btn bg-[#25D366] text-white">
-                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2"/></svg>
-            </button>
-            <button onclick="toggleSettings()" class="control-btn">⚙️</button>
-            <button onclick="resetGame()" class="control-btn">🔄</button>
-        </div>
-
-        <div class="flex justify-between items-center mb-2 px-1">
-            <div class="flex gap-1 flex-1 mr-2">
-                <button id="btn-counting" onclick="setMode('counting')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase">Count</button>
-                <button id="btn-addition" onclick="setMode('addition')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Add</button>
-                <button id="btn-subtraction" onclick="setMode('subtraction')" class="flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase">Sub</button>
-            </div>
-            <div id="scoreLabel" class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-black">Score: 0</div>
-        </div>
-
-        <div id="displayArea" class="bg-slate-50 rounded-2xl flex-1 flex items-center justify-center mb-2 border-2 border-slate-200 relative"></div>
-        <div id="inputBox" class="text-center text-3xl font-black text-sky-500 mb-2 h-10 tracking-widest">---</div>
+        <h1 class="text-4xl font-black mb-1 uppercase tracking-tighter">123 Number Game</h1>
+        <p class="text-[10px] text-sky-300 mb-8 uppercase tracking-widest px-6">Tap 3 dots (⋮) & choose "Open in Browser"</p>
         
+        <button onclick="startGame('counting')" class="play-btn">Play Game</button>
+        <div onclick="startGame('toddler')" class="text-sky-400 font-bold underline cursor-pointer uppercase text-sm mb-6">Toddler Mode</div>
+        
+        <button onclick="toggleModal('privacyModal')" class="text-sky-500 text-[10px] uppercase font-bold tracking-widest border-t border-sky-900 pt-4 w-40">Privacy Policy</button>
+    </div>
+
+    <div id="privacyModal" class="global-modal hidden">
+        <div class="policy-container">
+            <h2 class="text-xl font-black text-slate-800 mb-2 uppercase">Privacy Policy</h2>
+            <div class="policy-scroll">
+                <p>Last Updated: March 2026</p>
+                <b>1. Introduction</b>
+                123 Number Game is an educational tool built for children. We strictly follow COPPA (Children's Online Privacy Protection Act) guidelines.
+                <b>2. No Data Collection</b>
+                We do not collect, store, share, or sell any personal data. This includes names, emails, location, or device identifiers.
+                <b>3. Safe Advertisements</b>
+                Any ads presented are family-appropriate and follow the Google Play/App Store policies for families and children.
+                <b>4. Anonymous Analytics</b>
+                We use basic Vercel Analytics to measure site traffic. This data is fully anonymous and cannot identify any user.
+                <b>5. Parental Guidance</b>
+                We encourage parents to use the "Open in Browser" option for the best educational audio experience.
+            </div>
+            <button onclick="toggleModal('privacyModal')" class="bg-slate-800 text-white w-full py-4 rounded-xl font-black uppercase shadow-lg">Close Policy</button>
+        </div>
+    </div>
+
+    <div class="game-card">
+        <div onclick="location.reload()" class="close-trigger">✕</div>
+
+        <div id="helpModal" class="global-modal !bg-transparent !p-0 hidden">
+           <div class="policy-container !bg-white">
+                <div class="text-5xl mb-4">🙋‍♂️</div>
+                <h2 class="text-xl font-black text-sky-600 mb-2 uppercase">How to Play</h2>
+                <p class="text-slate-600 text-sm mb-6 leading-relaxed">Look at the problem, use the buttons to answer, and press OK!</p>
+                <button onclick="toggleModal('helpModal')" class="bg-sky-500 text-white w-full py-4 rounded-xl font-black uppercase">Got it!</button>
+           </div>
+        </div>
+
+        <div id="downloadPopup" class="global-modal !bg-transparent !p-0 hidden">
+            <div class="policy-container !bg-white">
+                <div class="text-6xl mb-4">🌟</div>
+                <h2 class="text-2xl font-black text-sky-600 mb-2 uppercase text-center">Superstar!</h2>
+                <p class="text-slate-500 font-bold text-sm mb-6 px-4">Add 123 Number Game to your home screen.</p>
+                <button onclick="toggleModal('downloadPopup')" class="bg-sky-500 text-white w-full py-4 rounded-xl font-black uppercase shadow-lg">Awesome!</button>
+            </div>
+        </div>
+
+        <div id="setMenu" class="global-modal !bg-transparent !p-0 hidden">
+            <div class="policy-container !bg-white">
+                <h2 class="text-xl font-black mb-4 uppercase text-sky-600">Level Select</h2>
+                <button onclick="setLvl(10)" class="w-full py-3 mb-2 rounded-xl font-black border-2 border-sky-100 bg-sky-50 text-sky-600">Level 10</button>
+                <button onclick="setLvl(20)" class="w-full py-3 mb-2 rounded-xl font-black border-2 border-slate-100 text-slate-400">Level 20</button>
+                <button onclick="setLvl(100)" class="w-full py-3 mb-6 rounded-xl font-black border-2 border-slate-100 text-slate-400">Level 100</button>
+                <button onclick="toggleModal('setMenu')" class="text-slate-400 font-black uppercase text-xs underline">Back</button>
+            </div>
+        </div>
+
+        <div class="util-row">
+            <button onclick="share()" class="util-btn bg-[#25D366] text-white border-none text-[10px]">WA</button>
+            <button onclick="toggleModal('helpModal'); playHelpAudio();" class="util-btn text-lg">❓</button>
+            <button onclick="toggleModal('setMenu')" class="util-btn text-lg">⚙️</button>
+            <button onclick="reset()" class="util-btn text-lg">🔄</button>
+        </div>
+
+        <div class="mode-row">
+            <button id="m-count" onclick="setMode('counting')" class="mode-btn m-active">Count</button>
+            <button id="m-add" onclick="setMode('addition')" class="mode-btn m-inactive">Add</button>
+            <button id="m-sub" onclick="setMode('subtraction')" class="mode-btn m-inactive">Sub</button>
+            <div id="score" class="score-box">Score: 0</div>
+        </div>
+
+        <div id="screen" class="screen"></div>
+        <div id="input" class="text-center text-3xl font-black text-sky-500 mb-2 h-8 tracking-widest uppercase">---</div>
+
         <div class="numpad">
-            <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
-            <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
-            <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
-            <button onclick="press('clear')">C</button><button onclick="press('0')">0</button>
-            <button id="okBtn" onclick="press('enter')" class="enter-btn">OK</button>
+            <button onclick="tap('1')">1</button><button onclick="tap('2')">2</button><button onclick="tap('3')">3</button>
+            <button onclick="tap('4')">4</button><button onclick="tap('5')">5</button><button onclick="tap('6')">6</button>
+            <button onclick="tap('7')">7</button><button onclick="tap('8')">8</button><button onclick="tap('9')">9</button>
+            <button onclick="tap('C')">C</button><button onclick="tap('0')">0</button>
+            <button onclick="tap('OK')" class="ok-btn">OK</button>
         </div>
     </div>
 
     <script>
-        let game = { mode: 'counting', range: 10, score: 0, tMoves: 0, ans: '', input: '', active: false, voiceOn: true, lastAns: '' };
-        let happySynth, femaleVoice = null;
+        let state = { mode: 'counting', score: 0, range: 10, ans: '', input: '', active: false };
+        let voice = null, ac = null;
 
-        async function initializeGame(m) {
-            const toneScript = document.createElement('script');
-            toneScript.src = "https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js";
-            toneScript.onload = async () => {
-                await Tone.start();
-                happySynth = new Tone.PolySynth(Tone.Synth).toDestination();
-                document.getElementById('entryPortal').style.transform = "translateY(-100%)";
-                game.active = true;
-                findVoice();
-                setMode(m);
-            };
-            document.head.appendChild(toneScript);
+        function startGame(m) {
+            if(!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+            if(ac.state === 'suspended') ac.resume();
+            document.getElementById('welcome').style.transform = "translateY(-100%)";
+            state.active = true; findVoice(); setMode(m);
         }
 
         function findVoice() {
-            const voices = window.speechSynthesis.getVoices();
-            femaleVoice = voices.find(v => (v.name.includes('Female') || v.name.includes('Google US')) && v.lang.includes('en'));
-            if (!femaleVoice) femaleVoice = voices.find(v => v.lang.includes('en'));
+            const v = window.speechSynthesis.getVoices();
+            voice = v.find(x => x.name.includes('Female') || x.lang.includes('en-US')) || v[0];
         }
         window.speechSynthesis.onvoiceschanged = findVoice;
 
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+        function playHelpAudio() { say("Look at the number, type the answer, and press OK!"); }
+        function setLvl(l) { state.range = l; toggleModal('setMenu'); reset(); }
+
         function setMode(m) {
-            game.mode = m;
-            document.querySelectorAll('[id^="btn-"]').forEach(b => {
-                b.className = b.id === 'btn-'+m ? "flex-1 py-1 rounded-lg font-bold text-[8px] bg-sky-500 text-white uppercase" : "flex-1 py-1 rounded-lg font-bold text-[8px] bg-gray-100 text-gray-400 uppercase";
+            state.mode = m;
+            ['m-count','m-add','m-sub'].forEach(id => {
+                const b = document.getElementById(id);
+                if(b) b.className = id === 'm-'+m.substring(0,5) ? "mode-btn m-active" : "mode-btn m-inactive";
             });
-            newQuestion();
+            newQ();
         }
 
-        function setLevel(lvl) {
-            game.range = lvl;
-            document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('selected'));
-            document.getElementById('l'+lvl).classList.add('selected');
-            toggleSettings(); 
-            newQuestion();
-        }
-
-        function toggleSettings() { document.getElementById('settingsModal').classList.toggle('hidden'); }
-
-        function newQuestion() {
-            let n1, n2, html = '', speech = '', currentAns = '';
-            if(game.mode === 'toddler') { 
-                html = '<div class="text-xl text-slate-300 font-bold uppercase">Tap Numbers!</div>';
-            } else {
-                do {
-                    if (game.mode === 'counting') { 
-                        n1 = Math.floor(Math.random() * game.range) + 1;
-                        currentAns = n1.toString(); 
-                        html = `<div class="text-7xl font-black text-slate-700">${n1}</div>`; 
-                        speech = n1.toString();
-                    } else if (game.mode === 'addition') { 
-                        n1 = Math.floor(Math.random() * (game.range/2)) + 1; n2 = Math.floor(Math.random() * (game.range/2)) + 1; 
-                        currentAns = (n1+n2).toString();
-                        html = `<div class="math-container"><div>${n1}</div><div>+ ${n2}</div><div class="math-line"></div></div>`; 
-                        speech = n1 + " plus " + n2;
-                    } else if (game.mode === 'subtraction') {
-                        n1 = Math.floor(Math.random() * (game.range-1)) + 1; n2 = Math.floor(Math.random() * n1);
-                        currentAns = (n1-n2).toString();
-                        html = `<div class="math-container"><div>${n1}</div><div>- ${n2}</div><div class="math-line"></div></div>`;
-                        speech = n1 + " minus " + n2;
-                    }
-                } while (currentAns === game.lastAns);
-            }
-            game.ans = currentAns; game.lastAns = currentAns;
-            document.getElementById('displayArea').innerHTML = html;
-            game.input = ''; document.getElementById('inputBox').textContent = '---'; 
-            if(game.voiceOn && speech) speak(speech);
-        }
-
-        function press(v) {
-            if(!game.active) return;
-            if(game.mode === 'toddler') {
-                if(v !== 'clear' && v !== 'enter') {
-                    game.tMoves++;
-                    document.getElementById('displayArea').innerHTML = `<div class="text-8xl font-black text-sky-500 animate-bounce">${v}</div>`;
-                    if(game.tMoves % 5 === 0) triggerReward(); else speak(v);
+        function newQ() {
+            let n1, n2, html = '', speech = '';
+            if(state.mode === 'toddler') { html = '<div class="text-xl text-slate-300 font-bold uppercase">Tap Numbers</div>'; }
+            else {
+                n1 = Math.floor(Math.random() * state.range) + 1;
+                if(state.mode === 'addition') {
+                    n2 = Math.floor(Math.random() * 9) + 1; state.ans = (n1+n2).toString();
+                    html = `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3.5rem;font-weight:900;color:#1e293b;line-height:1;"><div>${n1}</div><div>+ ${n2}</div><div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div></div>`;
+                    speech = n1 + " plus " + n2;
+                } else if(state.mode === 'subtraction') {
+                    n2 = Math.floor(Math.random() * n1); state.ans = (n1-n2).toString();
+                    html = `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3.5rem;font-weight:900;color:#1e293b;line-height:1;"><div>${n1}</div><div>- ${n2}</div><div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div></div>`;
+                    speech = n1 + " minus " + n2;
+                } else {
+                    state.ans = n1.toString(); html = `<div class="text-8xl font-black text-slate-700">${n1}</div>`; speech = n1.toString();
                 }
-                return;
             }
-            if (v === 'clear') game.input = '';
-            else if (v === 'enter') check(); 
-            else if (game.input.length < 4) game.input += v;
-            document.getElementById('inputBox').textContent = game.input || '---';
+            document.getElementById('screen').innerHTML = html;
+            state.input = ''; document.getElementById('input').textContent = '---';
+            if(speech) say(speech);
+        }
+
+        function tap(v) {
+            if(!state.active) return;
+            if(state.mode === 'toddler' && v !== 'OK' && v !== 'C') {
+                document.getElementById('screen').innerHTML = `<div class="text-9xl font-black text-sky-500 animate-bounce">${v}</div>`;
+                say(v); return;
+            }
+            if (v === 'C') state.input = ''; else if (v === 'OK') check(); else if (state.input.length < 3) state.input += v;
+            document.getElementById('input').textContent = state.input || '---';
         }
 
         function check() {
-            if (game.input === game.ans) {
-                game.score++;
-                document.getElementById('scoreLabel').textContent = "Score: " + game.score;
-                if(game.score % 5 === 0) triggerReward();
-                else speak("Correct!", () => { setTimeout(newQuestion, 500); });
-            } else {
-                speak("No, it was " + game.ans, () => { setTimeout(newQuestion, 1000); });
-            }
+            if (state.input === state.ans) {
+                state.score++; document.getElementById('score').textContent = "Score: " + state.score;
+                if(state.score % 5 === 0) reward(); else say("Correct!", () => setTimeout(newQ, 500));
+            } else { say("Try again!", () => { state.input = ''; document.getElementById('input').textContent = '---'; }); }
         }
 
-        function triggerReward() {
-            const card = document.getElementById('gameCard');
-            const now = Tone.now();
-            happySynth.triggerAttackRelease("C5", "16n", now);
-            happySynth.triggerAttackRelease("E5", "16n", now + 0.05);
-            happySynth.triggerAttackRelease("G5", "16n", now + 0.1);
-            happySynth.triggerAttackRelease("C6", "8n", now + 0.15);
-
-            for (let i = 0; i < 50; i++) {
-                const fx = document.createElement('div');
-                fx.className = 'shooting-star'; fx.innerHTML = '⭐';
-                fx.style.setProperty('--tw-x', `${(Math.random() - 0.5) * 600}px`);
-                fx.style.setProperty('--tw-y', `${-Math.random() * 700}px`);
-                card.appendChild(fx);
-                setTimeout(() => fx.remove(), 1500);
+        function reward() {
+            if(ac) {
+                const osc = ac.createOscillator(); const gain = ac.createGain();
+                osc.connect(gain); gain.connect(ac.destination); osc.type = 'square';
+                osc.frequency.setValueAtTime(150, ac.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, ac.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.3, ac.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.5);
+                osc.start(); osc.stop(ac.currentTime + 0.5);
             }
-            speak("Excellent! You are a superstar!", () => { 
-                setTimeout(() => { document.getElementById('installOverlay').classList.remove('hidden'); }, 500);
+            for (let i = 0; i < 60; i++) {
+                const s = document.createElement('div'); s.className = 'star';
+                s.innerHTML = ['⭐', '🌟', '✨', '🔥'][Math.floor(Math.random() * 4)];
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 500 + Math.random() * 800;
+                s.style.setProperty('--x', `${Math.cos(angle) * dist}px`);
+                s.style.setProperty('--y', `${Math.sin(angle) * dist}px`);
+                s.style.setProperty('--r', `${Math.random() * 720}deg`);
+                document.body.appendChild(s); setTimeout(() => s.remove(), 1500);
+            }
+            say("Excellent! Superstar!", () => {
+                setTimeout(() => { toggleModal('downloadPopup'); }, 500);
             });
         }
 
-        function speak(t, cb) {
-            window.speechSynthesis.cancel();
-            const m = new SpeechSynthesisUtterance(t);
-            if (femaleVoice) m.voice = femaleVoice;
-            m.onend = () => { if(cb) cb(); };
-            window.speechSynthesis.speak(m);
+        function say(t, cb) {
+            window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(t);
+            if (voice) m.voice = voice; m.onend = () => { if(cb) cb(); }; window.speechSynthesis.speak(m);
         }
-        function resetGame() { game.score = 0; document.getElementById('scoreLabel').textContent = "Score: 0"; newQuestion(); }
-        function shareGame() { window.open("https://api.whatsapp.com/send?text=Play Number Fun Kids Math! https://tinyurl.com/NumberFunGame"); }
+        function reset() { state.score = 0; document.getElementById('score').textContent = "Score: 0"; newQ(); }
+        function share() { window.open("https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame"); }
     </script>
 </body>
 </html>
