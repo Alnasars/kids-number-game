@@ -20,6 +20,59 @@
             -webkit-user-select: none;
             user-select: none;
         }
+
+        /* ── FB WALL ── */
+        #fb-wall {
+            position: fixed; inset: 0; z-index: 99999;
+            background: #0f172a;
+            display: none;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 30px;
+            color: white;
+        }
+        #fb-wall.show { display: flex; }
+        #fb-wall .fb-emoji { font-size: 4rem; margin-bottom: 1rem; }
+        #fb-wall h1 {
+            font-size: 1.6rem; font-weight: 900; color: #fbbf24;
+            margin-bottom: 0.75rem; text-transform: uppercase;
+        }
+        #fb-wall p {
+            font-size: 0.9rem; color: #cbd5e1;
+            line-height: 1.6; margin-bottom: 1.5rem; max-width: 300px;
+        }
+        #fb-wall .steps-box {
+            background: #1e293b; border-radius: 16px;
+            padding: 20px 24px; margin-bottom: 1.5rem;
+            width: 100%; max-width: 320px; text-align: left;
+        }
+        #fb-wall .step {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 14px; font-size: 0.9rem; color: #e2e8f0;
+        }
+        #fb-wall .step:last-child { margin-bottom: 0; }
+        #fb-wall .step-num {
+            background: #fbbf24; color: #78350f;
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 0.85rem; flex-shrink: 0;
+        }
+        #fb-wall .arrow {
+            font-size: 2.5rem; margin-bottom: 1.2rem;
+            animation: blink 1s ease infinite;
+        }
+        @keyframes blink {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        #fb-wall .skip-btn {
+            background: none; border: 1px solid #334155;
+            color: #64748b; padding: 10px 24px; border-radius: 99px;
+            cursor: pointer; font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* ── STARTUP SCREEN ── */
         .portal {
             position: fixed; inset: 0; background: #0f172a; z-index: 9999;
             display: flex; flex-direction: column; align-items: center;
@@ -56,6 +109,8 @@
             background: none; border-left: none; border-right: none; border-bottom: none;
             cursor: pointer; width: 10rem;
         }
+
+        /* ── GAME CARD ── */
         .game-card {
             background: #ffffff; border-radius: 24px; padding: 16px;
             width: 92vw; max-width: 360px; height: 86vh; max-height: 650px;
@@ -149,9 +204,9 @@
             border: none; cursor: pointer; font-size: 1rem;
             -webkit-tap-highlight-color: transparent;
         }
-        .btn-dark  { background: #1e293b; color: white; box-shadow: 0 4px 0 #0f172a; }
-        .btn-sky   { background: #0ea5e9; color: white; box-shadow: 0 4px 0 #0369a1; }
-        .btn-back  { background: none; border: none; color: #94a3b8; font-weight: 900; font-size: 12px; text-decoration: underline; cursor: pointer; text-transform: uppercase; margin-top: 0.5rem; }
+        .btn-dark { background: #1e293b; color: white; box-shadow: 0 4px 0 #0f172a; }
+        .btn-sky  { background: #0ea5e9; color: white; box-shadow: 0 4px 0 #0369a1; }
+        .btn-back { background: none; border: none; color: #94a3b8; font-weight: 900; font-size: 12px; text-decoration: underline; cursor: pointer; text-transform: uppercase; margin-top: 0.5rem; }
         .lvl-btn {
             width: 100%; padding: 0.75rem; margin-bottom: 0.5rem;
             border-radius: 12px; font-weight: 900;
@@ -162,7 +217,7 @@
         .lvl-gray { background: #f8fafc; border: 2px solid #e2e8f0; color: #94a3b8; }
         #confetti-canvas {
             position: fixed; inset: 0; pointer-events: none;
-            z-index: 9998; width: 100%; height: 100%;
+            z-index: 9998; width: 100%; height: 100%; display: none;
         }
         .hidden { display: none !important; }
         @keyframes bounce {
@@ -174,8 +229,34 @@
 </head>
 <body>
 
-<canvas id="confetti-canvas" class="hidden"></canvas>
+<!-- FB WALL — hidden by default, shown only by JS if FB browser detected -->
+<div id="fb-wall">
+    <div class="fb-emoji">📱</div>
+    <h1>One Quick Step!</h1>
+    <p>For voice, sounds &amp; best experience — open in your real browser. Takes 2 seconds!</p>
+    <div class="steps-box">
+        <div class="step">
+            <div class="step-num">1</div>
+            <span>Tap the <strong>3 dots ⋮</strong> top right corner</span>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <span>Tap <strong>"Open in Browser"</strong></span>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <span>🎉 Full game with <strong>voice &amp; sound!</strong></span>
+        </div>
+    </div>
+    <div class="arrow">👆</div>
+    <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">
+        Continue anyway (no sound)
+    </button>
+</div>
 
+<canvas id="confetti-canvas"></canvas>
+
+<!-- WELCOME SCREEN -->
 <div id="welcome" class="portal">
     <div class="portal-emoji">🚀</div>
     <h1>123 Number Game</h1>
@@ -185,6 +266,7 @@
     <button onclick="toggleModal('privacyModal')" class="privacy-link">Privacy Policy</button>
 </div>
 
+<!-- PRIVACY MODAL -->
 <div id="privacyModal" class="global-modal hidden">
     <div class="policy-container">
         <h2>Privacy Policy</h2>
@@ -205,6 +287,7 @@
     </div>
 </div>
 
+<!-- GAME CARD -->
 <div class="game-card">
     <div onclick="location.reload()" class="close-trigger">✕</div>
 
@@ -270,6 +353,20 @@
 </div>
 
 <script>
+    /* ── FB DETECTION — runs first, before anything else ── */
+    (function() {
+        var ua = navigator.userAgent || '';
+        var isFB = ua.indexOf('FBAN') > -1 ||
+                   ua.indexOf('FBAV') > -1 ||
+                   ua.indexOf('FB_IAB') > -1 ||
+                   ua.indexOf('FBIOS') > -1 ||
+                   ua.indexOf('Instagram') > -1;
+        if (isFB) {
+            document.getElementById('fb-wall').classList.add('show');
+        }
+    })();
+
+    /* ── GAME STATE ── */
     let state = { mode: 'counting', score: 0, range: 10, ans: '', input: '', active: false };
     let voice = null, ac = null;
 
@@ -358,7 +455,7 @@
             osc.start(); osc.stop(ac.currentTime + 0.5);
         }
         const canvas = document.getElementById('confetti-canvas');
-        canvas.classList.remove('hidden');
+        canvas.style.display = 'block';
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         const ctx = canvas.getContext('2d');
         const COLORS = ['#fbbf24','#f87171','#34d399','#60a5fa','#a78bfa','#fb923c'];
@@ -381,7 +478,7 @@
                 ctx.restore();
             });
             if (ts - start < 1800) requestAnimationFrame(draw);
-            else { canvas.classList.add('hidden'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+            else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
         }
         requestAnimationFrame(draw);
         say('Excellent! Superstar!', () => setTimeout(() => toggleModal('downloadPopup'), 500));
