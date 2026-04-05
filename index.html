@@ -9,249 +9,159 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-weight: 600;
-            background: #0f172a;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            -webkit-user-select: none;
-            user-select: none;
+            font-weight: 600; background: #0f172a;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden;
+            -webkit-user-select: none; user-select: none;
         }
 
         /* ── FB WALL ── */
         #fb-wall {
             position: fixed; inset: 0; z-index: 99999;
-            background: #0f172a;
-            display: none;
-            flex-direction: column;
-            align-items: center; justify-content: center;
-            text-align: center; padding: 30px;
-            color: white;
+            background: #0f172a; display: none;
+            flex-direction: column; align-items: center;
+            justify-content: center; text-align: center;
+            padding: 30px; color: white;
         }
         #fb-wall.show { display: flex; }
         #fb-wall .fb-emoji { font-size: 4rem; margin-bottom: 1rem; }
-        #fb-wall h1 {
-            font-size: 1.6rem; font-weight: 900; color: #fbbf24;
-            margin-bottom: 0.75rem; text-transform: uppercase;
-        }
-        #fb-wall p {
-            font-size: 0.9rem; color: #cbd5e1;
-            line-height: 1.6; margin-bottom: 1.5rem; max-width: 300px;
-        }
-        #fb-wall .steps-box {
-            background: #1e293b; border-radius: 16px;
-            padding: 20px 24px; margin-bottom: 1.5rem;
-            width: 100%; max-width: 320px; text-align: left;
-        }
-        #fb-wall .step {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 14px; font-size: 0.9rem; color: #e2e8f0;
-        }
+        #fb-wall h1 { font-size: 1.6rem; font-weight: 900; color: #fbbf24; margin-bottom: 0.75rem; text-transform: uppercase; }
+        #fb-wall p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1.5rem; max-width: 300px; }
+        #fb-wall .steps-box { background: #1e293b; border-radius: 16px; padding: 20px 24px; margin-bottom: 1.5rem; width: 100%; max-width: 320px; text-align: left; }
+        #fb-wall .step { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 0.9rem; color: #e2e8f0; }
         #fb-wall .step:last-child { margin-bottom: 0; }
-        #fb-wall .step-num {
-            background: #fbbf24; color: #78350f;
-            width: 28px; height: 28px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 0.85rem; flex-shrink: 0;
-        }
-        #fb-wall .arrow {
-            font-size: 2.5rem; margin-bottom: 1.2rem;
-            animation: blink 1s ease infinite;
-        }
-        @keyframes blink {
-            0%,100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        #fb-wall .skip-btn {
-            background: none; border: 1px solid #334155;
-            color: #64748b; padding: 10px 24px; border-radius: 99px;
-            cursor: pointer; font-size: 0.8rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
+        #fb-wall .step-num { background: #fbbf24; color: #78350f; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem; flex-shrink: 0; }
+        #fb-wall .arrow { font-size: 2.5rem; margin-bottom: 1.2rem; animation: blink 1s ease infinite; }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        #fb-wall .skip-btn { background: none; border: 1px solid #334155; color: #64748b; padding: 10px 24px; border-radius: 99px; cursor: pointer; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
 
-        /* ── STARTUP SCREEN ── */
+        /* ── WELCOME SCREEN ── */
         .portal {
             position: fixed; inset: 0; background: #0f172a; z-index: 9999;
             display: flex; flex-direction: column; align-items: center;
             justify-content: center; color: white;
-            transition: transform 0.5s ease; text-align: center;
+            transition: transform 0.5s ease; text-align: center; padding: 20px;
         }
         .portal-emoji { font-size: 4.5rem; margin-bottom: 1rem; }
-        .portal h1 {
-            font-size: 2.4rem; font-weight: 900; text-transform: uppercase;
-            letter-spacing: -1px; margin-bottom: 0.25rem;
-        }
-        .portal-hint {
-            font-size: 10px; color: #7dd3fc; margin-bottom: 2rem;
-            text-transform: uppercase; letter-spacing: 3px; padding: 0 1.5rem;
-        }
-        .play-btn {
-            background: #fbbf24; color: #78350f;
-            padding: 1.2rem 4rem; border-radius: 99px;
-            font-size: 1.5rem; font-weight: 900;
-            box-shadow: 0 8px 0 #d97706;
-            text-transform: uppercase; margin-bottom: 25px;
-            border: none; cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .toddler-link {
-            color: #38bdf8; font-weight: 700; text-decoration: underline;
-            cursor: pointer; text-transform: uppercase; font-size: 0.875rem;
-            margin-bottom: 1.5rem; background: none; border: none;
-        }
-        .privacy-link {
-            color: #38bdf8; font-size: 10px; text-transform: uppercase;
-            font-weight: 700; letter-spacing: 3px;
-            border-top: 1px solid #1e3a5f; padding-top: 1rem;
-            background: none; border-left: none; border-right: none; border-bottom: none;
-            cursor: pointer; width: 10rem;
-        }
+        .portal h1 { font-size: 2.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 0.25rem; }
+        .portal-hint { font-size: 10px; color: #7dd3fc; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 3px; padding: 0 1.5rem; }
+        .portal-buttons { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 280px; margin-bottom: 24px; }
+        .play-btn { background: #fbbf24; color: #78350f; padding: 1rem 2rem; border-radius: 99px; font-size: 1.2rem; font-weight: 900; box-shadow: 0 6px 0 #d97706; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; width: 100%; }
+        .toddler-btn { background: #0ea5e9; color: white; padding: 0.85rem 2rem; border-radius: 99px; font-size: 1rem; font-weight: 900; box-shadow: 0 5px 0 #0369a1; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; width: 100%; }
+        .privacy-link { color: #38bdf8; font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 3px; border-top: 1px solid #1e3a5f; padding-top: 1rem; background: none; border-left: none; border-right: none; border-bottom: none; cursor: pointer; width: 10rem; }
 
         /* ── GAME CARD ── */
-        .game-card {
-            background: #ffffff; border-radius: 24px; padding: 16px;
-            width: 92vw; max-width: 360px; height: 86vh; max-height: 650px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-            display: flex; flex-direction: column;
-            position: relative; z-index: 10;
-        }
-        .close-trigger {
-            position: absolute; top: -10px; right: -10px;
-            background: #ef4444; color: white;
-            width: 30px; height: 30px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; border: 3px solid white;
-            cursor: pointer; z-index: 100; font-size: 0.85rem;
-        }
+        .game-card { background: #ffffff; border-radius: 24px; padding: 16px; width: 92vw; max-width: 360px; height: 86vh; max-height: 650px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative; z-index: 10; }
+        .close-trigger { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 3px solid white; cursor: pointer; z-index: 100; font-size: 0.85rem; }
+
+        /* ── TABS ── */
+        .tab-row { display: flex; gap: 4px; margin-bottom: 8px; }
+        .tab-btn { flex: 1; padding: 8px 4px; border-radius: 8px; font-size: 9px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .tab-active { background: #0ea5e9; color: white; }
+        .tab-inactive { background: #e2e8f0; color: #334155; }
+
+        /* ── UTIL ROW ── */
         .util-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        .util-btn {
-            flex: 1; height: 34px; border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; background: #f8fafc;
-            cursor: pointer; color: #1e293b; font-size: 1rem;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .util-btn { flex: 1; height: 34px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 900; background: #f8fafc; cursor: pointer; color: #1e293b; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
         .util-btn-wa { background: #25D366; color: white; border: none; font-size: 10px; }
-        .mode-row { display: flex; gap: 4px; margin-bottom: 8px; align-items: center; }
-        .mode-btn {
-            flex: 1; padding: 8px 0; border-radius: 6px;
-            font-size: 9px; font-weight: 900; text-transform: uppercase;
-            border: none; cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .m-active  { background: #0ea5e9; color: white; }
+
+        /* ── MODE ROW ── */
+        .mode-row { display: flex; gap: 4px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+        .mode-btn { flex: 1; padding: 7px 2px; border-radius: 6px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 40px; }
+        .m-active { background: #0ea5e9; color: white; }
         .m-inactive { background: #e2e8f0; color: #334155; }
-        .score-box {
-            background: #fef9c3; color: #a16207;
-            padding: 4px 10px; border-radius: 6px;
-            font-size: 9px; font-weight: 900; white-space: nowrap;
-        }
-        .screen {
-            background: #f8fafc; border-radius: 20px; flex-grow: 1;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 8px; border: 2px solid #f1f5f9; position: relative;
-        }
-        .input-display {
-            text-align: center; font-size: 1.875rem; font-weight: 900;
-            color: #0ea5e9; margin-bottom: 0.5rem; height: 2rem;
-            letter-spacing: 4px; text-transform: uppercase;
-        }
+        .m-locked { background: #f1f5f9; color: #94a3b8; border: 1px dashed #cbd5e1; }
+        .score-box { background: #fef9c3; color: #a16207; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; white-space: nowrap; }
+
+        /* ── SCREEN ── */
+        .screen { background: #f8fafc; border-radius: 20px; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 2px solid #f1f5f9; position: relative; flex-direction: column; gap: 8px; overflow-y: auto; padding: 8px; }
+
+        /* ── INPUT ── */
+        .input-display { text-align: center; font-size: 1.875rem; font-weight: 900; color: #0ea5e9; margin-bottom: 0.5rem; height: 2rem; letter-spacing: 4px; text-transform: uppercase; }
+
+        /* ── NUMPAD ── */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
-        .numpad button {
-            background: #ffffff; border: 1px solid #e2e8f0;
-            border-radius: 12px; height: 50px;
-            font-size: 1.6rem; font-weight: 700; color: #1e293b;
-            box-shadow: 0 3px 0 #f1f5f9; cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .ok-btn {
-            background: #10b981 !important; color: white !important;
-            box-shadow: 0 4px 0 #065f46 !important; font-size: 1.1rem !important;
-        }
-        .global-modal {
-            position: fixed; inset: 0; background: white; z-index: 20000;
-            display: flex; flex-direction: column;
+        .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; height: 50px; font-size: 1.6rem; font-weight: 700; color: #1e293b; box-shadow: 0 3px 0 #f1f5f9; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .ok-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; font-size: 1.1rem !important; }
+
+        /* ── TABLE DISPLAY ── */
+        .table-line { font-size: 1.1rem; font-weight: 700; color: #1e293b; font-family: monospace; padding: 2px 0; border-bottom: 1px solid #f1f5f9; width: 100%; text-align: center; }
+
+        /* ── TODDLER ── */
+        .toddler-instruction { font-size: 0.75rem; color: #94a3b8; text-align: center; margin-bottom: 6px; font-style: italic; padding: 0 8px; }
+
+        /* ── LOCK POPUP ── */
+        #lockPopup {
+            position: fixed; inset: 0; z-index: 30000;
+            background: rgba(15,23,42,0.85);
+            display: none; flex-direction: column;
             align-items: center; justify-content: center;
             text-align: center; padding: 30px;
         }
+        #lockPopup.show { display: flex; }
+        .lock-box {
+            background: white; border-radius: 24px;
+            padding: 32px 24px; max-width: 300px; width: 100%;
+            border: 4px solid #fbbf24;
+        }
+        .lock-emoji { font-size: 3.5rem; margin-bottom: 0.75rem; }
+        .lock-title { font-size: 1.3rem; font-weight: 900; color: #1e293b; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .lock-msg { font-size: 0.85rem; color: #64748b; line-height: 1.6; margin-bottom: 1.5rem; }
+        .lock-close { background: #fbbf24; color: #78350f; border: none; padding: 0.85rem 2rem; border-radius: 99px; font-weight: 900; font-size: 1rem; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 0 #d97706; width: 100%; }
+
+        /* ── MODALS ── */
+        .global-modal { position: fixed; inset: 0; background: white; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
         .modal-transparent { background: transparent !important; padding: 0 !important; }
-        .policy-container {
-            width: 100%; max-width: 400px; background: white;
-            border: 4px solid #0ea5e9; border-radius: 24px;
-            padding: 20px; display: flex; flex-direction: column; max-height: 80vh;
-        }
-        .policy-container h2 {
-            font-size: 1.25rem; font-weight: 900; color: #1e293b;
-            text-transform: uppercase; margin-bottom: 0.5rem;
-        }
+        .policy-container { width: 100%; max-width: 400px; background: white; border: 4px solid #0ea5e9; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; max-height: 80vh; }
+        .policy-container h2 { font-size: 1.25rem; font-weight: 900; color: #1e293b; text-transform: uppercase; margin-bottom: 0.5rem; }
         .policy-container h2.sky { color: #0ea5e9; }
-        .policy-scroll {
-            overflow-y: auto; text-align: left;
-            font-size: 11px; color: #64748b; line-height: 1.5;
-            padding-right: 10px; margin-bottom: 20px;
-        }
+        .policy-scroll { overflow-y: auto; text-align: left; font-size: 11px; color: #64748b; line-height: 1.5; padding-right: 10px; margin-bottom: 20px; }
         .policy-scroll b { color: #1e293b; display: block; margin-top: 12px; }
         .policy-p { color: #64748b; font-size: 0.875rem; margin-bottom: 1.5rem; line-height: 1.6; padding: 0 1rem; }
         .modal-emoji { font-size: 3rem; margin-bottom: 1rem; }
         .modal-emoji-lg { font-size: 3.75rem; margin-bottom: 1rem; }
-        .btn-full {
-            width: 100%; padding: 1rem; border-radius: 12px;
-            font-weight: 900; text-transform: uppercase;
-            border: none; cursor: pointer; font-size: 1rem;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .btn-full { width: 100%; padding: 1rem; border-radius: 12px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
         .btn-dark { background: #1e293b; color: white; box-shadow: 0 4px 0 #0f172a; }
-        .btn-sky  { background: #0ea5e9; color: white; box-shadow: 0 4px 0 #0369a1; }
+        .btn-sky { background: #0ea5e9; color: white; box-shadow: 0 4px 0 #0369a1; }
         .btn-back { background: none; border: none; color: #94a3b8; font-weight: 900; font-size: 12px; text-decoration: underline; cursor: pointer; text-transform: uppercase; margin-top: 0.5rem; }
-        .lvl-btn {
-            width: 100%; padding: 0.75rem; margin-bottom: 0.5rem;
-            border-radius: 12px; font-weight: 900;
-            cursor: pointer; font-size: 1rem;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .lvl-sky  { background: #f0f9ff; border: 2px solid #bae6fd; color: #0ea5e9; }
+        .lvl-btn { width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
+        .lvl-sky { background: #f0f9ff; border: 2px solid #bae6fd; color: #0ea5e9; }
         .lvl-gray { background: #f8fafc; border: 2px solid #e2e8f0; color: #94a3b8; }
-        #confetti-canvas {
-            position: fixed; inset: 0; pointer-events: none;
-            z-index: 9998; width: 100%; height: 100%; display: none;
-        }
+        .table-input-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        .table-prompt { font-size: 1rem; font-weight: 700; color: #475569; margin-bottom: 12px; text-align: center; }
+        .table-range-hint { font-size: 0.75rem; color: #94a3b8; margin-bottom: 16px; text-align: center; }
+
+        #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 9998; width: 100%; height: 100%; display: none; }
         .hidden { display: none !important; }
-        @keyframes bounce {
-            0%,100% { transform: translateY(0); }
-            50%      { transform: translateY(-15px); }
-        }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .bounce { animation: bounce 0.6s ease infinite; }
     </style>
 </head>
 <body>
 
-<!-- FB WALL — hidden by default, shown only by JS if FB browser detected -->
+<!-- FB WALL -->
 <div id="fb-wall">
     <div class="fb-emoji">📱</div>
     <h1>One Quick Step!</h1>
-    <p>For voice, sounds &amp; best experience — open in your real browser. Takes 2 seconds!</p>
+    <p>For voice, sounds &amp; best experience — open in your real browser!</p>
     <div class="steps-box">
-        <div class="step">
-            <div class="step-num">1</div>
-            <span>Tap the <strong>3 dots ⋮</strong> top right corner</span>
-        </div>
-        <div class="step">
-            <div class="step-num">2</div>
-            <span>Tap <strong>"Open in Browser"</strong></span>
-        </div>
-        <div class="step">
-            <div class="step-num">3</div>
-            <span>🎉 Full game with <strong>voice &amp; sound!</strong></span>
-        </div>
+        <div class="step"><div class="step-num">1</div><span>Tap the <strong>3 dots ⋮</strong> top right</span></div>
+        <div class="step"><div class="step-num">2</div><span>Tap <strong>"Open in Browser"</strong></span></div>
+        <div class="step"><div class="step-num">3</div><span>🎉 Full game with <strong>voice &amp; sound!</strong></span></div>
     </div>
     <div class="arrow">👆</div>
-    <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">
-        Continue anyway (no sound)
-    </button>
+    <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">Continue anyway (no sound)</button>
+</div>
+
+<!-- LOCK POPUP -->
+<div id="lockPopup">
+    <div class="lock-box">
+        <div class="lock-emoji">🔒</div>
+        <div class="lock-title">Coming Soon!</div>
+        <div class="lock-msg">This feature is coming very soon!<br>Stay tuned for <strong>Missing Numbers</strong> &amp; <strong>Times Tables</strong> — the most exciting updates yet! 🚀</div>
+        <button class="lock-close" onclick="closeLock()">Got it!</button>
+    </div>
 </div>
 
 <canvas id="confetti-canvas"></canvas>
@@ -261,8 +171,10 @@
     <div class="portal-emoji">🚀</div>
     <h1>123 Number Game</h1>
     <p class="portal-hint">Tap 3 dots (⋮) &amp; choose "Open in Browser"</p>
-    <button onclick="startGame('counting')" class="play-btn">Play Game</button>
-    <button onclick="startGame('toddler')" class="toddler-link">Toddler Mode</button>
+    <div class="portal-buttons">
+        <button onclick="openPlayGame()" class="play-btn">🎮 Play Game</button>
+        <button onclick="openToddler()" class="toddler-btn">👶 Toddler Mode</button>
+    </div>
     <button onclick="toggleModal('privacyModal')" class="privacy-link">Privacy Policy</button>
 </div>
 
@@ -272,24 +184,19 @@
         <h2>Privacy Policy</h2>
         <div class="policy-scroll">
             <p>Last Updated: March 2026</p>
-            <b>1. Introduction</b>
-            123 Number Game is an educational tool built for children. We strictly follow COPPA guidelines.
-            <b>2. No Data Collection</b>
-            We do not collect, store, share, or sell any personal data.
-            <b>3. Safe Advertisements</b>
-            Any ads presented are family-appropriate and follow Google Play/App Store policies.
-            <b>4. Anonymous Analytics</b>
-            We use basic Vercel Analytics. This data is fully anonymous.
-            <b>5. Parental Guidance</b>
-            We encourage parents to use the "Open in Browser" option for the best audio experience.
+            <b>1. Introduction</b> 123 Number Game is an educational tool built for children. We strictly follow COPPA guidelines.
+            <b>2. No Data Collection</b> We do not collect, store, share, or sell any personal data.
+            <b>3. Safe Advertisements</b> Any ads are family-appropriate and follow Google Play/App Store policies.
+            <b>4. Anonymous Analytics</b> We use basic Vercel Analytics. This data is fully anonymous.
+            <b>5. Parental Guidance</b> We encourage parents to use the "Open in Browser" option for the best audio experience.
         </div>
         <button onclick="toggleModal('privacyModal')" class="btn-full btn-dark">Close Policy</button>
     </div>
 </div>
 
-<!-- GAME CARD -->
-<div class="game-card">
-    <div onclick="location.reload()" class="close-trigger">✕</div>
+<!-- PLAY GAME CARD -->
+<div id="playCard" class="game-card hidden">
+    <div onclick="backToHome()" class="close-trigger">✕</div>
 
     <div id="helpModal" class="global-modal modal-transparent hidden">
         <div class="policy-container">
@@ -311,10 +218,11 @@
 
     <div id="setMenu" class="global-modal modal-transparent hidden">
         <div class="policy-container">
-            <h2 class="sky">Level Select</h2><br>
-            <button onclick="setLvl(10)"  class="lvl-btn lvl-sky">Level 10</button>
-            <button onclick="setLvl(20)"  class="lvl-btn lvl-gray">Level 20</button>
-            <button onclick="setLvl(100)" class="lvl-btn lvl-gray" style="margin-bottom:1.5rem;">Level 100</button>
+            <h2 class="sky">Settings</h2><br>
+            <p style="font-size:11px;color:#64748b;margin-bottom:12px;">Number Range for Add &amp; Sub</p>
+            <button onclick="setLvl(10)"  class="lvl-btn lvl-sky">Numbers 1 - 10</button>
+            <button onclick="setLvl(20)"  class="lvl-btn lvl-gray">Numbers 1 - 20</button>
+            <button onclick="setLvl(100)" class="lvl-btn lvl-gray" style="margin-bottom:16px;">Numbers 1 - 100</button>
             <button onclick="toggleModal('setMenu')" class="btn-back">Back</button>
         </div>
     </div>
@@ -323,177 +231,331 @@
         <button onclick="share()" class="util-btn util-btn-wa">WA</button>
         <button onclick="toggleModal('helpModal'); playHelpAudio();" class="util-btn">❓</button>
         <button onclick="toggleModal('setMenu')" class="util-btn">⚙️</button>
-        <button onclick="reset()" class="util-btn">🔄</button>
+        <button onclick="resetGame()" class="util-btn">🔄</button>
     </div>
 
+    <!-- MODE ROW — Add & Sub FREE, Miss & Tables LOCKED -->
     <div class="mode-row">
-        <button id="m-count" onclick="setMode('counting')"    class="mode-btn m-active">Count</button>
-        <button id="m-add"   onclick="setMode('addition')"    class="mode-btn m-inactive">Add</button>
+        <button id="m-add"   onclick="setMode('addition')"    class="mode-btn m-active">Add</button>
         <button id="m-sub"   onclick="setMode('subtraction')" class="mode-btn m-inactive">Sub</button>
+        <button id="m-miss"  onclick="showLock()"             class="mode-btn m-locked">🔒 Miss</button>
+        <button id="m-table" onclick="showLock()"             class="mode-btn m-locked">🔒 Tables</button>
         <div id="score" class="score-box">Score: 0</div>
     </div>
 
     <div id="screen" class="screen"></div>
     <div id="input" class="input-display">---</div>
 
-    <div class="numpad">
-        <button onclick="tap('1')">1</button>
-        <button onclick="tap('2')">2</button>
-        <button onclick="tap('3')">3</button>
-        <button onclick="tap('4')">4</button>
-        <button onclick="tap('5')">5</button>
-        <button onclick="tap('6')">6</button>
-        <button onclick="tap('7')">7</button>
-        <button onclick="tap('8')">8</button>
-        <button onclick="tap('9')">9</button>
-        <button onclick="tap('C')">C</button>
-        <button onclick="tap('0')">0</button>
+    <div id="numpadArea" class="numpad">
+        <button onclick="tap('1')">1</button><button onclick="tap('2')">2</button><button onclick="tap('3')">3</button>
+        <button onclick="tap('4')">4</button><button onclick="tap('5')">5</button><button onclick="tap('6')">6</button>
+        <button onclick="tap('7')">7</button><button onclick="tap('8')">8</button><button onclick="tap('9')">9</button>
+        <button onclick="tap('C')">C</button><button onclick="tap('0')">0</button>
         <button onclick="tap('OK')" class="ok-btn">OK</button>
     </div>
 </div>
 
+<!-- TODDLER CARD -->
+<div id="toddlerCard" class="game-card hidden">
+    <div onclick="backToHome()" class="close-trigger">✕</div>
+
+    <div class="tab-row">
+        <button id="t-tap"  onclick="setToddlerTab('tap')"  class="tab-btn tab-active">👆 Tap &amp; Learn</button>
+        <button id="t-read" onclick="setToddlerTab('read')" class="tab-btn tab-inactive">👀 Read Numbers</button>
+    </div>
+
+    <div class="toddler-instruction" id="toddlerInstruction">Tap any number button!</div>
+    <div id="toddlerScreen" class="screen"></div>
+    <div id="toddlerInput" class="input-display hidden">---</div>
+
+    <div id="toddlerNumpad" class="numpad">
+        <button onclick="toddlerTap('1')">1</button><button onclick="toddlerTap('2')">2</button><button onclick="toddlerTap('3')">3</button>
+        <button onclick="toddlerTap('4')">4</button><button onclick="toddlerTap('5')">5</button><button onclick="toddlerTap('6')">6</button>
+        <button onclick="toddlerTap('7')">7</button><button onclick="toddlerTap('8')">8</button><button onclick="toddlerTap('9')">9</button>
+        <button onclick="toddlerTap('C')">C</button><button onclick="toddlerTap('0')">0</button>
+        <button onclick="toddlerTap('OK')" class="ok-btn">OK</button>
+    </div>
+</div>
+
 <script>
-    /* ── FB DETECTION — runs first, before anything else ── */
-    (function() {
-        var ua = navigator.userAgent || '';
-        var isFB = ua.indexOf('FBAN') > -1 ||
-                   ua.indexOf('FBAV') > -1 ||
-                   ua.indexOf('FB_IAB') > -1 ||
-                   ua.indexOf('FBIOS') > -1 ||
-                   ua.indexOf('Instagram') > -1;
-        if (isFB) {
-            document.getElementById('fb-wall').classList.add('show');
-        }
-    })();
+/* ── FB DETECTION ── */
+(function() {
+    var ua = navigator.userAgent || '';
+    var isFB = ua.indexOf('FBAN') > -1 || ua.indexOf('FBAV') > -1 ||
+               ua.indexOf('FB_IAB') > -1 || ua.indexOf('FBIOS') > -1 ||
+               ua.indexOf('Instagram') > -1;
+    if (isFB) document.getElementById('fb-wall').classList.add('show');
+})();
 
-    /* ── GAME STATE ── */
-    let state = { mode: 'counting', score: 0, range: 10, ans: '', input: '', active: false };
-    let voice = null, ac = null;
+/* ── LOCK POPUP ── */
+function showLock() {
+    document.getElementById('lockPopup').classList.add('show');
+}
+function closeLock() {
+    document.getElementById('lockPopup').classList.remove('show');
+}
 
-    function startGame(m) {
-        if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
-        if (ac.state === 'suspended') ac.resume();
-        document.getElementById('welcome').style.transform = 'translateY(-100%)';
-        state.active = true; findVoice(); setMode(m);
+/* ── STATE ── */
+let state = {
+    mode: 'addition', score: 0, range: 10,
+    ans: '', input: '', active: false,
+    missingData: {},
+    toddlerTab: 'tap', toddlerInput: '', toddlerAns: ''
+};
+let voice = null, ac = null;
+
+/* ── AUDIO ── */
+function initAudio() {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+}
+
+/* ── VOICE ── */
+function findVoice() {
+    const v = window.speechSynthesis.getVoices();
+    voice = v.find(x => x.name.includes('Female') || x.lang.includes('en-US')) || v[0];
+}
+window.speechSynthesis.onvoiceschanged = findVoice;
+
+function say(t, cb) {
+    window.speechSynthesis.cancel();
+    const m = new SpeechSynthesisUtterance(t);
+    if (voice) m.voice = voice;
+    m.onend = () => { if (cb) cb(); };
+    window.speechSynthesis.speak(m);
+}
+
+/* ── NAVIGATION ── */
+function backToHome() {
+    document.getElementById('playCard').classList.add('hidden');
+    document.getElementById('toddlerCard').classList.add('hidden');
+    document.getElementById('welcome').style.transform = '';
+    state.active = false;
+    window.speechSynthesis.cancel();
+}
+
+function openPlayGame() {
+    initAudio(); findVoice();
+    document.getElementById('welcome').style.transform = 'translateY(-100%)';
+    document.getElementById('playCard').classList.remove('hidden');
+    state.active = true;
+    setMode('addition');
+}
+
+function openToddler() {
+    initAudio(); findVoice();
+    document.getElementById('welcome').style.transform = 'translateY(-100%)';
+    document.getElementById('toddlerCard').classList.remove('hidden');
+    setToddlerTab('tap');
+}
+
+/* ── MODALS ── */
+function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+function playHelpAudio() { say("Look at the problem, type the answer, and press OK!"); }
+function setLvl(l) { state.range = l; toggleModal('setMenu'); resetGame(); }
+
+/* ── MODE ── */
+function setMode(m) {
+    state.mode = m;
+    const map = {'m-add':'addition','m-sub':'subtraction'};
+    ['m-add','m-sub'].forEach(id => {
+        const b = document.getElementById(id);
+        if (!b) return;
+        b.className = 'mode-btn ' + (map[id] === m ? 'm-active' : 'm-inactive');
+    });
+    showNumpad(true);
+    newQ();
+}
+
+/* ── NEW QUESTION ── */
+function newQ() {
+    let n1, n2, html = '', speech = '';
+    const r = state.range;
+    n1 = Math.floor(Math.random() * r) + 1;
+
+    if (state.mode === 'addition') {
+        n2 = Math.floor(Math.random() * 9) + 1;
+        state.ans = (n1 + n2).toString();
+        html = mathBox(n1, '+', n2);
+        speech = n1 + ' plus ' + n2;
+
+    } else if (state.mode === 'subtraction') {
+        n2 = Math.floor(Math.random() * n1);
+        state.ans = (n1 - n2).toString();
+        html = mathBox(n1, '-', n2);
+        speech = n1 + ' minus ' + n2;
     }
 
-    function findVoice() {
-        const v = window.speechSynthesis.getVoices();
-        voice = v.find(x => x.name.includes('Female') || x.lang.includes('en-US')) || v[0];
+    document.getElementById('screen').innerHTML = html;
+    state.input = '';
+    document.getElementById('input').textContent = '---';
+    if (speech) say(speech);
+}
+
+/* ── MATH BOX ── */
+function mathBox(n1, op, n2) {
+    return `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3.5rem;font-weight:900;color:#1e293b;line-height:1.1;">
+        <div>${n1}</div><div>${op} ${n2}</div>
+        <div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div>
+    </div>`;
+}
+
+/* ── NUMPAD ── */
+function showNumpad(show) {
+    if (show) {
+        document.getElementById('numpadArea').innerHTML = `
+            <button onclick="tap('1')">1</button><button onclick="tap('2')">2</button><button onclick="tap('3')">3</button>
+            <button onclick="tap('4')">4</button><button onclick="tap('5')">5</button><button onclick="tap('6')">6</button>
+            <button onclick="tap('7')">7</button><button onclick="tap('8')">8</button><button onclick="tap('9')">9</button>
+            <button onclick="tap('C')">C</button><button onclick="tap('0')">0</button>
+            <button onclick="tap('OK')" class="ok-btn">OK</button>`;
     }
-    window.speechSynthesis.onvoiceschanged = findVoice;
+}
 
-    function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
-    function playHelpAudio() { say("Look at the number, type the answer, and press OK!"); }
-    function setLvl(l) { state.range = l; toggleModal('setMenu'); reset(); }
+/* ── TAP ── */
+function tap(v) {
+    if (!state.active) return;
+    if (v === 'C') { state.input = ''; document.getElementById('input').textContent = '---'; }
+    else if (v === 'OK') { check(); return; }
+    else if (state.input.length < 3) state.input += v;
+    document.getElementById('input').textContent = state.input || '---';
+}
 
-    function setMode(m) {
-        state.mode = m;
-        ['m-count','m-add','m-sub'].forEach(id => {
-            const b = document.getElementById(id);
-            if (b) b.className = (id === 'm-' + m.substring(0,5)) ? 'mode-btn m-active' : 'mode-btn m-inactive';
+/* ── CHECK ── */
+function check() {
+    if (state.input === state.ans) {
+        state.score++;
+        document.getElementById('score').textContent = 'Score: ' + state.score;
+        if (state.score % 5 === 0) reward();
+        else say('Correct!', () => setTimeout(newQ, 500));
+    } else {
+        say('Try again!', () => {
+            state.input = '';
+            document.getElementById('input').textContent = '---';
         });
-        newQ();
     }
+}
 
-    function newQ() {
-        let n1, n2, html = '', speech = '';
-        if (state.mode === 'toddler') {
-            html = '<div style="font-size:1.25rem;color:#cbd5e1;font-weight:700;text-transform:uppercase;">Tap Numbers</div>';
+/* ── RESET ── */
+function resetGame() {
+    state.score = 0; state.input = '';
+    document.getElementById('score').textContent = 'Score: 0';
+    newQ();
+}
+
+/* ── TODDLER MODE ── */
+function setToddlerTab(tab) {
+    state.toddlerTab = tab;
+    state.toddlerInput = '';
+    document.getElementById('t-tap').className  = 'tab-btn ' + (tab === 'tap'  ? 'tab-active' : 'tab-inactive');
+    document.getElementById('t-read').className = 'tab-btn ' + (tab === 'read' ? 'tab-active' : 'tab-inactive');
+    const instrEl = document.getElementById('toddlerInstruction');
+    const inputEl = document.getElementById('toddlerInput');
+    const screenEl = document.getElementById('toddlerScreen');
+    if (tab === 'tap') {
+        instrEl.textContent = 'Tap any number to learn it!';
+        inputEl.classList.add('hidden');
+        screenEl.innerHTML = '<div style="font-size:1.1rem;color:#cbd5e1;font-weight:700;text-align:center;">👆 Tap a number below!</div>';
+        rebuildToddlerNumpad(false);
+        say('Welcome to Tap and Learn! Tap any number button to learn it!');
+    } else {
+        instrEl.textContent = 'Look at the number, then type it!';
+        inputEl.classList.remove('hidden');
+        inputEl.textContent = '---';
+        rebuildToddlerNumpad(true);
+        newToddlerReadQ();
+        say('Welcome to Read Numbers! Look at the number on screen, then type it using the buttons!');
+    }
+}
+
+function rebuildToddlerNumpad(showOK) {
+    document.getElementById('toddlerNumpad').innerHTML = `
+        <button onclick="toddlerTap('1')">1</button>
+        <button onclick="toddlerTap('2')">2</button>
+        <button onclick="toddlerTap('3')">3</button>
+        <button onclick="toddlerTap('4')">4</button>
+        <button onclick="toddlerTap('5')">5</button>
+        <button onclick="toddlerTap('6')">6</button>
+        <button onclick="toddlerTap('7')">7</button>
+        <button onclick="toddlerTap('8')">8</button>
+        <button onclick="toddlerTap('9')">9</button>
+        <button onclick="toddlerTap('C')">C</button>
+        <button onclick="toddlerTap('0')">0</button>
+        ${showOK ? '<button onclick="toddlerTap(\'OK\')" class="ok-btn">OK</button>' : '<button onclick="toddlerTap(\'C\')">⌫</button>'}`;
+}
+
+function newToddlerReadQ() {
+    const n = Math.floor(Math.random() * 10) + 1;
+    state.toddlerAns = n.toString();
+    state.toddlerInput = '';
+    document.getElementById('toddlerScreen').innerHTML =
+        `<div style="font-size:6rem;font-weight:900;color:#334155;">${n}</div>`;
+    document.getElementById('toddlerInput').textContent = '---';
+    say(n.toString());
+}
+
+function toddlerTap(v) {
+    if (state.toddlerTab === 'tap') {
+        if (v === 'C' || v === 'OK') return;
+        document.getElementById('toddlerScreen').innerHTML =
+            `<div class="bounce" style="font-size:6rem;font-weight:900;color:#0ea5e9;">${v}</div>`;
+        say(v); return;
+    }
+    if (v === 'C') { state.toddlerInput = ''; document.getElementById('toddlerInput').textContent = '---'; return; }
+    if (v === 'OK') {
+        if (state.toddlerInput === state.toddlerAns) {
+            say('Correct! Well done!', () => setTimeout(newToddlerReadQ, 600));
         } else {
-            n1 = Math.floor(Math.random() * state.range) + 1;
-            if (state.mode === 'addition') {
-                n2 = Math.floor(Math.random() * 9) + 1; state.ans = (n1+n2).toString();
-                html = `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3.5rem;font-weight:900;color:#1e293b;line-height:1;"><div>${n1}</div><div>+ ${n2}</div><div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div></div>`;
-                speech = n1 + ' plus ' + n2;
-            } else if (state.mode === 'subtraction') {
-                n2 = Math.floor(Math.random() * n1); state.ans = (n1-n2).toString();
-                html = `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3.5rem;font-weight:900;color:#1e293b;line-height:1;"><div>${n1}</div><div>- ${n2}</div><div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div></div>`;
-                speech = n1 + ' minus ' + n2;
-            } else {
-                state.ans = n1.toString();
-                html = `<div style="font-size:5rem;font-weight:900;color:#334155;">${n1}</div>`;
-                speech = n1.toString();
-            }
+            say('Try again!', () => { state.toddlerInput = ''; document.getElementById('toddlerInput').textContent = '---'; });
         }
-        document.getElementById('screen').innerHTML = html;
-        state.input = ''; document.getElementById('input').textContent = '---';
-        if (speech) say(speech);
+        return;
     }
+    if (state.toddlerInput.length < 2) state.toddlerInput += v;
+    document.getElementById('toddlerInput').textContent = state.toddlerInput || '---';
+}
 
-    function tap(v) {
-        if (!state.active) return;
-        if (state.mode === 'toddler' && v !== 'OK' && v !== 'C') {
-            document.getElementById('screen').innerHTML =
-                `<div class="bounce" style="font-size:5.5rem;font-weight:900;color:#0ea5e9;">${v}</div>`;
-            say(v); return;
-        }
-        if (v === 'C') state.input = '';
-        else if (v === 'OK') { check(); return; }
-        else if (state.input.length < 3) state.input += v;
-        document.getElementById('input').textContent = state.input || '---';
+/* ── REWARD ── */
+function reward() {
+    if (ac) {
+        const osc = ac.createOscillator(), gain = ac.createGain();
+        osc.connect(gain); gain.connect(ac.destination); osc.type = 'square';
+        osc.frequency.setValueAtTime(150, ac.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, ac.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.3, ac.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.5);
+        osc.start(); osc.stop(ac.currentTime + 0.5);
     }
-
-    function check() {
-        if (state.input === state.ans) {
-            state.score++; document.getElementById('score').textContent = 'Score: ' + state.score;
-            if (state.score % 5 === 0) reward();
-            else say('Correct!', () => setTimeout(newQ, 500));
-        } else {
-            say('Try again!', () => { state.input = ''; document.getElementById('input').textContent = '---'; });
-        }
+    const canvas = document.getElementById('confetti-canvas');
+    canvas.style.display = 'block';
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    const COLORS = ['#fbbf24','#f87171','#34d399','#60a5fa','#a78bfa','#fb923c'];
+    const pieces = Array.from({length: 80}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 8 + 4,
+        c: COLORS[Math.floor(Math.random() * COLORS.length)],
+        vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 3,
+        spin: Math.random() * 0.2 - 0.1, angle: Math.random() * Math.PI * 2
+    }));
+    let start = null;
+    function draw(ts) {
+        if (!start) start = ts;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+            p.y += p.vy; p.x += p.vx; p.angle += p.spin;
+            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+            ctx.fillStyle = p.c; ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
+            ctx.restore();
+        });
+        if (ts - start < 1800) requestAnimationFrame(draw);
+        else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
     }
+    requestAnimationFrame(draw);
+    say('Excellent! Superstar!', () => setTimeout(() => toggleModal('downloadPopup'), 500));
+}
 
-    function reward() {
-        if (ac) {
-            const osc = ac.createOscillator(), gain = ac.createGain();
-            osc.connect(gain); gain.connect(ac.destination); osc.type = 'square';
-            osc.frequency.setValueAtTime(150, ac.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(40, ac.currentTime + 0.5);
-            gain.gain.setValueAtTime(0.3, ac.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.5);
-            osc.start(); osc.stop(ac.currentTime + 0.5);
-        }
-        const canvas = document.getElementById('confetti-canvas');
-        canvas.style.display = 'block';
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const ctx = canvas.getContext('2d');
-        const COLORS = ['#fbbf24','#f87171','#34d399','#60a5fa','#a78bfa','#fb923c'];
-        const pieces = Array.from({length: 80}, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height - canvas.height,
-            r: Math.random() * 8 + 4,
-            c: COLORS[Math.floor(Math.random() * COLORS.length)],
-            vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 3,
-            spin: Math.random() * 0.2 - 0.1, angle: Math.random() * Math.PI * 2
-        }));
-        let start = null;
-        function draw(ts) {
-            if (!start) start = ts;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            pieces.forEach(p => {
-                p.y += p.vy; p.x += p.vx; p.angle += p.spin;
-                ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
-                ctx.fillStyle = p.c; ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
-                ctx.restore();
-            });
-            if (ts - start < 1800) requestAnimationFrame(draw);
-            else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
-        }
-        requestAnimationFrame(draw);
-        say('Excellent! Superstar!', () => setTimeout(() => toggleModal('downloadPopup'), 500));
-    }
-
-    function say(t, cb) {
-        window.speechSynthesis.cancel();
-        const m = new SpeechSynthesisUtterance(t);
-        if (voice) m.voice = voice;
-        m.onend = () => { if (cb) cb(); };
-        window.speechSynthesis.speak(m);
-    }
-
-    function reset() { state.score = 0; document.getElementById('score').textContent = 'Score: 0'; newQ(); }
-    function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
+function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
 </script>
 </body>
 </html>
