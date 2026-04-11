@@ -36,6 +36,41 @@
         @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
         #fb-wall .skip-btn { background: none; border: 1px solid #334155; color: #64748b; padding: 10px 24px; border-radius: 99px; cursor: pointer; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
 
+        /* ── FB HINT ARROW (shows on welcome screen for FB users) ── */
+        #fb-hint {
+            position: fixed;
+            bottom: 42%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            pointer-events: none;
+        }
+        #fb-hint.show { display: flex; }
+        #fb-hint .hint-text {
+            background: #fbbf24;
+            color: #78350f;
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(251,191,36,0.4);
+        }
+        #fb-hint .hint-arrow {
+            font-size: 2rem;
+            animation: pulse-down 0.8s ease infinite;
+        }
+        @keyframes pulse-down {
+            0%,100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(8px); opacity: 0.6; }
+        }
+
         /* ── WELCOME SCREEN ── */
         .portal {
             position: fixed; inset: 0; background: #0f172a; z-index: 9999;
@@ -47,8 +82,36 @@
         .portal h1 { font-size: 2.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 0.25rem; }
         .portal-hint { font-size: 10px; color: #7dd3fc; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 3px; padding: 0 1.5rem; }
         .portal-buttons { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 280px; margin-bottom: 24px; }
-        .play-btn { background: #fbbf24; color: #78350f; padding: 1rem 2rem; border-radius: 99px; font-size: 1.2rem; font-weight: 900; box-shadow: 0 6px 0 #d97706; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; width: 100%; }
-        .toddler-btn { background: #0ea5e9; color: white; padding: 0.85rem 2rem; border-radius: 99px; font-size: 1rem; font-weight: 900; box-shadow: 0 5px 0 #0369a1; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; width: 100%; }
+        .play-btn {
+            background: #fbbf24; color: #78350f;
+            padding: 1rem 2rem; border-radius: 99px;
+            font-size: 1.2rem; font-weight: 900;
+            box-shadow: 0 6px 0 #d97706;
+            text-transform: uppercase; border: none; cursor: pointer;
+            -webkit-tap-highlight-color: transparent; width: 100%;
+            position: relative;
+        }
+        /* pulsing ring around Play Game button for FB users */
+        .play-btn.fb-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 99px;
+            border: 3px solid #fbbf24;
+            animation: ring-pulse 1.2s ease infinite;
+        }
+        @keyframes ring-pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.15); opacity: 0; }
+        }
+        .toddler-btn {
+            background: #0ea5e9; color: white;
+            padding: 0.85rem 2rem; border-radius: 99px;
+            font-size: 1rem; font-weight: 900;
+            box-shadow: 0 5px 0 #0369a1;
+            text-transform: uppercase; border: none; cursor: pointer;
+            -webkit-tap-highlight-color: transparent; width: 100%;
+        }
         .privacy-link { color: #38bdf8; font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 3px; border-top: 1px solid #1e3a5f; padding-top: 1rem; background: none; border-left: none; border-right: none; border-bottom: none; cursor: pointer; width: 10rem; }
 
         /* ── GAME CARD ── */
@@ -85,7 +148,7 @@
         .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; height: 50px; font-size: 1.6rem; font-weight: 700; color: #1e293b; box-shadow: 0 3px 0 #f1f5f9; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .ok-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; font-size: 1.1rem !important; }
 
-        /* ── TABLE DISPLAY ── */
+        /* ── TABLE ── */
         .table-line { font-size: 1.1rem; font-weight: 700; color: #1e293b; font-family: monospace; padding: 2px 0; border-bottom: 1px solid #f1f5f9; width: 100%; text-align: center; }
 
         /* ── TODDLER ── */
@@ -100,11 +163,7 @@
             text-align: center; padding: 30px;
         }
         #lockPopup.show { display: flex; }
-        .lock-box {
-            background: white; border-radius: 24px;
-            padding: 32px 24px; max-width: 300px; width: 100%;
-            border: 4px solid #fbbf24;
-        }
+        .lock-box { background: white; border-radius: 24px; padding: 32px 24px; max-width: 300px; width: 100%; border: 4px solid #fbbf24; }
         .lock-emoji { font-size: 3.5rem; margin-bottom: 0.75rem; }
         .lock-title { font-size: 1.3rem; font-weight: 900; color: #1e293b; text-transform: uppercase; margin-bottom: 0.5rem; }
         .lock-msg { font-size: 0.85rem; color: #64748b; line-height: 1.6; margin-bottom: 1.5rem; }
@@ -151,7 +210,13 @@
         <div class="step"><div class="step-num">3</div><span>🎉 Full game with <strong>voice &amp; sound!</strong></span></div>
     </div>
     <div class="arrow">👆</div>
-    <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">Continue anyway (no sound)</button>
+    <button class="skip-btn" onclick="dismissFbWall()">Continue anyway (no sound)</button>
+</div>
+
+<!-- FB HINT ARROW — shows on welcome screen for FB users -->
+<div id="fb-hint">
+    <div class="hint-text">👆 Tap here to play!</div>
+    <div class="hint-arrow">⬇️</div>
 </div>
 
 <!-- LOCK POPUP -->
@@ -159,7 +224,7 @@
     <div class="lock-box">
         <div class="lock-emoji">🔒</div>
         <div class="lock-title">Coming Soon!</div>
-        <div class="lock-msg">This feature is coming very soon!<br>Stay tuned for <strong>Missing Numbers</strong> &amp; <strong>Times Tables</strong> — the most exciting updates yet! 🚀</div>
+        <div class="lock-msg">This feature is coming very soon!<br>Stay tuned for <strong>Missing Numbers</strong> &amp; <strong>Times Tables</strong>! 🚀</div>
         <button class="lock-close" onclick="closeLock()">Got it!</button>
     </div>
 </div>
@@ -172,7 +237,7 @@
     <h1>123 Number Game</h1>
     <p class="portal-hint">Tap 3 dots (⋮) &amp; choose "Open in Browser"</p>
     <div class="portal-buttons">
-        <button onclick="openPlayGame()" class="play-btn">🎮 Play Game</button>
+        <button onclick="openPlayGame()" class="play-btn" id="playBtn">🎮 Play Game</button>
         <button onclick="openToddler()" class="toddler-btn">👶 Toddler Mode</button>
     </div>
     <button onclick="toggleModal('privacyModal')" class="privacy-link">Privacy Policy</button>
@@ -234,7 +299,6 @@
         <button onclick="resetGame()" class="util-btn">🔄</button>
     </div>
 
-    <!-- MODE ROW — Add & Sub FREE, Miss & Tables LOCKED -->
     <div class="mode-row">
         <button id="m-add"   onclick="setMode('addition')"    class="mode-btn m-active">Add</button>
         <button id="m-sub"   onclick="setMode('subtraction')" class="mode-btn m-inactive">Sub</button>
@@ -279,21 +343,31 @@
 
 <script>
 /* ── FB DETECTION ── */
-(function() {
+var isFBBrowser = (function() {
     var ua = navigator.userAgent || '';
-    var isFB = ua.indexOf('FBAN') > -1 || ua.indexOf('FBAV') > -1 ||
-               ua.indexOf('FB_IAB') > -1 || ua.indexOf('FBIOS') > -1 ||
-               ua.indexOf('Instagram') > -1;
-    if (isFB) document.getElementById('fb-wall').classList.add('show');
+    return ua.indexOf('FBAN') > -1 || ua.indexOf('FBAV') > -1 ||
+           ua.indexOf('FB_IAB') > -1 || ua.indexOf('FBIOS') > -1 ||
+           ua.indexOf('Instagram') > -1;
 })();
 
+/* Show FB wall if on FB browser */
+if (isFBBrowser) {
+    document.getElementById('fb-wall').classList.add('show');
+}
+
+/* Dismiss FB wall → show hint arrow on welcome screen */
+function dismissFbWall() {
+    document.getElementById('fb-wall').classList.remove('show');
+    if (isFBBrowser) {
+        /* show pulsing hint arrow + ring on play button */
+        document.getElementById('fb-hint').classList.add('show');
+        document.getElementById('playBtn').classList.add('fb-pulse');
+    }
+}
+
 /* ── LOCK POPUP ── */
-function showLock() {
-    document.getElementById('lockPopup').classList.add('show');
-}
-function closeLock() {
-    document.getElementById('lockPopup').classList.remove('show');
-}
+function showLock() { document.getElementById('lockPopup').classList.add('show'); }
+function closeLock() { document.getElementById('lockPopup').classList.remove('show'); }
 
 /* ── STATE ── */
 let state = {
@@ -335,6 +409,9 @@ function backToHome() {
 }
 
 function openPlayGame() {
+    /* hide hint when they tap play */
+    document.getElementById('fb-hint').classList.remove('show');
+    document.getElementById('playBtn').classList.remove('fb-pulse');
     initAudio(); findVoice();
     document.getElementById('welcome').style.transform = 'translateY(-100%)';
     document.getElementById('playCard').classList.remove('hidden');
@@ -343,6 +420,9 @@ function openPlayGame() {
 }
 
 function openToddler() {
+    /* hide hint when they tap toddler */
+    document.getElementById('fb-hint').classList.remove('show');
+    document.getElementById('playBtn').classList.remove('fb-pulse');
     initAudio(); findVoice();
     document.getElementById('welcome').style.transform = 'translateY(-100%)';
     document.getElementById('toddlerCard').classList.remove('hidden');
@@ -378,7 +458,6 @@ function newQ() {
         state.ans = (n1 + n2).toString();
         html = mathBox(n1, '+', n2);
         speech = n1 + ' plus ' + n2;
-
     } else if (state.mode === 'subtraction') {
         n2 = Math.floor(Math.random() * n1);
         state.ans = (n1 - n2).toString();
