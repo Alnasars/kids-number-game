@@ -36,7 +36,7 @@
         @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
         #fb-wall .skip-btn { background: none; border: 1px solid #334155; color: #64748b; padding: 10px 24px; border-radius: 99px; cursor: pointer; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
 
-        /* ── FB HINT ARROW ── */
+        /* ── FB HINT ── */
         #fb-hint {
             position: fixed; bottom: 42%; left: 50%;
             transform: translateX(-50%); z-index: 10000;
@@ -44,18 +44,33 @@
             align-items: center; gap: 6px; pointer-events: none;
         }
         #fb-hint.show { display: flex; }
-        #fb-hint .hint-text {
-            background: #fbbf24; color: #78350f;
-            padding: 6px 16px; border-radius: 99px;
-            font-size: 0.8rem; font-weight: 900;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            white-space: nowrap; box-shadow: 0 4px 12px rgba(251,191,36,0.4);
-        }
+        #fb-hint .hint-text { background: #fbbf24; color: #78350f; padding: 6px 16px; border-radius: 99px; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; white-space: nowrap; }
         #fb-hint .hint-arrow { font-size: 2rem; animation: pulse-down 0.8s ease infinite; }
-        @keyframes pulse-down {
-            0%,100% { transform: translateY(0); opacity: 1; }
-            50% { transform: translateY(8px); opacity: 0.6; }
+        @keyframes pulse-down { 0%,100% { transform: translateY(0); opacity:1; } 50% { transform: translateY(8px); opacity:0.6; } }
+
+        /* ── NEW FEATURE POPUP ── */
+        #newFeaturePopup {
+            position: fixed; inset: 0; z-index: 99998;
+            background: rgba(15,23,42,0.92);
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 30px;
         }
+        #newFeaturePopup.show { display: flex; }
+        .nf-box {
+            background: white; border-radius: 24px;
+            padding: 28px 24px; max-width: 300px; width: 100%;
+            border: 4px solid #10b981;
+            animation: pop-in 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+        }
+        @keyframes pop-in { 0% { transform: scale(0.7); opacity:0; } 100% { transform: scale(1); opacity:1; } }
+        .nf-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
+        .nf-badge { display: inline-block; background: #dcfce7; color: #166534; padding: 3px 12px; border-radius: 99px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; }
+        .nf-title { font-size: 1.2rem; font-weight: 900; color: #1e293b; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .nf-list { text-align: left; margin-bottom: 1.2rem; padding: 0 8px; }
+        .nf-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #334155; margin-bottom: 8px; font-weight: 700; }
+        .nf-item span { font-size: 1.1rem; }
+        .nf-close { background: #10b981; color: white; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 900; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 0 #065f46; width: 100%; -webkit-tap-highlight-color: transparent; }
 
         /* ── WELCOME SCREEN ── */
         .portal {
@@ -78,10 +93,7 @@
             content: ''; position: absolute; inset: -4px; border-radius: 99px;
             border: 3px solid #fbbf24; animation: ring-pulse 1.2s ease infinite;
         }
-        @keyframes ring-pulse {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.15); opacity: 0; }
-        }
+        @keyframes ring-pulse { 0% { transform: scale(1); opacity:1; } 100% { transform: scale(1.15); opacity:0; } }
         .toddler-btn {
             background: #0ea5e9; color: white; padding: 0.85rem 2rem; border-radius: 99px;
             font-size: 1rem; font-weight: 900; box-shadow: 0 5px 0 #0369a1;
@@ -91,7 +103,14 @@
         .privacy-link { color: #38bdf8; font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 3px; border-top: 1px solid #1e3a5f; padding-top: 1rem; background: none; border-left: none; border-right: none; border-bottom: none; cursor: pointer; width: 10rem; }
 
         /* ── GAME CARD ── */
-        .game-card { background: #ffffff; border-radius: 24px; padding: 16px; width: 92vw; max-width: 360px; height: 86vh; max-height: 650px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; position: relative; z-index: 10; }
+        .game-card {
+            background: #ffffff; border-radius: 24px; padding: 16px;
+            width: 92vw; max-width: 380px;
+            height: 90vh; max-height: 680px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            display: flex; flex-direction: column;
+            position: relative; z-index: 10;
+        }
         .close-trigger { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 3px solid white; cursor: pointer; z-index: 100; font-size: 0.85rem; }
 
         /* ── TABS ── */
@@ -105,45 +124,65 @@
         .util-btn { flex: 1; height: 34px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 900; background: #f8fafc; cursor: pointer; color: #1e293b; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
         .util-btn-wa { background: #25D366; color: white; border: none; font-size: 10px; }
 
-        /* ── MODE ROW ── */
-        .mode-row { display: flex; gap: 4px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
-        .mode-btn { flex: 1; padding: 7px 2px; border-radius: 6px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 40px; }
+        /* ── MODE ROW — BIGGER BUTTONS ✅ ── */
+        .mode-row { display: flex; gap: 3px; margin-bottom: 8px; align-items: center; }
+        .mode-btn {
+            flex: 1; padding: 9px 2px; border-radius: 8px;
+            font-size: 10px; font-weight: 900;
+            text-transform: uppercase; border: none; cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
         .m-active { background: #0ea5e9; color: white; }
         .m-inactive { background: #e2e8f0; color: #334155; }
-        .m-locked { background: #f1f5f9; color: #94a3b8; border: 1px dashed #cbd5e1; }
-        .score-box { background: #fef9c3; color: #a16207; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; white-space: nowrap; }
+        .m-miss-add { background: #dcfce7; color: #166534; }
+        .m-miss-add.m-active { background: #10b981; color: white; }
+        .m-miss-sub { background: #fee2e2; color: #991b1b; }
+        .m-miss-sub.m-active { background: #ef4444; color: white; }
 
         /* ── SCREEN ── */
-        .screen { background: #f8fafc; border-radius: 20px; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 2px solid #f1f5f9; position: relative; flex-direction: column; gap: 8px; overflow-y: auto; padding: 8px; }
+        .screen {
+            background: #f8fafc; border-radius: 20px; flex-grow: 1;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 8px; border: 2px solid #f1f5f9;
+            position: relative; flex-direction: column;
+            gap: 8px; overflow-y: auto; padding: 8px;
+        }
 
-        /* ── INPUT ── */
-        .input-display { text-align: center; font-size: 1.875rem; font-weight: 900; color: #0ea5e9; margin-bottom: 0.5rem; height: 2rem; letter-spacing: 4px; text-transform: uppercase; }
+        /* ── INPUT ROW WITH SCORE ── */
+        .input-row { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; }
+        .input-display {
+            flex: 1; text-align: center; font-size: 1.6rem; font-weight: 900;
+            color: #0ea5e9; letter-spacing: 4px; text-transform: uppercase;
+            background: #f0f9ff; border-radius: 10px; padding: 6px 8px;
+            border: 2px solid #bae6fd; min-height: 44px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .score-box {
+            background: #fef9c3; color: #a16207;
+            padding: 6px 10px; border-radius: 10px;
+            font-size: 9px; font-weight: 900; white-space: nowrap;
+            border: 2px solid #fde68a; text-align: center; min-width: 56px;
+        }
 
         /* ── NUMPAD ── */
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
-        .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; height: 50px; font-size: 1.6rem; font-weight: 700; color: #1e293b; box-shadow: 0 3px 0 #f1f5f9; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .ok-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; font-size: 1.1rem !important; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; height: 48px; font-size: 1.5rem; font-weight: 700; color: #1e293b; box-shadow: 0 3px 0 #f1f5f9; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .ok-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; font-size: 1rem !important; }
 
         /* ── TABLE ── */
-        .table-line { font-size: 1.1rem; font-weight: 700; color: #1e293b; font-family: monospace; padding: 2px 0; border-bottom: 1px solid #f1f5f9; width: 100%; text-align: center; }
+        .table-line { font-size: 1.3rem; font-weight: 700; color: #1e293b; font-family: monospace; padding: 4px 0; border-bottom: 1px solid #f1f5f9; width: 100%; text-align: center; }
+
+        /* ── TABLE BACK BTN — inside screen now ✅ ── */
+        .table-back-btn {
+            background: #0ea5e9; color: white; border: none;
+            padding: 8px 20px; border-radius: 10px;
+            font-weight: 900; font-size: 0.8rem; cursor: pointer;
+            text-transform: uppercase; box-shadow: 0 3px 0 #0369a1;
+            margin-top: 8px; -webkit-tap-highlight-color: transparent;
+        }
 
         /* ── TODDLER ── */
         .toddler-instruction { font-size: 0.75rem; color: #94a3b8; text-align: center; margin-bottom: 6px; font-style: italic; padding: 0 8px; }
-
-        /* ── LOCK POPUP ── */
-        #lockPopup {
-            position: fixed; inset: 0; z-index: 30000;
-            background: rgba(15,23,42,0.85);
-            display: none; flex-direction: column;
-            align-items: center; justify-content: center;
-            text-align: center; padding: 30px;
-        }
-        #lockPopup.show { display: flex; }
-        .lock-box { background: white; border-radius: 24px; padding: 32px 24px; max-width: 300px; width: 100%; border: 4px solid #fbbf24; }
-        .lock-emoji { font-size: 3.5rem; margin-bottom: 0.75rem; }
-        .lock-title { font-size: 1.3rem; font-weight: 900; color: #1e293b; text-transform: uppercase; margin-bottom: 0.5rem; }
-        .lock-msg { font-size: 0.85rem; color: #64748b; line-height: 1.6; margin-bottom: 1.5rem; }
-        .lock-close { background: #fbbf24; color: #78350f; border: none; padding: 0.85rem 2rem; border-radius: 99px; font-weight: 900; font-size: 1rem; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 0 #d97706; width: 100%; }
 
         /* ── MODALS ── */
         .global-modal { position: fixed; inset: 0; background: white; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
@@ -189,19 +228,25 @@
     <button class="skip-btn" onclick="dismissFbWall()">Continue anyway (no sound)</button>
 </div>
 
-<!-- FB HINT ARROW -->
+<!-- FB HINT -->
 <div id="fb-hint">
     <div class="hint-text">👆 Tap here to play!</div>
     <div class="hint-arrow">⬇️</div>
 </div>
 
-<!-- LOCK POPUP -->
-<div id="lockPopup">
-    <div class="lock-box">
-        <div class="lock-emoji">🔒</div>
-        <div class="lock-title">Coming Soon!</div>
-        <div class="lock-msg">This feature is coming very soon!<br>Stay tuned for <strong>Missing Numbers</strong> &amp; <strong>Times Tables</strong>! 🚀</div>
-        <button class="lock-close" onclick="closeLock()">Got it!</button>
+<!-- NEW FEATURE POPUP -->
+<div id="newFeaturePopup">
+    <div class="nf-box">
+        <div class="nf-emoji">🎉</div>
+        <div class="nf-badge">🆕 New Update!</div>
+        <div class="nf-title">New Modes Unlocked!</div>
+        <div class="nf-list">
+            <div class="nf-item"><span>🔢</span> Missing Numbers — FREE!</div>
+            <div class="nf-item"><span>📖</span> Times Tables 1-25 — FREE!</div>
+            <div class="nf-item"><span>🔊</span> Voice reads everything!</div>
+            <div class="nf-item"><span>✅</span> No download. No signup.</div>
+        </div>
+        <button class="nf-close" onclick="closeNewFeature()">Let's Play! 🚀</button>
     </div>
 </div>
 
@@ -224,7 +269,7 @@
     <div class="policy-container">
         <h2>Privacy Policy</h2>
         <div class="policy-scroll">
-            <p>Last Updated: March 2026</p>
+            <p>Last Updated: April 2026</p>
             <b>1. Introduction</b> 123 Number Game is an educational tool built for children. We strictly follow COPPA guidelines.
             <b>2. No Data Collection</b> We do not collect, store, share, or sell any personal data.
             <b>3. Safe Advertisements</b> Any ads are family-appropriate and follow Google Play/App Store policies.
@@ -260,10 +305,15 @@
     <div id="setMenu" class="global-modal modal-transparent hidden">
         <div class="policy-container">
             <h2 class="sky">Settings</h2><br>
-            <p style="font-size:11px;color:#64748b;margin-bottom:12px;">Number Range for Add &amp; Sub</p>
+            <p style="font-size:11px;color:#64748b;margin-bottom:12px;">Number Range for Add, Sub &amp; Missing</p>
             <button onclick="setLvl(10)"  class="lvl-btn lvl-sky">Numbers 1 - 10</button>
             <button onclick="setLvl(20)"  class="lvl-btn lvl-gray">Numbers 1 - 20</button>
-            <button onclick="setLvl(100)" class="lvl-btn lvl-gray" style="margin-bottom:16px;">Numbers 1 - 100</button>
+            <button onclick="setLvl(100)" class="lvl-btn lvl-gray" style="margin-bottom:8px;">Numbers 1 - 100</button>
+            <hr style="border:1px solid #e2e8f0;margin:8px 0;">
+            <p style="font-size:11px;color:#64748b;margin-bottom:12px;">Tables Range</p>
+            <button onclick="setTableRange(3)"  class="lvl-btn lvl-sky">Tables 1 - 3</button>
+            <button onclick="setTableRange(10)" class="lvl-btn lvl-gray">Tables 1 - 10</button>
+            <button onclick="setTableRange(25)" class="lvl-btn lvl-gray" style="margin-bottom:16px;">Tables 1 - 25</button>
             <button onclick="toggleModal('setMenu')" class="btn-back">Back</button>
         </div>
     </div>
@@ -275,16 +325,23 @@
         <button onclick="resetGame()" class="util-btn">🔄</button>
     </div>
 
+    <!-- MODE ROW — bigger font ✅ -->
     <div class="mode-row">
-        <button id="m-add"   onclick="setMode('addition')"    class="mode-btn m-active">Add</button>
-        <button id="m-sub"   onclick="setMode('subtraction')" class="mode-btn m-inactive">Sub</button>
-        <button id="m-miss"  onclick="showLock()"             class="mode-btn m-locked">🔒 Miss</button>
-        <button id="m-table" onclick="showLock()"             class="mode-btn m-locked">🔒 Tables</button>
-        <div id="score" class="score-box">Score: 0</div>
+        <button id="m-add"    onclick="setMode('addition')"    class="mode-btn m-active">➕ Add</button>
+        <button id="m-sub"    onclick="setMode('subtraction')" class="mode-btn m-inactive">➖ Sub</button>
+        <button id="m-miss-a" onclick="setMode('missing-add')" class="mode-btn m-miss-add">M➕</button>
+        <button id="m-miss-s" onclick="setMode('missing-sub')" class="mode-btn m-miss-sub">M➖</button>
+        <button id="m-table"  onclick="setMode('tables')"      class="mode-btn m-inactive">📖</button>
     </div>
 
+    <!-- SCREEN — table back button goes INSIDE here ✅ -->
     <div id="screen" class="screen"></div>
-    <div id="input" class="input-display">---</div>
+
+    <!-- INPUT ROW WITH SCORE -->
+    <div class="input-row">
+        <div class="input-display" id="input">---</div>
+        <div class="score-box" id="score">Score<br>0</div>
+    </div>
 
     <div id="numpadArea" class="numpad">
         <button onclick="tap('1')">1</button><button onclick="tap('2')">2</button><button onclick="tap('3')">3</button>
@@ -298,16 +355,13 @@
 <!-- TODDLER CARD -->
 <div id="toddlerCard" class="game-card hidden">
     <div onclick="backToHome()" class="close-trigger">✕</div>
-
     <div class="tab-row">
         <button id="t-tap"  onclick="setToddlerTab('tap')"  class="tab-btn tab-active">👆 Tap &amp; Learn</button>
         <button id="t-read" onclick="setToddlerTab('read')" class="tab-btn tab-inactive">👀 Read Numbers</button>
     </div>
-
     <div class="toddler-instruction" id="toddlerInstruction">Tap any number button!</div>
     <div id="toddlerScreen" class="screen"></div>
-    <div id="toddlerInput" class="input-display hidden">---</div>
-
+    <div id="toddlerInput" class="input-display" style="margin-bottom:8px;display:none;">---</div>
     <div id="toddlerNumpad" class="numpad">
         <button onclick="toddlerTap('1')">1</button><button onclick="toddlerTap('2')">2</button><button onclick="toddlerTap('3')">3</button>
         <button onclick="toddlerTap('4')">4</button><button onclick="toddlerTap('5')">5</button><button onclick="toddlerTap('6')">6</button>
@@ -325,10 +379,7 @@ var isFBBrowser = (function() {
            ua.indexOf('FB_IAB') > -1 || ua.indexOf('FBIOS') > -1 ||
            ua.indexOf('Instagram') > -1;
 })();
-
-if (isFBBrowser) {
-    document.getElementById('fb-wall').classList.add('show');
-}
+if (isFBBrowser) document.getElementById('fb-wall').classList.add('show');
 
 function dismissFbWall() {
     document.getElementById('fb-wall').classList.remove('show');
@@ -338,14 +389,27 @@ function dismissFbWall() {
     }
 }
 
-/* ── LOCK ── */
-function showLock() { document.getElementById('lockPopup').classList.add('show'); }
-function closeLock() { document.getElementById('lockPopup').classList.remove('show'); }
+/* ── NEW FEATURE POPUP ── */
+window.addEventListener('load', function() {
+    if (!sessionStorage.getItem('nf_shown')) {
+        setTimeout(function() {
+            if (!isFBBrowser) {
+                document.getElementById('newFeaturePopup').classList.add('show');
+                sessionStorage.setItem('nf_shown', '1');
+            }
+        }, 1500);
+    }
+});
+function closeNewFeature() {
+    document.getElementById('newFeaturePopup').classList.remove('show');
+}
 
 /* ── STATE ── */
 let state = {
     mode: 'addition', score: 0, range: 10,
     ans: '', input: '', active: false,
+    tableRange: 3, tableNum: 0, tablePhase: 'input',
+    missingData: {},
     toddlerTab: 'tap', toddlerInput: '', toddlerAns: ''
 };
 let voice = null, ac = null;
@@ -403,18 +467,23 @@ function openToddler() {
 function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
 function playHelpAudio() { say("Look at the problem, type the answer, and press OK!"); }
 function setLvl(l) { state.range = l; toggleModal('setMenu'); resetGame(); }
+function setTableRange(r) { state.tableRange = r; toggleModal('setMenu'); if (state.mode === 'tables') showTableInput(); }
+
+/* ── UPDATE SCORE ── */
+function updateScore() {
+    document.getElementById('score').innerHTML = 'Score<br>' + state.score;
+}
 
 /* ── MODE ── */
 function setMode(m) {
     state.mode = m;
-    const map = {'m-add':'addition','m-sub':'subtraction'};
-    ['m-add','m-sub'].forEach(id => {
-        const b = document.getElementById(id);
-        if (!b) return;
-        b.className = 'mode-btn ' + (map[id] === m ? 'm-active' : 'm-inactive');
-    });
-    showNumpad(true);
-    newQ();
+    document.getElementById('m-add').className    = 'mode-btn ' + (m==='addition'    ? 'm-active' : 'm-inactive');
+    document.getElementById('m-sub').className    = 'mode-btn ' + (m==='subtraction' ? 'm-active' : 'm-inactive');
+    document.getElementById('m-miss-a').className = 'mode-btn m-miss-add' + (m==='missing-add' ? ' m-active' : '');
+    document.getElementById('m-miss-s').className = 'mode-btn m-miss-sub' + (m==='missing-sub' ? ' m-active' : '');
+    document.getElementById('m-table').className  = 'mode-btn ' + (m==='tables'      ? 'm-active' : 'm-inactive');
+    if (m === 'tables') { showTableInput(); }
+    else { showNumpad(true); newQ(); }
 }
 
 /* ── NEW QUESTION ── */
@@ -424,7 +493,6 @@ function newQ() {
     n1 = Math.floor(Math.random() * r) + 1;
 
     if (state.mode === 'addition') {
-        /* ✅ FIXED — n2 now uses full range like subtraction */
         n2 = Math.floor(Math.random() * r) + 1;
         state.ans = (n1 + n2).toString();
         html = mathBox(n1, '+', n2);
@@ -435,6 +503,26 @@ function newQ() {
         state.ans = (n1 - n2).toString();
         html = mathBox(n1, '-', n2);
         speech = n1 + ' minus ' + n2;
+
+    } else if (state.mode === 'missing-add') {
+        n2 = Math.floor(Math.random() * r) + 1;
+        const sum = n1 + n2;
+        const pos = Math.floor(Math.random() * 3);
+        state.missingData = { a: n1, op: 'plus', b: n2, result: sum };
+        if (pos === 0) { state.ans = n1.toString(); html = missingBox('?', '+', n2, sum); }
+        else if (pos === 1) { state.ans = n2.toString(); html = missingBox(n1, '+', '?', sum); }
+        else { state.ans = sum.toString(); html = missingBox(n1, '+', n2, '?'); }
+        speech = 'What is the missing number?';
+
+    } else if (state.mode === 'missing-sub') {
+        n2 = Math.floor(Math.random() * n1);
+        const diff = n1 - n2;
+        const pos = Math.floor(Math.random() * 3);
+        state.missingData = { a: n1, op: 'minus', b: n2, result: diff };
+        if (pos === 0) { state.ans = n1.toString(); html = missingBox('?', '-', n2, diff); }
+        else if (pos === 1) { state.ans = n2.toString(); html = missingBox(n1, '-', '?', diff); }
+        else { state.ans = diff.toString(); html = missingBox(n1, '-', n2, '?'); }
+        speech = 'What is the missing number?';
     }
 
     document.getElementById('screen').innerHTML = html;
@@ -451,7 +539,56 @@ function mathBox(n1, op, n2) {
     </div>`;
 }
 
-/* ── NUMPAD ── */
+/* ── MISSING BOX ── */
+function missingBox(a, op, b, result) {
+    const qs = 'color:#ef4444;'; const ns = 'color:#1e293b;';
+    return `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3rem;font-weight:900;line-height:1.1;">
+        <div style="${a==='?'?qs:ns}">${a}</div>
+        <div style="${b==='?'?qs:ns}">${op} ${b}</div>
+        <div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div>
+        <div style="${result==='?'?qs:ns}">${result}</div>
+    </div>`;
+}
+
+/* ── TABLES ── */
+function showTableInput() {
+    state.tablePhase = 'input';
+    state.tableNum = 0;
+    showNumpad(true);
+    state.input = '';
+    document.getElementById('input').textContent = '---';
+    document.getElementById('screen').innerHTML = `
+        <div class="table-input-screen">
+            <div class="table-prompt">Which table do you want?</div>
+            <div class="table-range-hint">Enter 1 to ${state.tableRange}<br>
+            <span style="font-size:10px;color:#94a3b8;">⚙️ Settings to change range</span></div>
+            <div style="font-size:3rem;">📖</div>
+        </div>`;
+    say('Which table do you want? Enter a number from 1 to ' + state.tableRange);
+}
+
+function showTableDisplay(num) {
+    state.tablePhase = 'show';
+    state.tableNum = num;
+    /* ✅ Hide numpad completely for tables */
+    document.getElementById('numpadArea').innerHTML = '';
+    document.getElementById('input').textContent = '';
+
+    let html = `<div style="width:100%;padding:4px 0;">`;
+    let speech = 'Table of ' + num + '. ';
+    for (let i = 1; i <= 10; i++) {
+        const result = num * i;
+        html += `<div class="table-line">${num} &times; ${i} = ${result}</div>`;
+        speech += num + ' times ' + i + ' equals ' + result + '. ';
+    }
+    /* ✅ Back button INSIDE screen area */
+    html += `</div>
+        <button class="table-back-btn" onclick="showTableInput()">← New Table</button>`;
+
+    document.getElementById('screen').innerHTML = html;
+    say(speech);
+}
+
 function showNumpad(show) {
     if (show) {
         document.getElementById('numpadArea').innerHTML = `
@@ -466,6 +603,20 @@ function showNumpad(show) {
 /* ── TAP ── */
 function tap(v) {
     if (!state.active) return;
+    if (state.mode === 'tables' && state.tablePhase === 'input') {
+        if (v === 'C') { state.input = ''; document.getElementById('input').textContent = '---'; return; }
+        if (v === 'OK') {
+            const num = parseInt(state.input);
+            if (!num || num < 1 || num > state.tableRange) {
+                say('Please enter a number from 1 to ' + state.tableRange);
+                state.input = ''; document.getElementById('input').textContent = '---';
+            } else { showTableDisplay(num); }
+            return;
+        }
+        if (state.input.length < 2) state.input += v;
+        document.getElementById('input').textContent = state.input || '---';
+        return;
+    }
     if (v === 'C') { state.input = ''; document.getElementById('input').textContent = '---'; }
     else if (v === 'OK') { check(); return; }
     else if (state.input.length < 3) state.input += v;
@@ -476,9 +627,16 @@ function tap(v) {
 function check() {
     if (state.input === state.ans) {
         state.score++;
-        document.getElementById('score').textContent = 'Score: ' + state.score;
-        if (state.score % 5 === 0) reward();
-        else say('Correct!', () => setTimeout(newQ, 500));
+        updateScore();
+        if (state.mode === 'missing-add' || state.mode === 'missing-sub') {
+            const d = state.missingData;
+            const fullSpeech = d.a + ' ' + d.op + ' ' + d.b + ' equals ' + d.result + '! Correct!';
+            if (state.score % 5 === 0) say(fullSpeech, () => reward());
+            else say(fullSpeech, () => setTimeout(newQ, 600));
+        } else {
+            if (state.score % 5 === 0) reward();
+            else say('Correct!', () => setTimeout(newQ, 500));
+        }
     } else {
         say('Try again!', () => {
             state.input = '';
@@ -490,28 +648,28 @@ function check() {
 /* ── RESET ── */
 function resetGame() {
     state.score = 0; state.input = '';
-    document.getElementById('score').textContent = 'Score: 0';
-    newQ();
+    updateScore();
+    if (state.mode === 'tables') showTableInput();
+    else newQ();
 }
 
 /* ── TODDLER MODE ── */
 function setToddlerTab(tab) {
-    state.toddlerTab = tab;
-    state.toddlerInput = '';
-    document.getElementById('t-tap').className  = 'tab-btn ' + (tab === 'tap'  ? 'tab-active' : 'tab-inactive');
-    document.getElementById('t-read').className = 'tab-btn ' + (tab === 'read' ? 'tab-active' : 'tab-inactive');
+    state.toddlerTab = tab; state.toddlerInput = '';
+    document.getElementById('t-tap').className  = 'tab-btn ' + (tab==='tap'  ? 'tab-active':'tab-inactive');
+    document.getElementById('t-read').className = 'tab-btn ' + (tab==='read' ? 'tab-active':'tab-inactive');
     const instrEl = document.getElementById('toddlerInstruction');
     const inputEl = document.getElementById('toddlerInput');
     const screenEl = document.getElementById('toddlerScreen');
     if (tab === 'tap') {
         instrEl.textContent = 'Tap any number to learn it!';
-        inputEl.classList.add('hidden');
+        inputEl.style.display = 'none';
         screenEl.innerHTML = '<div style="font-size:1.1rem;color:#cbd5e1;font-weight:700;text-align:center;">👆 Tap a number below!</div>';
         rebuildToddlerNumpad(false);
         say('Welcome to Tap and Learn! Tap any number button to learn it!');
     } else {
         instrEl.textContent = 'Look at the number, then type it!';
-        inputEl.classList.remove('hidden');
+        inputEl.style.display = 'flex';
         inputEl.textContent = '---';
         rebuildToddlerNumpad(true);
         newToddlerReadQ();
@@ -537,8 +695,7 @@ function rebuildToddlerNumpad(showOK) {
 
 function newToddlerReadQ() {
     const n = Math.floor(Math.random() * 10) + 1;
-    state.toddlerAns = n.toString();
-    state.toddlerInput = '';
+    state.toddlerAns = n.toString(); state.toddlerInput = '';
     document.getElementById('toddlerScreen').innerHTML =
         `<div style="font-size:6rem;font-weight:900;color:#334155;">${n}</div>`;
     document.getElementById('toddlerInput').textContent = '---';
