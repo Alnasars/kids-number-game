@@ -36,36 +36,22 @@
         @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
         #fb-wall .skip-btn { background: none; border: 1px solid #334155; color: #64748b; padding: 10px 24px; border-radius: 99px; cursor: pointer; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
 
-        /* ── FB HINT ARROW (shows on welcome screen for FB users) ── */
+        /* ── FB HINT ARROW ── */
         #fb-hint {
-            position: fixed;
-            bottom: 42%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            pointer-events: none;
+            position: fixed; bottom: 42%; left: 50%;
+            transform: translateX(-50%); z-index: 10000;
+            display: none; flex-direction: column;
+            align-items: center; gap: 6px; pointer-events: none;
         }
         #fb-hint.show { display: flex; }
         #fb-hint .hint-text {
-            background: #fbbf24;
-            color: #78350f;
-            padding: 6px 16px;
-            border-radius: 99px;
-            font-size: 0.8rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(251,191,36,0.4);
+            background: #fbbf24; color: #78350f;
+            padding: 6px 16px; border-radius: 99px;
+            font-size: 0.8rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; box-shadow: 0 4px 12px rgba(251,191,36,0.4);
         }
-        #fb-hint .hint-arrow {
-            font-size: 2rem;
-            animation: pulse-down 0.8s ease infinite;
-        }
+        #fb-hint .hint-arrow { font-size: 2rem; animation: pulse-down 0.8s ease infinite; }
         @keyframes pulse-down {
             0%,100% { transform: translateY(0); opacity: 1; }
             50% { transform: translateY(8px); opacity: 0.6; }
@@ -83,32 +69,22 @@
         .portal-hint { font-size: 10px; color: #7dd3fc; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 3px; padding: 0 1.5rem; }
         .portal-buttons { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 280px; margin-bottom: 24px; }
         .play-btn {
-            background: #fbbf24; color: #78350f;
-            padding: 1rem 2rem; border-radius: 99px;
-            font-size: 1.2rem; font-weight: 900;
-            box-shadow: 0 6px 0 #d97706;
+            background: #fbbf24; color: #78350f; padding: 1rem 2rem; border-radius: 99px;
+            font-size: 1.2rem; font-weight: 900; box-shadow: 0 6px 0 #d97706;
             text-transform: uppercase; border: none; cursor: pointer;
-            -webkit-tap-highlight-color: transparent; width: 100%;
-            position: relative;
+            -webkit-tap-highlight-color: transparent; width: 100%; position: relative;
         }
-        /* pulsing ring around Play Game button for FB users */
         .play-btn.fb-pulse::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 99px;
-            border: 3px solid #fbbf24;
-            animation: ring-pulse 1.2s ease infinite;
+            content: ''; position: absolute; inset: -4px; border-radius: 99px;
+            border: 3px solid #fbbf24; animation: ring-pulse 1.2s ease infinite;
         }
         @keyframes ring-pulse {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(1.15); opacity: 0; }
         }
         .toddler-btn {
-            background: #0ea5e9; color: white;
-            padding: 0.85rem 2rem; border-radius: 99px;
-            font-size: 1rem; font-weight: 900;
-            box-shadow: 0 5px 0 #0369a1;
+            background: #0ea5e9; color: white; padding: 0.85rem 2rem; border-radius: 99px;
+            font-size: 1rem; font-weight: 900; box-shadow: 0 5px 0 #0369a1;
             text-transform: uppercase; border: none; cursor: pointer;
             -webkit-tap-highlight-color: transparent; width: 100%;
         }
@@ -213,7 +189,7 @@
     <button class="skip-btn" onclick="dismissFbWall()">Continue anyway (no sound)</button>
 </div>
 
-<!-- FB HINT ARROW — shows on welcome screen for FB users -->
+<!-- FB HINT ARROW -->
 <div id="fb-hint">
     <div class="hint-text">👆 Tap here to play!</div>
     <div class="hint-arrow">⬇️</div>
@@ -350,22 +326,19 @@ var isFBBrowser = (function() {
            ua.indexOf('Instagram') > -1;
 })();
 
-/* Show FB wall if on FB browser */
 if (isFBBrowser) {
     document.getElementById('fb-wall').classList.add('show');
 }
 
-/* Dismiss FB wall → show hint arrow on welcome screen */
 function dismissFbWall() {
     document.getElementById('fb-wall').classList.remove('show');
     if (isFBBrowser) {
-        /* show pulsing hint arrow + ring on play button */
         document.getElementById('fb-hint').classList.add('show');
         document.getElementById('playBtn').classList.add('fb-pulse');
     }
 }
 
-/* ── LOCK POPUP ── */
+/* ── LOCK ── */
 function showLock() { document.getElementById('lockPopup').classList.add('show'); }
 function closeLock() { document.getElementById('lockPopup').classList.remove('show'); }
 
@@ -373,7 +346,6 @@ function closeLock() { document.getElementById('lockPopup').classList.remove('sh
 let state = {
     mode: 'addition', score: 0, range: 10,
     ans: '', input: '', active: false,
-    missingData: {},
     toddlerTab: 'tap', toddlerInput: '', toddlerAns: ''
 };
 let voice = null, ac = null;
@@ -409,7 +381,6 @@ function backToHome() {
 }
 
 function openPlayGame() {
-    /* hide hint when they tap play */
     document.getElementById('fb-hint').classList.remove('show');
     document.getElementById('playBtn').classList.remove('fb-pulse');
     initAudio(); findVoice();
@@ -420,7 +391,6 @@ function openPlayGame() {
 }
 
 function openToddler() {
-    /* hide hint when they tap toddler */
     document.getElementById('fb-hint').classList.remove('show');
     document.getElementById('playBtn').classList.remove('fb-pulse');
     initAudio(); findVoice();
@@ -454,10 +424,12 @@ function newQ() {
     n1 = Math.floor(Math.random() * r) + 1;
 
     if (state.mode === 'addition') {
-        n2 = Math.floor(Math.random() * 9) + 1;
+        /* ✅ FIXED — n2 now uses full range like subtraction */
+        n2 = Math.floor(Math.random() * r) + 1;
         state.ans = (n1 + n2).toString();
         html = mathBox(n1, '+', n2);
         speech = n1 + ' plus ' + n2;
+
     } else if (state.mode === 'subtraction') {
         n2 = Math.floor(Math.random() * n1);
         state.ans = (n1 - n2).toString();
