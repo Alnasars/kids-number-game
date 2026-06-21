@@ -2,7 +2,7 @@
   "id": "/",
   "name": "123 Number Game - Number Fun Kids Math",
   "short_name": "NumberFun",
-  "start_url": "/newindex.html",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0f172a",
