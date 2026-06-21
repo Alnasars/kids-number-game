@@ -1,4 +1,4 @@
-const cacheName = 'math-v4'; // Incremented to v4 — fixed icon filenames
+const cacheName = 'math-v5'; // Bumped to v5 — added Google Analytics tracking to index.html
 const assets = [
   './',
   './index.html',
