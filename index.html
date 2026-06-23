@@ -205,7 +205,6 @@
 <div id="playCard" class="game-card hidden">
     <div onclick="backToHome()" class="close-trigger">✕</div>
 
-    <!-- modals inside play card -->
     <div id="helpModal" class="global-modal modal-transparent hidden">
         <div class="policy-container">
             <div class="modal-emoji">🙋‍♂️</div>
@@ -275,7 +274,6 @@
 <div id="toddlerCard" class="game-card hidden">
     <div onclick="backToHome()" class="close-trigger">✕</div>
 
-    <!-- toddler tab row -->
     <div class="tab-row">
         <button id="t-tap" onclick="setToddlerTab('tap')" class="tab-btn tab-active">👆 Tap & Learn</button>
         <button id="t-read" onclick="setToddlerTab('read')" class="tab-btn tab-inactive">👀 Read Numbers</button>
@@ -367,7 +365,7 @@ function openToddler() {
 /* ── MODALS ── */
 function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
 function playHelpAudio() { say("Look at the problem, type the answer, and press OK!"); }
-function setLvl(l) { state.range = l; toggleModal('setMenu'); resetGame(); }
+function setLvl(l) { state.range = l; toggleModal('setMenu'); resetGame(); state.input = ''; document.getElementById('input').textContent = '---'; }
 function setTableRange(r) { state.tableRange = r; toggleModal('setMenu'); if(state.mode === 'tables') setMode('tables'); }
 
 /* ══════════════════════════════════
@@ -402,7 +400,8 @@ function newQ() {
         speech = n1 + ' plus ' + n2;
 
     } else if (state.mode === 'subtraction') {
-        n2 = Math.floor(Math.random() * n1);
+        if (n1 < 2) n1 = 2;
+        n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
         state.ans = (n1 - n2).toString();
         html = mathBox(n1, '-', n2);
         speech = n1 + ' minus ' + n2;
