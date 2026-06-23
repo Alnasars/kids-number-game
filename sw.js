@@ -1,4 +1,4 @@
-const cacheName = 'math-v5'; // Bumped to v5 — added Google Analytics tracking to index.html
+const cacheName = 'math-v6'; // Bumped to v6 — added Google Analytics tracking to index.html
 const assets = [
   './',
   './index.html',
