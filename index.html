@@ -8,7 +8,6 @@
     <meta name="theme-color" content="#0ea5e9">
     <link rel="apple-touch-icon" href="/icon-192.png">
     <script defer src="/_vercel/insights/script.js"></script>
-
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BP03CVPLEP"></script>
     <script>
@@ -75,6 +74,7 @@
             text-transform: uppercase; border: none; cursor: pointer;
             -webkit-tap-highlight-color: transparent; width: 100%;
         }
+        .install-btn { background: none; border: 1px solid #334155; color: #7dd3fc; padding: 8px 20px; border-radius: 99px; cursor: pointer; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; display: none; -webkit-tap-highlight-color: transparent; }
         .privacy-link { color: #38bdf8; font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 3px; border-top: 1px solid #1e3a5f; padding-top: 1rem; background: none; border-left: none; border-right: none; border-bottom: none; cursor: pointer; width: 10rem; }
 
         /* ── GAME CARD ── */
@@ -100,7 +100,7 @@
 
         /* ── MODE ROW ── */
         .mode-row { display: flex; gap: 4px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
-        .mode-btn { flex: 1; padding: 7px 2px; border-radius: 6px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 40px; }
+        .mode-btn { flex: 1; padding: 7px 2px; border-radius: 6px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 36px; }
         .m-active { background: #0ea5e9; color: white; }
         .m-inactive { background: #e2e8f0; color: #334155; }
         .score-box { background: #fef9c3; color: #a16207; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; white-space: nowrap; }
@@ -118,7 +118,6 @@
 
         /* ── TABLE DISPLAY ── */
         .table-line { font-size: 1.1rem; font-weight: 700; color: #1e293b; font-family: monospace; padding: 2px 0; border-bottom: 1px solid #f1f5f9; width: 100%; text-align: center; }
-        .table-line.highlight { color: #0ea5e9; font-size: 1.2rem; }
 
         /* ── TODDLER INSTRUCTION ── */
         .toddler-instruction { font-size: 0.75rem; color: #94a3b8; text-align: center; margin-bottom: 6px; font-style: italic; padding: 0 8px; }
@@ -152,6 +151,14 @@
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .bounce { animation: bounce 0.6s ease infinite; }
 
+        /* ── FIRST OPEN POPUP ── */
+        #firstOpenPopup { position: fixed; inset: 0; z-index: 99995; background: rgba(15,23,42,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
+        #firstOpenPopup .fo-box { background: white; border-radius: 24px; padding: 28px 24px; max-width: 320px; width: 100%; }
+        #firstOpenPopup .fo-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
+        #firstOpenPopup h2 { font-size: 1.3rem; font-weight: 900; color: #0ea5e9; text-transform: uppercase; margin-bottom: 1rem; }
+        #firstOpenPopup .fo-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.85rem; color: #334155; font-weight: 700; text-align: left; }
+        #firstOpenPopup .fo-icon { font-size: 1.4rem; flex-shrink: 0; }
+
         /* ── STREAK ── */
         #streakDisplay { position: absolute; top: 8px; left: 8px; background: #fbbf24; color: #78350f; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 900; z-index: 5; display: none; }
 
@@ -166,19 +173,33 @@
 
 <!-- FB WALL -->
 <div id="fb-wall">
-    <div class="fb-emoji">📱</div>
-    <h1>One Quick Step!</h1>
-    <p>For voice, sounds &amp; best experience — open in your real browser!</p>
+    <div class="fb-emoji">🔇</div>
+    <h1>Your child is missing the sound!</h1>
+    <p>Facebook's browser blocks the voice &amp; sound. Open in Chrome — your child gets the FULL experience with voice reading every question!</p>
     <div class="steps-box">
         <div class="step"><div class="step-num">1</div><span>Tap the <strong>3 dots ⋮</strong> top right</span></div>
         <div class="step"><div class="step-num">2</div><span>Tap <strong>"Open in Browser"</strong></span></div>
         <div class="step"><div class="step-num">3</div><span>🎉 Full game with <strong>voice &amp; sound!</strong></span></div>
     </div>
     <div class="arrow">👆</div>
-    <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">Continue anyway (no sound)</button>
+    <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">Skip (no sound for my child)</button>
 </div>
 
 <canvas id="confetti-canvas"></canvas>
+
+<!-- FIRST OPEN POPUP -->
+<div id="firstOpenPopup">
+    <div class="fo-box">
+        <div class="fo-emoji">🎉</div>
+        <h2>What's New!</h2>
+        <div class="fo-item"><span class="fo-icon">🔥</span><span>Streak counter — get 3 in a row!</span></div>
+        <div class="fo-item"><span class="fo-icon">⭐</span><span>Victory music on 5 correct answers!</span></div>
+        <div class="fo-item"><span class="fo-icon">➕</span><span>M+ and M- missing number modes!</span></div>
+        <div class="fo-item"><span class="fo-icon">📖</span><span>Tables now go all the way to 25!</span></div>
+        <div class="fo-item"><span class="fo-icon">💡</span><span>Hints on harder levels!</span></div>
+        <button onclick="closeFirstOpen()" class="btn-full btn-sky" style="margin-top:1.5rem;">Let's Play! 🚀</button>
+    </div>
+</div>
 
 <!-- STAR CELEBRATION OVERLAY -->
 <div id="starCelebration">
@@ -196,6 +217,7 @@
         <button onclick="openPlayGame()" class="play-btn">🎮 Play Game</button>
         <button onclick="openToddler()" class="toddler-btn">👶 Toddler Mode</button>
     </div>
+    <button id="installBtn" class="install-btn" onclick="installApp()">📲 Save to Phone</button>
     <button onclick="toggleModal('privacyModal')" class="privacy-link">Privacy Policy</button>
 </div>
 
@@ -225,10 +247,11 @@
         <div class="policy-container">
             <div class="modal-emoji">🙋‍♂️</div>
             <h2 class="sky">How to Play</h2>
-            <p class="policy-p">Look at the math problem on screen, type your answer using the number buttons, then press OK!</p>
+            <p class="policy-p">Look at the math problem, type your answer using the number buttons, then press OK!</p>
             <p class="policy-p" style="font-size:0.8rem;margin-bottom:0.75rem;">🔥 Get 3 correct in a row to see your streak!</p>
             <p class="policy-p" style="font-size:0.8rem;margin-bottom:0.75rem;">⭐ Get 5 correct answers for a special reward!</p>
-            <p class="policy-p" style="font-size:0.8rem;margin-bottom:1.5rem;">💡 On higher levels, wait a few seconds and the game will give you a hint!</p>
+            <p class="policy-p" style="font-size:0.8rem;margin-bottom:0.75rem;">➕ M+ = missing addition | ➖ M- = missing subtraction</p>
+            <p class="policy-p" style="font-size:0.8rem;margin-bottom:1.5rem;">💡 On higher levels, wait a few seconds for a hint!</p>
             <button onclick="toggleModal('helpModal')" class="btn-full btn-sky">Got it!</button>
         </div>
     </div>
@@ -253,7 +276,8 @@
             <p style="font-size:11px;color:#64748b;margin-bottom:12px;">Tables Range</p>
             <button onclick="setTableRange(3)"  class="lvl-btn lvl-sky">Tables 1-3</button>
             <button onclick="setTableRange(5)"  class="lvl-btn lvl-sky">Tables 1-5</button>
-            <button onclick="setTableRange(10)" class="lvl-btn lvl-sky" style="margin-bottom:16px;">Tables 1-10</button>
+            <button onclick="setTableRange(10)" class="lvl-btn lvl-sky">Tables 1-10</button>
+            <button onclick="setTableRange(25)" class="lvl-btn lvl-sky" style="margin-bottom:16px;">Tables 1-25</button>
             <button onclick="toggleModal('setMenu')" class="btn-back">Back</button>
         </div>
     </div>
@@ -268,10 +292,11 @@
 
     <!-- mode row -->
     <div class="mode-row">
-        <button id="m-add" onclick="setMode('addition')" class="mode-btn m-active">Add</button>
-        <button id="m-sub" onclick="setMode('subtraction')" class="mode-btn m-inactive">Sub</button>
-        <button id="m-miss" onclick="setMode('missing')" class="mode-btn m-inactive">Miss</button>
-        <button id="m-table" onclick="setMode('tables')" class="mode-btn m-inactive">Tables</button>
+        <button id="m-add"   onclick="setMode('addition')"    class="mode-btn m-active">Add</button>
+        <button id="m-sub"   onclick="setMode('subtraction')" class="mode-btn m-inactive">Sub</button>
+        <button id="m-mplus"  onclick="setMode('missing-add')" class="mode-btn m-inactive">M+</button>
+        <button id="m-mminus" onclick="setMode('missing-sub')" class="mode-btn m-inactive">M-</button>
+        <button id="m-table" onclick="setMode('tables')"      class="mode-btn m-inactive">Tables</button>
         <div id="score" class="score-box">Score: 0</div>
     </div>
 
@@ -324,6 +349,22 @@
     if (isFB) document.getElementById('fb-wall').classList.add('show');
 })();
 
+/* ── FIRST OPEN POPUP ── */
+(function() {
+    try {
+        if (!localStorage.getItem('ng_seen_v10')) {
+            const popup = document.getElementById('firstOpenPopup');
+            if (popup) popup.style.display = 'flex';
+        }
+    } catch(e) {}
+})();
+
+function closeFirstOpen() {
+    try { localStorage.setItem('ng_seen_v10', '1'); } catch(e) {}
+    const popup = document.getElementById('firstOpenPopup');
+    if (popup) popup.style.display = 'none';
+}
+
 /* ── STATE ── */
 let state = {
     mode: 'addition', score: 0, range: 10,
@@ -332,7 +373,8 @@ let state = {
     tablePhase: 'input',
     toddlerTab: 'tap', toddlerInput: '', toddlerAns: '',
     firstCorrectFired: false,
-    streak: 0
+    streak: 0,
+    fullEq: ''
 };
 
 const PRAISE = [
@@ -395,7 +437,7 @@ function openToddler() {
 
 /* ── MODALS ── */
 function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
-function playHelpAudio() { say("Look at the math problem, type your answer, and press OK! Get 3 in a row for a streak, and 5 correct for a special reward!"); }
+function playHelpAudio() { say("Look at the math problem, type your answer, and press OK! M plus is missing addition. M minus is missing subtraction. Get 3 in a row for a streak!"); }
 function setLvl(l) { state.range = l; toggleModal('setMenu'); resetGame(); state.input = ''; document.getElementById('input').textContent = '---'; }
 function setTableRange(r) { state.tableRange = r; toggleModal('setMenu'); if(state.mode === 'tables') setMode('tables'); }
 
@@ -404,10 +446,16 @@ function setTableRange(r) { state.tableRange = r; toggleModal('setMenu'); if(sta
 ══════════════════════════════════ */
 function setMode(m) {
     state.mode = m;
-    ['m-add','m-sub','m-miss','m-table'].forEach(id => {
+    ['m-add','m-sub','m-mplus','m-mminus','m-table'].forEach(id => {
         const b = document.getElementById(id);
         if (!b) return;
-        const map = {'m-add':'addition','m-sub':'subtraction','m-miss':'missing','m-table':'tables'};
+        const map = {
+            'm-add':'addition',
+            'm-sub':'subtraction',
+            'm-mplus':'missing-add',
+            'm-mminus':'missing-sub',
+            'm-table':'tables'
+        };
         b.className = 'mode-btn ' + (map[id] === m ? 'm-active' : 'm-inactive');
     });
     if (m === 'tables') {
@@ -422,12 +470,11 @@ function newQ() {
     let n1, n2, html = '', speech = '';
     const r = state.range;
     n1 = Math.floor(Math.random() * r) + 1;
+    state.fullEq = '';
 
     if (state.mode === 'addition') {
-        // n2 proportional to level
         const n2Max = state.range <= 10 ? 9 : state.range <= 20 ? 18 : 50;
         n2 = Math.floor(Math.random() * n2Max) + 1;
-        // ensure n1 feels appropriate for level
         if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
         if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
         state.ans = (n1 + n2).toString();
@@ -435,7 +482,6 @@ function newQ() {
         speech = n1 + ' plus ' + n2;
 
     } else if (state.mode === 'subtraction') {
-        // ensure n1 feels appropriate for level
         if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
         if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
         if (n1 < 2) n1 = 2;
@@ -444,48 +490,51 @@ function newQ() {
         html = mathBox(n1, '-', n2);
         speech = n1 + ' minus ' + n2;
 
-    } else if (state.mode === 'missing') {
-        const isSub = Math.random() > 0.5;
-        if (isSub) {
-            if (n1 < 2) n1 = 2;
-            n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
-            const diff = n1 - n2;
-            const whichMissing = Math.floor(Math.random() * 3);
-            if (whichMissing === 0) {
-                state.ans = n1.toString();
-                html = missingBox('?', '-', n2, diff);
-                speech = 'Question mark minus ' + n2 + ' equals ' + diff;
-            } else if (whichMissing === 1) {
-                state.ans = n2.toString();
-                html = missingBox(n1, '-', '?', diff);
-                speech = n1 + ' minus question mark equals ' + diff;
-            } else {
-                state.ans = diff.toString();
-                html = missingBox(n1, '-', n2, '?');
-                speech = n1 + ' minus ' + n2 + ' equals question mark';
-            }
+    } else if (state.mode === 'missing-add') {
+        n2 = Math.floor(Math.random() * 9) + 1;
+        const sum = n1 + n2;
+        const whichMissing = Math.floor(Math.random() * 3);
+        if (whichMissing === 0) {
+            state.ans = n1.toString();
+            state.fullEq = n1 + ' plus ' + n2 + ' equals ' + sum;
+            html = missingBox('?', '+', n2, sum);
+            speech = 'Question mark plus ' + n2 + ' equals ' + sum;
+        } else if (whichMissing === 1) {
+            state.ans = n2.toString();
+            state.fullEq = n1 + ' plus ' + n2 + ' equals ' + sum;
+            html = missingBox(n1, '+', '?', sum);
+            speech = n1 + ' plus question mark equals ' + sum;
         } else {
-            n2 = Math.floor(Math.random() * 9) + 1;
-            const sum = n1 + n2;
-            const whichMissing = Math.floor(Math.random() * 3);
-            if (whichMissing === 0) {
-                state.ans = n1.toString();
-                html = missingBox('?', '+', n2, sum);
-                speech = 'Question mark plus ' + n2 + ' equals ' + sum;
-            } else if (whichMissing === 1) {
-                state.ans = n2.toString();
-                html = missingBox(n1, '+', '?', sum);
-                speech = n1 + ' plus question mark equals ' + sum;
-            } else {
-                state.ans = sum.toString();
-                html = missingBox(n1, '+', n2, '?');
-                speech = n1 + ' plus ' + n2 + ' equals question mark';
-            }
+            state.ans = sum.toString();
+            state.fullEq = n1 + ' plus ' + n2 + ' equals ' + sum;
+            html = missingBox(n1, '+', n2, '?');
+            speech = n1 + ' plus ' + n2 + ' equals question mark';
+        }
+
+    } else if (state.mode === 'missing-sub') {
+        if (n1 < 2) n1 = 2;
+        n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
+        const diff = n1 - n2;
+        const whichMissing = Math.floor(Math.random() * 3);
+        if (whichMissing === 0) {
+            state.ans = n1.toString();
+            state.fullEq = n1 + ' minus ' + n2 + ' equals ' + diff;
+            html = missingBox('?', '-', n2, diff);
+            speech = 'Question mark minus ' + n2 + ' equals ' + diff;
+        } else if (whichMissing === 1) {
+            state.ans = n2.toString();
+            state.fullEq = n1 + ' minus ' + n2 + ' equals ' + diff;
+            html = missingBox(n1, '-', '?', diff);
+            speech = n1 + ' minus question mark equals ' + diff;
+        } else {
+            state.ans = diff.toString();
+            state.fullEq = n1 + ' minus ' + n2 + ' equals ' + diff;
+            html = missingBox(n1, '-', n2, '?');
+            speech = n1 + ' minus ' + n2 + ' equals question mark';
         }
     }
 
     document.getElementById('screen').innerHTML = html;
-    // Re-add streak display after innerHTML wipe
     const sd = document.createElement('div');
     sd.id = 'streakDisplay';
     document.getElementById('screen').prepend(sd);
@@ -495,7 +544,6 @@ function newQ() {
     document.getElementById('input').textContent = '---';
     if (speech) say(speech);
 
-    // Hint timer — only on Level 20 and 100
     if (hintTimer) clearTimeout(hintTimer);
     if (state.range >= 20 && state.mode !== 'tables') {
         hintTimer = setTimeout(() => {
@@ -644,8 +692,13 @@ function check() {
         }
         if (state.score % 5 === 0) reward();
         else {
+            const isMissing = state.mode === 'missing-add' || state.mode === 'missing-sub';
             const praise = PRAISE[Math.floor(Math.random() * PRAISE.length)];
-            say(praise, () => setTimeout(newQ, 600));
+            if (isMissing && state.fullEq) {
+                say(praise + ' ' + state.fullEq, () => setTimeout(newQ, 800));
+            } else {
+                say(praise, () => setTimeout(newQ, 600));
+            }
         }
     } else {
         if (hintTimer) clearTimeout(hintTimer);
@@ -755,14 +808,32 @@ function toddlerTap(v) {
 /* ── REWARD ── */
 function reward() {
     if (ac) {
-        const osc = ac.createOscillator(), gain = ac.createGain();
-        osc.connect(gain); gain.connect(ac.destination); osc.type = 'square';
-        osc.frequency.setValueAtTime(150, ac.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(40, ac.currentTime + 0.5);
-        gain.gain.setValueAtTime(0.3, ac.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.5);
-        osc.start(); osc.stop(ac.currentTime + 0.5);
+        const notes = [523, 659, 784, 1047];
+        notes.forEach((freq, i) => {
+            const osc = ac.createOscillator();
+            const gain = ac.createGain();
+            osc.connect(gain); gain.connect(ac.destination);
+            osc.type = 'sine';
+            const startTime = ac.currentTime + i * 0.15;
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.4, startTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
+            osc.start(startTime);
+            osc.stop(startTime + 0.4);
+        });
+        setTimeout(() => {
+            const osc2 = ac.createOscillator();
+            const gain2 = ac.createGain();
+            osc2.connect(gain2); gain2.connect(ac.destination);
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(1568, ac.currentTime);
+            gain2.gain.setValueAtTime(0.3, ac.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.6);
+            osc2.start(); osc2.stop(ac.currentTime + 0.6);
+        }, 600);
     }
+
     const canvas = document.getElementById('confetti-canvas');
     canvas.style.display = 'block';
     canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -793,14 +864,38 @@ function reward() {
     say('Excellent! Superstar!', () => {
         const cel = document.getElementById('starCelebration');
         cel.style.display = 'flex';
-        setTimeout(() => {
-            cel.style.display = 'none';
-            newQ();
-        }, 2500);
+        setTimeout(() => { cel.style.display = 'none'; newQ(); }, 2500);
     });
 }
 
 function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
+
+/* ── PWA INSTALL PROMPT ── */
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = 'block';
+});
+
+function installApp() {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(choice => {
+        if (choice.outcome === 'accepted') {
+            const btn = document.getElementById('installBtn');
+            if (btn) btn.style.display = 'none';
+        }
+        deferredInstallPrompt = null;
+    });
+}
+
+window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = 'none';
+    deferredInstallPrompt = null;
+});
 
 /* ── SERVICE WORKER ── */
 if ('serviceWorker' in navigator) {
