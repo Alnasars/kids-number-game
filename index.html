@@ -375,4 +375,441 @@ function backToHome() {
 }
 
 function openPlayGame() {
-    initAudio();
+    initAudio(); findVoice();
+    if (window.va) window.va('event', { name: 'play_game_opened' });
+    if (window.gtag) gtag('event', 'play_game_opened');
+    document.getElementById('welcome').style.transform = 'translateY(-100%)';
+    document.getElementById('playCard').classList.remove('hidden');
+    state.active = true;
+    setMode('addition');
+}
+
+function openToddler() {
+    initAudio(); findVoice();
+    if (window.va) window.va('event', { name: 'toddler_mode_opened' });
+    if (window.gtag) gtag('event', 'toddler_mode_opened');
+    document.getElementById('welcome').style.transform = 'translateY(-100%)';
+    document.getElementById('toddlerCard').classList.remove('hidden');
+    setToddlerTab('tap');
+}
+
+/* ── MODALS ── */
+function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+function playHelpAudio() { say("Look at the math problem, type your answer, and press OK! Get 3 in a row for a streak, and 5 correct for a special reward!"); }
+function setLvl(l) { state.range = l; toggleModal('setMenu'); resetGame(); state.input = ''; document.getElementById('input').textContent = '---'; }
+function setTableRange(r) { state.tableRange = r; toggleModal('setMenu'); if(state.mode === 'tables') setMode('tables'); }
+
+/* ══════════════════════════════════
+   PLAY GAME MODES
+══════════════════════════════════ */
+function setMode(m) {
+    state.mode = m;
+    ['m-add','m-sub','m-miss','m-table'].forEach(id => {
+        const b = document.getElementById(id);
+        if (!b) return;
+        const map = {'m-add':'addition','m-sub':'subtraction','m-miss':'missing','m-table':'tables'};
+        b.className = 'mode-btn ' + (map[id] === m ? 'm-active' : 'm-inactive');
+    });
+    if (m === 'tables') {
+        showTableInput();
+    } else {
+        showNumpad(true);
+        newQ();
+    }
+}
+
+function newQ() {
+    let n1, n2, html = '', speech = '';
+    const r = state.range;
+    n1 = Math.floor(Math.random() * r) + 1;
+
+    if (state.mode === 'addition') {
+        // n2 proportional to level
+        const n2Max = state.range <= 10 ? 9 : state.range <= 20 ? 18 : 50;
+        n2 = Math.floor(Math.random() * n2Max) + 1;
+        // ensure n1 feels appropriate for level
+        if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
+        if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
+        state.ans = (n1 + n2).toString();
+        html = mathBox(n1, '+', n2);
+        speech = n1 + ' plus ' + n2;
+
+    } else if (state.mode === 'subtraction') {
+        // ensure n1 feels appropriate for level
+        if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
+        if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
+        if (n1 < 2) n1 = 2;
+        n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
+        state.ans = (n1 - n2).toString();
+        html = mathBox(n1, '-', n2);
+        speech = n1 + ' minus ' + n2;
+
+    } else if (state.mode === 'missing') {
+        const isSub = Math.random() > 0.5;
+        if (isSub) {
+            if (n1 < 2) n1 = 2;
+            n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
+            const diff = n1 - n2;
+            const whichMissing = Math.floor(Math.random() * 3);
+            if (whichMissing === 0) {
+                state.ans = n1.toString();
+                html = missingBox('?', '-', n2, diff);
+                speech = 'Question mark minus ' + n2 + ' equals ' + diff;
+            } else if (whichMissing === 1) {
+                state.ans = n2.toString();
+                html = missingBox(n1, '-', '?', diff);
+                speech = n1 + ' minus question mark equals ' + diff;
+            } else {
+                state.ans = diff.toString();
+                html = missingBox(n1, '-', n2, '?');
+                speech = n1 + ' minus ' + n2 + ' equals question mark';
+            }
+        } else {
+            n2 = Math.floor(Math.random() * 9) + 1;
+            const sum = n1 + n2;
+            const whichMissing = Math.floor(Math.random() * 3);
+            if (whichMissing === 0) {
+                state.ans = n1.toString();
+                html = missingBox('?', '+', n2, sum);
+                speech = 'Question mark plus ' + n2 + ' equals ' + sum;
+            } else if (whichMissing === 1) {
+                state.ans = n2.toString();
+                html = missingBox(n1, '+', '?', sum);
+                speech = n1 + ' plus question mark equals ' + sum;
+            } else {
+                state.ans = sum.toString();
+                html = missingBox(n1, '+', n2, '?');
+                speech = n1 + ' plus ' + n2 + ' equals question mark';
+            }
+        }
+    }
+
+    document.getElementById('screen').innerHTML = html;
+    // Re-add streak display after innerHTML wipe
+    const sd = document.createElement('div');
+    sd.id = 'streakDisplay';
+    document.getElementById('screen').prepend(sd);
+    updateStreakDisplay();
+
+    state.input = '';
+    document.getElementById('input').textContent = '---';
+    if (speech) say(speech);
+
+    // Hint timer — only on Level 20 and 100
+    if (hintTimer) clearTimeout(hintTimer);
+    if (state.range >= 20 && state.mode !== 'tables') {
+        hintTimer = setTimeout(() => {
+            if (state.input === '') {
+                say('Take your time... try breaking it into smaller steps!');
+            }
+        }, 7000);
+    }
+}
+
+function mathBox(n1, op, n2) {
+    return `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3.5rem;font-weight:900;color:#1e293b;line-height:1.1;">
+        <div>${n1}</div><div>${op} ${n2}</div>
+        <div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div>
+    </div>`;
+}
+
+function missingBox(a, op, b, result) {
+    const style = (v) => v === '?' ? 'color:#ef4444;font-size:3rem;' : 'color:#1e293b;';
+    return `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3rem;font-weight:900;line-height:1.1;">
+        <div style="${style(a)}">${a}</div>
+        <div style="${style(b)}">${op} ${b}</div>
+        <div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div>
+        <div style="${style(result)}">${result}</div>
+    </div>`;
+}
+
+/* ── TABLES ── */
+function showTableInput() {
+    state.tablePhase = 'input';
+    state.tableNum = 0;
+    showNumpad(true);
+    document.getElementById('input').textContent = '---';
+    document.getElementById('screen').innerHTML = `
+        <div class="table-input-screen">
+            <div class="table-prompt">Which table do you want?</div>
+            <div class="table-range-hint">Enter 1 to ${state.tableRange}</div>
+            <div style="font-size:4rem;">📖</div>
+        </div>`;
+    say('Which table do you want? Enter a number from 1 to ' + state.tableRange);
+}
+
+function showTableDisplay(num) {
+    state.tablePhase = 'show';
+    state.tableNum = num;
+    showNumpad(false);
+    let html = `<div style="width:100%;">`;
+    let speech = 'Table of ' + num + '. ';
+    for (let i = 1; i <= 10; i++) {
+        const result = num * i;
+        html += `<div class="table-line">${num} × ${i} = ${result}</div>`;
+        speech += num + ' times ' + i + ' equals ' + result + '. ';
+    }
+    html += `</div>`;
+    document.getElementById('screen').innerHTML = html;
+    document.getElementById('input').textContent = '';
+
+    const backBtn = document.createElement('button');
+    backBtn.textContent = '← New Table';
+    backBtn.className = 'btn-full btn-sky';
+    backBtn.style.marginTop = '8px';
+    backBtn.style.fontSize = '0.85rem';
+    backBtn.style.padding = '0.6rem';
+    backBtn.onclick = showTableInput;
+    document.getElementById('numpadArea').innerHTML = '';
+    document.getElementById('numpadArea').appendChild(backBtn);
+
+    say(speech);
+}
+
+function showNumpad(show) {
+    if (show) {
+        document.getElementById('numpadArea').innerHTML = `
+            <button onclick="tap('1')">1</button><button onclick="tap('2')">2</button><button onclick="tap('3')">3</button>
+            <button onclick="tap('4')">4</button><button onclick="tap('5')">5</button><button onclick="tap('6')">6</button>
+            <button onclick="tap('7')">7</button><button onclick="tap('8')">8</button><button onclick="tap('9')">9</button>
+            <button onclick="tap('C')">C</button><button onclick="tap('0')">0</button>
+            <button onclick="tap('OK')" class="ok-btn">OK</button>`;
+    }
+}
+
+/* ── TAP ── */
+function tap(v) {
+    if (!state.active) return;
+
+    if (state.mode === 'tables' && state.tablePhase === 'input') {
+        if (v === 'C') { state.input = ''; document.getElementById('input').textContent = '---'; return; }
+        if (v === 'OK') {
+            const num = parseInt(state.input);
+            if (!num || num < 1 || num > state.tableRange) {
+                say('Please enter a number from 1 to ' + state.tableRange);
+                state.input = ''; document.getElementById('input').textContent = '---';
+            } else {
+                showTableDisplay(num);
+            }
+            return;
+        }
+        if (state.input.length < 2) state.input += v;
+        document.getElementById('input').textContent = state.input || '---';
+        return;
+    }
+
+    if (v === 'C') state.input = '';
+    else if (v === 'OK') { check(); return; }
+    else if (state.input.length < 3) state.input += v;
+    document.getElementById('input').textContent = state.input || '---';
+}
+
+/* ── STREAK DISPLAY ── */
+function updateStreakDisplay() {
+    const el = document.getElementById('streakDisplay');
+    if (!el) return;
+    if (state.streak >= 3) {
+        el.style.display = 'block';
+        el.textContent = '🔥 ' + state.streak + ' in a row!';
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+/* ── FLASH SCREEN ── */
+function flashScreen(color) {
+    const s = document.getElementById('screen');
+    s.style.background = color;
+    s.style.transition = 'background 0.1s';
+    setTimeout(() => { s.style.background = '#f8fafc'; }, 400);
+}
+
+/* ── CHECK ── */
+function check() {
+    if (state.input === state.ans) {
+        if (hintTimer) clearTimeout(hintTimer);
+        state.score++;
+        state.streak++;
+        document.getElementById('score').textContent = 'Score: ' + state.score;
+        flashScreen('#d1fae5');
+        updateStreakDisplay();
+        if (!state.firstCorrectFired) {
+            state.firstCorrectFired = true;
+            if (window.va) window.va('event', { name: 'first_correct_answer' });
+            if (window.gtag) gtag('event', 'first_correct_answer');
+        }
+        if (state.score === 5) {
+            if (window.va) window.va('event', { name: 'milestone_5_correct' });
+            if (window.gtag) gtag('event', 'milestone_5_correct');
+        }
+        if (state.score % 5 === 0) reward();
+        else {
+            const praise = PRAISE[Math.floor(Math.random() * PRAISE.length)];
+            say(praise, () => setTimeout(newQ, 600));
+        }
+    } else {
+        if (hintTimer) clearTimeout(hintTimer);
+        state.streak = 0;
+        updateStreakDisplay();
+        flashScreen('#fee2e2');
+        say('Oops! Try again!', () => { state.input = ''; document.getElementById('input').textContent = '---'; });
+    }
+}
+
+/* ── RESET ── */
+function resetGame() {
+    state.score = 0; state.input = ''; state.streak = 0;
+    if (hintTimer) clearTimeout(hintTimer);
+    document.getElementById('score').textContent = 'Score: 0';
+    updateStreakDisplay();
+    if (state.mode === 'tables') showTableInput();
+    else newQ();
+}
+
+/* ══════════════════════════════════
+   TODDLER MODE
+══════════════════════════════════ */
+function setToddlerTab(tab) {
+    state.toddlerTab = tab;
+    state.toddlerInput = '';
+
+    document.getElementById('t-tap').className  = 'tab-btn ' + (tab === 'tap'  ? 'tab-active' : 'tab-inactive');
+    document.getElementById('t-read').className = 'tab-btn ' + (tab === 'read' ? 'tab-active' : 'tab-inactive');
+
+    const instrEl = document.getElementById('toddlerInstruction');
+    const inputEl = document.getElementById('toddlerInput');
+    const screenEl = document.getElementById('toddlerScreen');
+
+    if (tab === 'tap') {
+        instrEl.textContent = 'Tap any number to learn it!';
+        inputEl.classList.add('hidden');
+        screenEl.innerHTML = '<div style="font-size:1.1rem;color:#cbd5e1;font-weight:700;text-align:center;">👆 Tap a number below!</div>';
+        rebuildToddlerNumpad(false);
+        say('Welcome to Tap and Learn! Tap any number button to learn it!');
+    } else {
+        instrEl.textContent = 'Look at the number, then type it!';
+        inputEl.classList.remove('hidden');
+        inputEl.textContent = '---';
+        rebuildToddlerNumpad(true);
+        newToddlerReadQ();
+        say('Welcome to Read Numbers! Look at the number on screen, then type it using the buttons!');
+    }
+}
+
+function rebuildToddlerNumpad(showOK) {
+    const pad = document.getElementById('toddlerNumpad');
+    pad.innerHTML = `
+        <button onclick="toddlerTap('1')">1</button>
+        <button onclick="toddlerTap('2')">2</button>
+        <button onclick="toddlerTap('3')">3</button>
+        <button onclick="toddlerTap('4')">4</button>
+        <button onclick="toddlerTap('5')">5</button>
+        <button onclick="toddlerTap('6')">6</button>
+        <button onclick="toddlerTap('7')">7</button>
+        <button onclick="toddlerTap('8')">8</button>
+        <button onclick="toddlerTap('9')">9</button>
+        <button onclick="toddlerTap('C')">C</button>
+        <button onclick="toddlerTap('0')">0</button>
+        ${showOK ? '<button onclick="toddlerTap(\'OK\')" class="ok-btn">OK</button>' : '<button onclick="toddlerTap(\'C\')">⌫</button>'}`;
+}
+
+function newToddlerReadQ() {
+    const n = Math.floor(Math.random() * 10) + 1;
+    state.toddlerAns = n.toString();
+    state.toddlerInput = '';
+    document.getElementById('toddlerScreen').innerHTML =
+        `<div style="font-size:6rem;font-weight:900;color:#334155;">${n}</div>`;
+    document.getElementById('toddlerInput').textContent = '---';
+    say(n.toString());
+}
+
+function toddlerTap(v) {
+    if (state.toddlerTab === 'tap') {
+        if (v === 'C' || v === 'OK') return;
+        document.getElementById('toddlerScreen').innerHTML =
+            `<div class="bounce" style="font-size:6rem;font-weight:900;color:#0ea5e9;">${v}</div>`;
+        say(v);
+        return;
+    }
+
+    if (v === 'C') {
+        state.toddlerInput = '';
+        document.getElementById('toddlerInput').textContent = '---';
+        return;
+    }
+    if (v === 'OK') {
+        if (state.toddlerInput === state.toddlerAns) {
+            say('Correct! Well done!', () => setTimeout(newToddlerReadQ, 600));
+        } else {
+            say('Try again!', () => {
+                state.toddlerInput = '';
+                document.getElementById('toddlerInput').textContent = '---';
+            });
+        }
+        return;
+    }
+    if (state.toddlerInput.length < 2) state.toddlerInput += v;
+    document.getElementById('toddlerInput').textContent = state.toddlerInput || '---';
+}
+
+/* ── REWARD ── */
+function reward() {
+    if (ac) {
+        const osc = ac.createOscillator(), gain = ac.createGain();
+        osc.connect(gain); gain.connect(ac.destination); osc.type = 'square';
+        osc.frequency.setValueAtTime(150, ac.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, ac.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.3, ac.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.5);
+        osc.start(); osc.stop(ac.currentTime + 0.5);
+    }
+    const canvas = document.getElementById('confetti-canvas');
+    canvas.style.display = 'block';
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    const COLORS = ['#fbbf24','#f87171','#34d399','#60a5fa','#a78bfa','#fb923c'];
+    const pieces = Array.from({length: 80}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 8 + 4,
+        c: COLORS[Math.floor(Math.random() * COLORS.length)],
+        vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 3,
+        spin: Math.random() * 0.2 - 0.1, angle: Math.random() * Math.PI * 2
+    }));
+    let start = null;
+    function draw(ts) {
+        if (!start) start = ts;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+            p.y += p.vy; p.x += p.vx; p.angle += p.spin;
+            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+            ctx.fillStyle = p.c; ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
+            ctx.restore();
+        });
+        if (ts - start < 1800) requestAnimationFrame(draw);
+        else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    }
+    requestAnimationFrame(draw);
+    say('Excellent! Superstar!', () => {
+        const cel = document.getElementById('starCelebration');
+        cel.style.display = 'flex';
+        setTimeout(() => {
+            cel.style.display = 'none';
+            newQ();
+        }, 2500);
+    });
+}
+
+function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
+
+/* ── SERVICE WORKER ── */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW registered:', reg.scope))
+            .catch(err => console.log('SW failed:', err));
+    });
+}
+</script>
+</body>
+</html>
