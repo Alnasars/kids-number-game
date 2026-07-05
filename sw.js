@@ -1,4 +1,4 @@
-const cacheName = 'math-v10'; // v10 — M+ M- buttons, Tables 1-25, full equation, first-open popup
+const cacheName = 'math-v11'; // v11 — two-stage hint: voice at 7s, digit answer at 12s
 const assets = [
   './',
   './index.html',
