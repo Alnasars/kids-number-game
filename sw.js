@@ -1,4 +1,4 @@
-const cacheName = 'math-v9'; // v9 — better FB wall, install button, victory fanfare
+const cacheName = 'math-v10'; // v10 — M+ M- buttons, Tables 1-25, full equation, first-open popup
 const assets = [
   './',
   './index.html',
