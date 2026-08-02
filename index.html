@@ -140,12 +140,14 @@
 <div id="fb-wall">
     <div class="fb-emoji">🔇</div>
     <h1>Your child is missing the sound!</h1>
-    <p>Facebook's browser blocks the voice &amp; sound. Open in Chrome — your child gets the FULL experience with voice reading every question!</p>
+    <p>Facebook's browser blocks the voice &amp; sound. Open in your browser — your child gets the FULL experience with voice reading every question!</p>
+    <button id="fb-auto-btn" class="skip-btn" style="background:#fbbf24;color:#78350f;border:none;font-size:1rem;padding:14px 24px;margin-bottom:1rem;display:none;" onclick="openInChrome()">🚀 Open in Chrome Now</button>
     <div class="steps-box">
         <div class="step"><div class="step-num">1</div><span>Tap the <strong>3 dots ⋮</strong> top right</span></div>
         <div class="step"><div class="step-num">2</div><span>Tap <strong>"Open in Browser"</strong></span></div>
         <div class="step"><div class="step-num">3</div><span>🎉 Full game with <strong>voice &amp; sound!</strong></span></div>
     </div>
+    <button id="fb-copy-btn" class="skip-btn" style="margin-bottom:1rem;display:none;" onclick="copyGameLink()">📋 Copy Link (paste in Safari)</button>
     <div class="arrow">👆</div>
     <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">Skip (no sound for my child)</button>
 </div>
@@ -298,8 +300,33 @@
     var isFB = ua.indexOf('FBAN') > -1 || ua.indexOf('FBAV') > -1 ||
                ua.indexOf('FB_IAB') > -1 || ua.indexOf('FBIOS') > -1 ||
                ua.indexOf('Instagram') > -1;
-    if (isFB) document.getElementById('fb-wall').classList.add('show');
+    var isAndroid = ua.indexOf('Android') > -1;
+    var isIOS = /iPhone|iPad|iPod/.test(ua);
+    if (isFB) {
+        document.getElementById('fb-wall').classList.add('show');
+        if (isAndroid) {
+            var autoBtn = document.getElementById('fb-auto-btn');
+            if (autoBtn) autoBtn.style.display = 'block';
+        } else if (isIOS) {
+            var copyBtn = document.getElementById('fb-copy-btn');
+            if (copyBtn) copyBtn.style.display = 'block';
+        }
+    }
 })();
+
+function openInChrome() {
+    var intentUrl = 'intent://' + location.host + location.pathname + location.search + '#Intent;scheme=https;package=com.android.chrome;end';
+    window.location.href = intentUrl;
+}
+
+function copyGameLink() {
+    navigator.clipboard.writeText(location.href).then(function() {
+        var btn = document.getElementById('fb-copy-btn');
+        if (btn) btn.textContent = '✅ Copied! Now paste in Safari';
+    }).catch(function() {
+        alert('Copy this link: ' + location.href);
+    });
+}
 
 (function() {
     if (!localStorage.getItem('ng_seen_v10')) {
