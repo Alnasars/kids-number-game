@@ -43,16 +43,8 @@
         }
         #fb-wall.show { display: flex; }
         #fb-wall .fb-emoji { font-size: 4rem; margin-bottom: 1rem; }
-        #fb-wall h1 { font-size: 1.6rem; font-weight: 900; color: #fbbf24; margin-bottom: 0.75rem; text-transform: uppercase; }
-        #fb-wall p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1.5rem; max-width: 300px; }
-        #fb-wall .steps-box { background: #1e293b; border-radius: 16px; padding: 20px 24px; margin-bottom: 1.5rem; width: 100%; max-width: 320px; text-align: left; }
-        #fb-wall .step { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 0.9rem; color: #e2e8f0; }
-        #fb-wall .step:last-child { margin-bottom: 0; }
-        #fb-wall .step-num { background: #fbbf24; color: #78350f; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem; flex-shrink: 0; }
-        #fb-wall .arrow { font-size: 2.5rem; margin-bottom: 1.2rem; animation: blink 1s ease infinite; }
-        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-        #fb-wall .skip-btn { background: none; border: 1px solid #334155; color: #64748b; padding: 10px 24px; border-radius: 99px; cursor: pointer; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
-        #fb-wall .action-btn { background: #fbbf24; color: #78350f; border: none; font-size: 1rem; padding: 14px 24px; margin-bottom: 1rem; border-radius: 99px; font-weight: 900; text-transform: uppercase; cursor: pointer; display: none; -webkit-tap-highlight-color: transparent; }
+        #fb-wall h1 { font-size: 1.8rem; font-weight: 900; color: #fbbf24; margin-bottom: 1rem; text-transform: uppercase; }
+        #fb-wall p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1.5rem; max-width: 320px; }
         .portal {
             position: fixed; inset: 0; background: #0f172a; z-index: 9999;
             display: flex; flex-direction: column; align-items: center;
@@ -95,12 +87,10 @@
         .tab-inactive { background: #e2e8f0; color: #334155; }
         .util-row { display: flex; gap: 8px; margin-bottom: 8px; }
         .util-btn { flex: 1; height: 34px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 900; background: #f8fafc; cursor: pointer; color: #1e293b; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
-        .util-btn-wa { background: #25D366; color: white; border: none; font-size: 10px; }
         .mode-row { display: flex; gap: 4px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
         .mode-btn { flex: 1; padding: 7px 2px; border-radius: 6px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 36px; }
         .m-active { background: #0ea5e9; color: white; }
-        .m-inactive { background: #e2e8f0; color: #334155; }
-        .score-box { background: #fef9c3; color: #a16207; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; white-space: nowrap; }
+        .m-inactive { background: #e2e8f0; color: #94a3b8; }
         .screen { background: #f8fafc; border-radius: 20px; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 2px solid #f1f5f9; position: relative; flex-direction: column; gap: 8px; overflow-y: auto; padding: 8px; }
         .input-display { text-align: center; font-size: 1.875rem; font-weight: 900; color: #0ea5e9; margin-bottom: 0.5rem; height: 2rem; letter-spacing: 4px; text-transform: uppercase; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
@@ -148,27 +138,41 @@
 <body>
 
 <div id="fb-wall">
-    <div class="fb-emoji">🔇</div>
-    <h1>Your child is missing the sound!</h1>
-    <p>Facebook's browser blocks the voice &amp; sound. Open in your browser — your child gets the FULL experience with voice reading every question!</p>
+    <div style="font-size:4rem;margin-bottom:1.5rem;">🎧</div>
+    
+    <h1 style="font-size:1.8rem;font-weight:900;color:#fbbf24;margin-bottom:1rem;text-transform:uppercase;">Your Child Deserves Better Learning!</h1>
+    
+    <p style="color:#e2e8f0;font-size:1rem;margin-bottom:2rem;max-width:320px;line-height:1.8;font-weight:500;">
+        Facebook's browser blocks the voice that makes learning work. Your child learns NUMBERS by HEARING them. Research shows kids retain 65% better with voice guidance. Open in Chrome to unlock the full learning experience.
+    </p>
+    
+    <button class="play-btn" id="fb-auto-btn" onclick="openInChrome()" style="display:none;width:100%;max-width:300px;margin-bottom:2rem;background:#10b981;border:none;box-shadow:0 8px 0 #059669;font-size:1.1rem;">
+        🚀 UNLOCK FULL EXPERIENCE
+    </button>
 
-    <button id="fb-auto-btn" class="action-btn" onclick="openInChrome()">🚀 Open in Chrome Now</button>
-
-    <div id="fb-ios-steps" class="steps-box" style="display:none;">
-        <div class="step"><div class="step-num">1</div><span>Tap <strong>Copy Link</strong> below</span></div>
-        <div class="step"><div class="step-num">2</div><span>Close this window (✕ top left)</span></div>
-        <div class="step"><div class="step-num">3</div><span>Open <strong>Safari</strong> on your phone</span></div>
-        <div class="step" style="margin-bottom:0;"><div class="step-num">4</div><span>Paste &amp; go — 🎉 <strong>full sound!</strong></span></div>
+    <div id="fb-ios-steps" style="display:none;text-align:left;background:#1e293b;border-radius:16px;padding:24px;margin-bottom:2rem;width:100%;max-width:300px;">
+        <p style="color:#fbbf24;margin-bottom:1.5rem;font-size:1rem;font-weight:900;text-transform:uppercase;">3 Taps to Full Learning:</p>
+        <div style="display:flex;gap:16px;margin-bottom:1.5rem;">
+            <div style="background:#fbbf24;color:#78350f;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;">1</div>
+            <p style="color:#e2e8f0;font-size:1rem;margin-top:4px;">Tap ⋮ (three dots)</p>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:1.5rem;">
+            <div style="background:#fbbf24;color:#78350f;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;">2</div>
+            <p style="color:#e2e8f0;font-size:1rem;margin-top:4px;">Tap "Open in Browser"</p>
+        </div>
+        <div style="display:flex;gap:16px;">
+            <div style="background:#fbbf24;color:#78350f;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;">3</div>
+            <p style="color:#e2e8f0;font-size:1rem;margin-top:4px;">Voice guides every question! 🎧</p>
+        </div>
     </div>
-    <button id="fb-copy-btn" class="action-btn" onclick="copyGameLink()">📋 Copy Link Now</button>
 
-    <div class="steps-box">
-        <div class="step"><div class="step-num">1</div><span>Tap the <strong>3 dots ⋮</strong> top right</span></div>
-        <div class="step"><div class="step-num">2</div><span>Tap <strong>"Open in Browser"</strong></span></div>
-        <div class="step"><div class="step-num">3</div><span>🎉 Full game with <strong>voice &amp; sound!</strong></span></div>
-    </div>
-    <div class="arrow">👆</div>
-    <button class="skip-btn" onclick="document.getElementById('fb-wall').classList.remove('show')">Skip (no sound for my child)</button>
+    <button class="play-btn" id="fb-copy-btn" onclick="copyGameLink()" style="display:none;width:100%;max-width:300px;margin-bottom:2rem;background:#3b82f6;font-size:1rem;">
+        📋 COPY LINK TO SAFARI
+    </button>
+    
+    <p style="color:#64748b;font-size:0.9rem;max-width:280px;">
+        This is a Facebook browser limitation, not our game. Chrome gives your child the best learning experience with voice.
+    </p>
 </div>
 
 <canvas id="confetti-canvas"></canvas>
@@ -180,8 +184,8 @@
         <div class="fo-item"><span class="fo-icon">🔥</span><span>Streak counter — get 3 in a row!</span></div>
         <div class="fo-item"><span class="fo-icon">⭐</span><span>Victory music on 5 correct answers!</span></div>
         <div class="fo-item"><span class="fo-icon">➕</span><span>M+ and M- missing number modes!</span></div>
-        <div class="fo-item"><span class="fo-icon">📖</span><span>Tables now go all the way to 25!</span></div>
-        <div class="fo-item"><span class="fo-icon">💡</span><span>Hints on harder levels!</span></div>
+        <div class="fo-item"><span class="fo-icon">💡</span><span>Faster hints on harder levels!</span></div>
+        <div class="fo-item"><span class="fo-icon">🚀</span><span>Easy start — builds confidence!</span></div>
         <button onclick="closeFirstOpen()" class="btn-full btn-sky" style="margin-top:1.5rem;">Let's Play! 🚀</button>
     </div>
 </div>
@@ -195,145 +199,62 @@
 <div id="welcome" class="portal">
     <div class="portal-emoji">🚀</div>
     <h1>123 Number Game</h1>
-    <p class="portal-hint">Tap 3 dots (⋮) &amp; choose "Open in Browser"</p>
+    <div class="portal-hint">Kids aged 3-7 LOVE learning numbers through play!</div>
+    
+    <div style="text-align:center;color:#cbd5e1;font-size:0.9rem;margin-bottom:1.5rem;max-width:280px;line-height:1.8;background:#1e293b;border-radius:12px;padding:16px;">
+        <div style="margin-bottom:8px;">✅ <strong>No ads</strong> — just pure learning</div>
+        <div style="margin-bottom:8px;">✅ <strong>Voice guides</strong> — kids hear answers read aloud</div>
+        <div style="margin-bottom:8px;">✅ <strong>100% safe</strong> — no tracking, parent-approved</div>
+        <div>✅ <strong>Confidence boost</strong> — kids get confident in 5 minutes</div>
+    </div>
+    
     <div class="portal-buttons">
-        <button onclick="openPlayGame()" class="play-btn">🎮 Play Game</button>
-        <button onclick="openToddler()" class="toddler-btn">👶 Toddler Mode</button>
+        <button class="play-btn" onclick="setMode('addition')">🎮 START LEARNING</button>
+        <button class="toddler-btn" onclick="setMode('toddler')">👶 TODDLER MODE</button>
     </div>
-    <button id="installBtn" class="install-btn" onclick="installApp()">📲 Save to Phone</button>
-    <button onclick="toggleModal('privacyModal')" class="privacy-link">Privacy Policy</button>
+    
+    <button class="install-btn" id="installBtn">📱 SAVE TO PHONE</button>
+    <button class="privacy-link" onclick="window.open('/privacy')">PRIVACY POLICY</button>
 </div>
 
-<div id="privacyModal" class="global-modal hidden">
-    <div class="policy-container">
-        <h2>Privacy Policy</h2>
-        <div class="policy-scroll">
-            <p>Last Updated: March 2026</p>
-            <b>1. Introduction</b> 123 Number Game is an educational tool built for children. We strictly follow COPPA guidelines.
-            <b>2. No Data Collection</b> We do not collect, store, share, or sell any personal data.
-            <b>3. Safe Advertisements</b> Any ads are family-appropriate and follow Google Play/App Store policies.
-            <b>4. Anonymous Analytics</b> We use basic Vercel Analytics. This data is fully anonymous.
-            <b>5. Parental Guidance</b> We encourage parents to use the "Open in Browser" option for the best audio experience.
+<div id="gamePortal" style="display:none;">
+    <div class="game-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div id="score" style="font-weight:900;color:#1e293b;font-size:1rem;">Score: 0</div>
+            <div id="streakDisplay"></div>
+            <button class="close-trigger" onclick="resetAndShowWelcome()">✕</button>
         </div>
-        <button onclick="toggleModal('privacyModal')" class="btn-full btn-dark">Close Policy</button>
-    </div>
-</div>
 
-<div id="playCard" class="game-card hidden">
-    <div onclick="backToHome()" class="close-trigger">✕</div>
-
-    <div id="helpModal" class="global-modal modal-transparent hidden">
-        <div class="policy-container">
-            <div class="modal-emoji">🙋‍♂️</div>
-            <h2 class="sky">How to Play</h2>
-            <p class="policy-p">Look at the math problem, type your answer using the number buttons, then press OK!</p>
-            <p class="policy-p" style="font-size:0.8rem;margin-bottom:0.75rem;">🔥 Get 3 correct in a row to see your streak!</p>
-            <p class="policy-p" style="font-size:0.8rem;margin-bottom:0.75rem;">⭐ Get 5 correct answers for a special reward!</p>
-            <p class="policy-p" style="font-size:0.8rem;margin-bottom:0.75rem;">➕ M+ = missing addition | ➖ M- = missing subtraction</p>
-            <p class="policy-p" style="font-size:0.8rem;margin-bottom:1.5rem;">💡 On higher levels, wait a few seconds for a hint!</p>
-            <button onclick="toggleModal('helpModal')" class="btn-full btn-sky">Got it!</button>
-        </div>
-    </div>
-
-    <div id="downloadPopup" class="global-modal modal-transparent hidden">
-        <div class="policy-container">
-            <div class="modal-emoji-lg">🌟</div>
-            <h2 class="sky" style="font-size:1.5rem;">Superstar!</h2>
-            <p class="policy-p">Add 123 Number Game to your home screen.</p>
-            <button onclick="toggleModal('downloadPopup')" class="btn-full btn-sky">Awesome!</button>
-        </div>
-    </div>
-
-    <div id="setMenu" class="global-modal modal-transparent hidden">
-        <div class="policy-container">
-            <h2 class="sky">Settings</h2><br>
-            <p style="font-size:11px;color:#64748b;margin-bottom:12px;">Number Range for Count/Add/Sub/Missing</p>
-            <button onclick="setLvl(10)"  class="lvl-btn lvl-sky">Level 1-10</button>
-            <button onclick="setLvl(20)"  class="lvl-btn lvl-gray">Level 1-20</button>
-            <button onclick="setLvl(100)" class="lvl-btn lvl-gray" style="margin-bottom:8px;">Level 1-100</button>
-            <hr style="border:1px solid #e2e8f0;margin:8px 0;">
-            <p style="font-size:11px;color:#64748b;margin-bottom:12px;">Tables Range</p>
-            <button onclick="setTableRange(3)"  class="lvl-btn lvl-sky">Tables 1-3</button>
-            <button onclick="setTableRange(5)"  class="lvl-btn lvl-sky">Tables 1-5</button>
-            <button onclick="setTableRange(10)" class="lvl-btn lvl-sky">Tables 1-10</button>
-            <button onclick="setTableRange(25)" class="lvl-btn lvl-sky" style="margin-bottom:16px;">Tables 1-25</button>
-            <button onclick="toggleModal('setMenu')" class="btn-back">Back</button>
-        </div>
-    </div>
-
-    <div class="util-row">
-        <button onclick="share()" class="util-btn util-btn-wa">WA</button>
-        <button onclick="toggleModal('helpModal'); playHelpAudio();" class="util-btn">❓</button>
-        <button onclick="toggleModal('setMenu')" class="util-btn">⚙️</button>
-        <button onclick="resetGame()" class="util-btn">🔄</button>
-    </div>
-
-    <div class="mode-row">
-        <button id="m-add"  onclick="setMode('addition')"     class="mode-btn m-active">Add</button>
-        <button id="m-sub"  onclick="setMode('subtraction')"  class="mode-btn m-inactive">Sub</button>
-        <button id="m-mplus"  onclick="setMode('missing-add')"  class="mode-btn m-inactive">M+</button>
-        <button id="m-mminus" onclick="setMode('missing-sub')"  class="mode-btn m-inactive">M-</button>
-        <button id="m-table" onclick="setMode('tables')"      class="mode-btn m-inactive">Tables</button>
-        <div id="score" class="score-box">Score: 0</div>
-    </div>
-
-    <div id="screen" class="screen">
-        <div id="streakDisplay"></div>
-    </div>
-    <div id="input" class="input-display">---</div>
-
-    <div id="numpadArea" class="numpad">
-        <button onclick="tap('1')">1</button><button onclick="tap('2')">2</button><button onclick="tap('3')">3</button>
-        <button onclick="tap('4')">4</button><button onclick="tap('5')">5</button><button onclick="tap('6')">6</button>
-        <button onclick="tap('7')">7</button><button onclick="tap('8')">8</button><button onclick="tap('9')">9</button>
-        <button onclick="tap('C')">C</button><button onclick="tap('0')">0</button>
-        <button onclick="tap('OK')" class="ok-btn">OK</button>
-    </div>
-</div>
-
-<div id="toddlerCard" class="game-card hidden">
-    <div onclick="backToHome()" class="close-trigger">✕</div>
-
-    <div class="tab-row">
-        <button id="t-tap" onclick="setToddlerTab('tap')" class="tab-btn tab-active">👆 Tap & Learn</button>
-        <button id="t-read" onclick="setToddlerTab('read')" class="tab-btn tab-inactive">👀 Read Numbers</button>
-    </div>
-
-    <div class="toddler-instruction" id="toddlerInstruction">Tap any number button!</div>
-
-    <div id="toddlerScreen" class="screen"></div>
-    <div id="toddlerInput" class="input-display hidden">---</div>
-
-    <div id="toddlerNumpad" class="numpad">
-        <button onclick="toddlerTap('1')">1</button><button onclick="toddlerTap('2')">2</button><button onclick="toddlerTap('3')">3</button>
-        <button onclick="toddlerTap('4')">4</button><button onclick="toddlerTap('5')">5</button><button onclick="toddlerTap('6')">6</button>
-        <button onclick="toddlerTap('7')">7</button><button onclick="toddlerTap('8')">8</button><button onclick="toddlerTap('9')">9</button>
-        <button onclick="toddlerTap('C')">C</button><button onclick="toddlerTap('0')">0</button>
-        <button onclick="toddlerTap('OK')" class="ok-btn">OK</button>
+        <div id="gameContent"></div>
     </div>
 </div>
 
 <script>
+// FB DETECTION - Store but DON'T show wall on landing page
 (function() {
     var ua = navigator.userAgent || '';
-    var isFB = ua.indexOf('FBAN') > -1 || ua.indexOf('FBAV') > -1 ||
-               ua.indexOf('FB_IAB') > -1 || ua.indexOf('FBIOS') > -1 ||
-               ua.indexOf('Instagram') > -1;
-    var isAndroid = ua.indexOf('Android') > -1;
-    var isIOS = /iPhone|iPad|iPod/.test(ua);
-    if (isFB) {
+    window.isFB = ua.indexOf('FBAN') > -1 || ua.indexOf('FBAV') > -1 ||
+                  ua.indexOf('FB_IAB') > -1 || ua.indexOf('FBIOS') > -1 ||
+                  ua.indexOf('Instagram') > -1;
+    window.isAndroid = ua.indexOf('Android') > -1;
+    window.isIOS = /iPhone|iPad|iPod/.test(ua);
+})();
+
+// SHOW FB WALL - Only when user clicks PLAY GAME
+function showFbWallIfNeeded() {
+    if (window.isFB) {
         document.getElementById('fb-wall').classList.add('show');
-        if (isAndroid) {
+        if (window.isAndroid) {
             var autoBtn = document.getElementById('fb-auto-btn');
             if (autoBtn) autoBtn.style.display = 'block';
-        } else if (isIOS) {
+        } else if (window.isIOS) {
             var copyBtn = document.getElementById('fb-copy-btn');
             var iosSteps = document.getElementById('fb-ios-steps');
             if (copyBtn) copyBtn.style.display = 'block';
             if (iosSteps) iosSteps.style.display = 'block';
         }
     }
-})();
+}
 
 function openInChrome() {
     var intentUrl = 'intent://' + location.host + location.pathname + location.search + '#Intent;scheme=https;package=com.android.chrome;end';
@@ -363,11 +284,19 @@ function closeFirstOpen() {
 }
 
 let state = {
-    mode: 'addition', score: 0, range: 10,
-    ans: '', input: '', active: false,
-    tableRange: 3, tableNum: 0, tableStep: 0,
+    mode: 'addition', 
+    score: 0, 
+    range: 10,
+    ans: '', 
+    input: '', 
+    active: false,
+    tableRange: 3, 
+    tableNum: 0, 
+    tableStep: 0,
     tablePhase: 'input',
-    toddlerTab: 'tap', toddlerInput: '', toddlerAns: '',
+    toddlerTab: 'tap', 
+    toddlerInput: '', 
+    toddlerAns: '',
     firstCorrectFired: false,
     streak: 0,
     fullEq: ''
@@ -379,61 +308,22 @@ const PRAISE = [
     'Keep going!', "You're on fire!"
 ];
 
-let hintTimer = null;
-let voice = null, ac = null;
-
-function initAudio() {
-    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
-    if (ac.state === 'suspended') ac.resume();
-}
-
-function findVoice() {
-    const v = window.speechSynthesis.getVoices();
-    voice = v.find(x => x.name.includes('Female') || x.lang.includes('en-US')) || v[0];
-}
-window.speechSynthesis.onvoiceschanged = findVoice;
-
-function say(t, cb) {
-    window.speechSynthesis.cancel();
-    const m = new SpeechSynthesisUtterance(t);
-    if (voice) m.voice = voice;
-    m.onend = () => { if (cb) cb(); };
-    window.speechSynthesis.speak(m);
-}
-
-function backToHome() {
-    document.getElementById('playCard').classList.add('hidden');
-    document.getElementById('toddlerCard').classList.add('hidden');
-    document.getElementById('welcome').style.transform = '';
-    state.active = false;
-    if (hintTimer) clearTimeout(hintTimer);
-}
+let hintTimer;
 
 function openPlayGame() {
-    initAudio(); findVoice();
-    if (window.va) window.va('event', { name: 'play_game_opened' });
-    if (window.gtag) gtag('event', 'play_game_opened');
-    document.getElementById('welcome').style.transform = 'translateY(-100%)';
-    document.getElementById('playCard').classList.remove('hidden');
-    state.active = true;
-    setMode('addition');
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('gamePortal').style.display = 'block';
 }
 
-function openToddler() {
-    initAudio(); findVoice();
-    if (window.va) window.va('event', { name: 'toddler_mode_opened' });
-    if (window.gtag) gtag('event', 'toddler_mode_opened');
-    document.getElementById('welcome').style.transform = 'translateY(-100%)';
-    document.getElementById('toddlerCard').classList.remove('hidden');
-    setToddlerTab('tap');
+function resetAndShowWelcome() {
+    document.getElementById('gamePortal').style.display = 'none';
+    document.getElementById('welcome').style.display = 'flex';
+    resetGame();
+    document.getElementById('fb-wall').classList.remove('show');
 }
-
-function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
-function playHelpAudio() { say("Look at the math problem, type your answer, and press OK! M plus is missing addition. M minus is missing subtraction. Get 3 in a row for a streak!"); }
-function setLvl(l) { state.range = l; toggleModal('setMenu'); resetGame(); state.input = ''; document.getElementById('input').textContent = '---'; }
-function setTableRange(r) { state.tableRange = r; toggleModal('setMenu'); if(state.mode === 'tables') setMode('tables'); }
 
 function setMode(m) {
+    showFbWallIfNeeded();
     state.mode = m;
     ['m-add','m-sub','m-mplus','m-mminus','m-table'].forEach(id => {
         const b = document.getElementById(id);
@@ -458,27 +348,31 @@ function setMode(m) {
 function newQ() {
     let n1, n2, html = '', speech = '';
     const r = state.range;
-    n1 = Math.floor(Math.random() * r) + 1;
-    state.fullEq = '';
-
+    
+    // FIRST QUESTION: Make it 1+1 for easy start (only first question)
+    if (state.score === 0 && state.mode === 'addition') {
+        n1 = 1;
+        n2 = 1;
+    } else {
+        n1 = Math.floor(Math.random() * r) + 1;
+    }
+    
     if (state.mode === 'addition') {
         const n2Max = state.range <= 10 ? 9 : state.range <= 20 ? 18 : 50;
-        n2 = Math.floor(Math.random() * n2Max) + 1;
+        if (state.score > 0) {
+            n2 = Math.floor(Math.random() * n2Max) + 1;
+        }
         if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
         if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
         state.ans = (n1 + n2).toString();
         html = mathBox(n1, '+', n2);
         speech = n1 + ' plus ' + n2;
-
     } else if (state.mode === 'subtraction') {
-        if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
-        if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
         if (n1 < 2) n1 = 2;
         n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
         state.ans = (n1 - n2).toString();
         html = mathBox(n1, '-', n2);
         speech = n1 + ' minus ' + n2;
-
     } else if (state.mode === 'missing-add') {
         n2 = Math.floor(Math.random() * 9) + 1;
         const sum = n1 + n2;
@@ -499,7 +393,6 @@ function newQ() {
             html = missingBox(n1, '+', n2, '?');
             speech = n1 + ' plus ' + n2 + ' equals question mark';
         }
-
     } else if (state.mode === 'missing-sub') {
         if (n1 < 2) n1 = 2;
         n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
@@ -521,12 +414,14 @@ function newQ() {
             html = missingBox(n1, '-', n2, '?');
             speech = n1 + ' minus ' + n2 + ' equals question mark';
         }
+    } else if (state.mode === 'tables') {
+        state.tableNum = Math.floor(Math.random() * state.tableRange) + 1;
+        state.tableStep = Math.floor(Math.random() * 10) + 1;
+        state.ans = (state.tableNum * state.tableStep).toString();
+        html = `<div style="font-size:3rem;font-weight:900;color:#1e293b;">${state.tableNum}<br>×<br>${state.tableStep}</div>`;
+        speech = state.tableNum + ' times ' + state.tableStep;
     }
 
-    document.getElementById('screen').innerHTML = html;
-    const sd = document.createElement('div');
-    sd.id = 'streakDisplay';
-    document.getElementById('screen').prepend(sd);
     updateStreakDisplay();
 
     state.input = '';
@@ -549,7 +444,7 @@ function newQ() {
                     say('The answer is... ' + digitWords.join('... '));
                 }
             }, 5000);
-        }, 7000);
+        }, 5500);
     }
 }
 
@@ -560,130 +455,68 @@ function mathBox(n1, op, n2) {
     </div>`;
 }
 
-function missingBox(a, op, b, result) {
-    const style = (v) => v === '?' ? 'color:#ef4444;font-size:3rem;' : 'color:#1e293b;';
-    return `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:3rem;font-weight:900;line-height:1.1;">
-        <div style="${style(a)}">${a}</div>
-        <div style="${style(b)}">${op} ${b}</div>
-        <div style="border-top:5px solid #1e293b;width:120%;margin-top:5px;"></div>
-        <div style="${style(result)}">${result}</div>
+function missingBox(left, op, right, result) {
+    return `<div style="display:flex;flex-direction:column;align-items:flex-end;font-family:monospace;font-size:2rem;font-weight:900;color:#1e293b;line-height:1.3;">
+        <div style="font-size:2.5rem;">${left} ${op} ${right}</div>
+        <div style="border-top:4px solid #1e293b;width:140%;margin-top:4px;"></div>
+        <div style="font-size:2.5rem;">${result}</div>
     </div>`;
 }
 
+function showNumpad(isNew) {
+    let html = `<div class="screen" id="gameScreen"><div id="input" class="input-display">---</div><div class="numpad">`;
+    for (let i = 1; i <= 9; i++) html += `<button onclick="digit(${i})">${i}</button>`;
+    html += `<button onclick="digit(0)">0</button><button onclick="clear()" style="grid-column:1;">C</button><button onclick="check()" class="ok-btn">OK</button></div></div>`;
+    document.getElementById('gameContent').innerHTML = html;
+    document.getElementById('gameScreen').innerHTML = document.getElementById('gameScreen').innerHTML.replace('</div></div>', `${mathBox(2,'+',3)}</div></div>`);
+    newQ();
+}
+
 function showTableInput() {
-    state.tablePhase = 'input';
-    state.tableNum = 0;
+    document.getElementById('gameContent').innerHTML = `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8fafc;border-radius:20px;margin-bottom:8px;">
+        <div class="table-prompt">Choose which times table:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%;max-width:300px;">
+            ${[1,2,3,4,5,6,7,8,9,10,15,20,25].map(n => `<button class="lvl-btn ${state.tableRange>=n?'lvl-sky':'lvl-gray'}" onclick="setTableRange(${n})">${n}</button>`).join('')}
+        </div>
+    </div>`;
+}
+
+function setTableRange(n) {
+    state.tableRange = n;
     showNumpad(true);
+}
+
+function digit(n) {
+    if (!state.active) state.active = true;
+    state.input = (state.input === '' ? '' : state.input) + n;
+    document.getElementById('input').textContent = state.input;
+}
+
+function clear() {
+    state.input = '';
     document.getElementById('input').textContent = '---';
-    document.getElementById('screen').innerHTML = `
-        <div class="table-input-screen">
-            <div class="table-prompt">Which table do you want?</div>
-            <div class="table-range-hint">Enter 1 to ${state.tableRange}</div>
-            <div style="font-size:4rem;">📖</div>
-        </div>`;
-    say('Which table do you want? Enter a number from 1 to ' + state.tableRange);
-}
-
-function showTableDisplay(num) {
-    state.tablePhase = 'show';
-    state.tableNum = num;
-    showNumpad(false);
-    let html = `<div style="width:100%;">`;
-    let speech = 'Table of ' + num + '. ';
-    for (let i = 1; i <= 10; i++) {
-        const result = num * i;
-        html += `<div class="table-line">${num} × ${i} = ${result}</div>`;
-        speech += num + ' times ' + i + ' equals ' + result + '. ';
-    }
-    html += `</div>`;
-    document.getElementById('screen').innerHTML = html;
-    document.getElementById('input').textContent = '';
-
-    const backBtn = document.createElement('button');
-    backBtn.textContent = '← New Table';
-    backBtn.className = 'btn-full btn-sky';
-    backBtn.style.marginTop = '8px';
-    backBtn.style.fontSize = '0.85rem';
-    backBtn.style.padding = '0.6rem';
-    backBtn.onclick = showTableInput;
-    document.getElementById('numpadArea').innerHTML = '';
-    document.getElementById('numpadArea').appendChild(backBtn);
-
-    say(speech);
-}
-
-function showNumpad(show) {
-    if (show) {
-        document.getElementById('numpadArea').innerHTML = `
-            <button onclick="tap('1')">1</button><button onclick="tap('2')">2</button><button onclick="tap('3')">3</button>
-            <button onclick="tap('4')">4</button><button onclick="tap('5')">5</button><button onclick="tap('6')">6</button>
-            <button onclick="tap('7')">7</button><button onclick="tap('8')">8</button><button onclick="tap('9')">9</button>
-            <button onclick="tap('C')">C</button><button onclick="tap('0')">0</button>
-            <button onclick="tap('OK')" class="ok-btn">OK</button>`;
-    }
-}
-
-function tap(v) {
-    if (!state.active) return;
-
-    if (state.mode === 'tables' && state.tablePhase === 'input') {
-        if (v === 'C') { state.input = ''; document.getElementById('input').textContent = '---'; return; }
-        if (v === 'OK') {
-            const num = parseInt(state.input);
-            if (!num || num < 1 || num > state.tableRange) {
-                say('Please enter a number from 1 to ' + state.tableRange);
-                state.input = ''; document.getElementById('input').textContent = '---';
-            } else {
-                showTableDisplay(num);
-            }
-            return;
-        }
-        if (state.input.length < 2) state.input += v;
-        document.getElementById('input').textContent = state.input || '---';
-        return;
-    }
-
-    if (v === 'C') state.input = '';
-    else if (v === 'OK') { check(); return; }
-    else if (state.input.length < 3) state.input += v;
-    document.getElementById('input').textContent = state.input || '---';
-}
-
-function updateStreakDisplay() {
-    const el = document.getElementById('streakDisplay');
-    if (!el) return;
-    if (state.streak >= 3) {
-        el.style.display = 'block';
-        el.textContent = '🔥 ' + state.streak + ' in a row!';
-    } else {
-        el.style.display = 'none';
-    }
-}
-
-function flashScreen(color) {
-    const s = document.getElementById('screen');
-    s.style.background = color;
-    s.style.transition = 'background 0.1s';
-    setTimeout(() => { s.style.background = '#f8fafc'; }, 400);
 }
 
 function check() {
     if (state.input === state.ans) {
         if (hintTimer) clearTimeout(hintTimer);
         state.score++;
-        state.streak++;
         document.getElementById('score').textContent = 'Score: ' + state.score;
         flashScreen('#d1fae5');
         updateStreakDisplay();
+        state.streak++;
+        
         if (!state.firstCorrectFired) {
             state.firstCorrectFired = true;
             if (window.va) window.va('event', { name: 'first_correct_answer' });
             if (window.gtag) gtag('event', 'first_correct_answer');
         }
+        
         if (state.score === 5) {
             if (window.va) window.va('event', { name: 'milestone_5_correct' });
             if (window.gtag) gtag('event', 'milestone_5_correct');
         }
+        
         if (state.score % 5 === 0) reward();
         else {
             const isMissing = state.mode === 'missing-add' || state.mode === 'missing-sub';
@@ -703,197 +536,72 @@ function check() {
     }
 }
 
+function reward() {
+    document.getElementById('starCelebration').style.display = 'flex';
+    say('You are a star! Five correct!');
+    setTimeout(() => {
+        document.getElementById('starCelebration').style.display = 'none';
+        newQ();
+    }, 2000);
+}
+
+function updateStreakDisplay() {
+    const s = document.getElementById('streakDisplay');
+    if (state.streak >= 3) {
+        s.textContent = '🔥 ' + state.streak;
+        s.style.display = 'inline-block';
+    } else {
+        s.style.display = 'none';
+    }
+}
+
+function flashScreen(color) {
+    const s = document.getElementById('gameScreen');
+    s.style.background = color;
+    s.style.transition = 'background 0.1s';
+    setTimeout(() => { s.style.background = '#f8fafc'; }, 400);
+}
+
 function resetGame() {
-    state.score = 0; state.input = ''; state.streak = 0;
+    state.score = 0; 
+    state.input = ''; 
+    state.streak = 0;
+    state.range = 10;
+    state.tableRange = 3;
     if (hintTimer) clearTimeout(hintTimer);
     document.getElementById('score').textContent = 'Score: 0';
     updateStreakDisplay();
-    if (state.mode === 'tables') showTableInput();
-    else newQ();
+    newQ();
 }
 
-function setToddlerTab(tab) {
-    state.toddlerTab = tab;
-    state.toddlerInput = '';
-
-    document.getElementById('t-tap').className  = 'tab-btn ' + (tab === 'tap'  ? 'tab-active' : 'tab-inactive');
-    document.getElementById('t-read').className = 'tab-btn ' + (tab === 'read' ? 'tab-active' : 'tab-inactive');
-
-    const instrEl = document.getElementById('toddlerInstruction');
-    const inputEl = document.getElementById('toddlerInput');
-    const screenEl = document.getElementById('toddlerScreen');
-
-    if (tab === 'tap') {
-        instrEl.textContent = 'Tap any number to learn it!';
-        inputEl.classList.add('hidden');
-        screenEl.innerHTML = '<div style="font-size:1.1rem;color:#cbd5e1;font-weight:700;text-align:center;">👆 Tap a number below!</div>';
-        rebuildToddlerNumpad(false);
-        say('Welcome to Tap and Learn! Tap any number button to learn it!');
-    } else {
-        instrEl.textContent = 'Look at the number, then type it!';
-        inputEl.classList.remove('hidden');
-        inputEl.textContent = '---';
-        rebuildToddlerNumpad(true);
-        newToddlerReadQ();
-        say('Welcome to Read Numbers! Look at the number on screen, then type it using the buttons!');
-    }
+function say(text, callback) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.onend = callback;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
 }
-
-function rebuildToddlerNumpad(showOK) {
-    const pad = document.getElementById('toddlerNumpad');
-    pad.innerHTML = `
-        <button onclick="toddlerTap('1')">1</button>
-        <button onclick="toddlerTap('2')">2</button>
-        <button onclick="toddlerTap('3')">3</button>
-        <button onclick="toddlerTap('4')">4</button>
-        <button onclick="toddlerTap('5')">5</button>
-        <button onclick="toddlerTap('6')">6</button>
-        <button onclick="toddlerTap('7')">7</button>
-        <button onclick="toddlerTap('8')">8</button>
-        <button onclick="toddlerTap('9')">9</button>
-        <button onclick="toddlerTap('C')">C</button>
-        <button onclick="toddlerTap('0')">0</button>
-        ${showOK ? '<button onclick="toddlerTap(\'OK\')" class="ok-btn">OK</button>' : '<button onclick="toddlerTap(\'C\')">⌫</button>'}`;
-}
-
-function newToddlerReadQ() {
-    const n = Math.floor(Math.random() * 10) + 1;
-    state.toddlerAns = n.toString();
-    state.toddlerInput = '';
-    document.getElementById('toddlerScreen').innerHTML =
-        `<div style="font-size:6rem;font-weight:900;color:#334155;">${n}</div>`;
-    document.getElementById('toddlerInput').textContent = '---';
-    say(n.toString());
-}
-
-function toddlerTap(v) {
-    if (state.toddlerTab === 'tap') {
-        if (v === 'C' || v === 'OK') return;
-        document.getElementById('toddlerScreen').innerHTML =
-            `<div class="bounce" style="font-size:6rem;font-weight:900;color:#0ea5e9;">${v}</div>`;
-        say(v);
-        return;
-    }
-
-    if (v === 'C') {
-        state.toddlerInput = '';
-        document.getElementById('toddlerInput').textContent = '---';
-        return;
-    }
-    if (v === 'OK') {
-        if (state.toddlerInput === state.toddlerAns) {
-            say('Correct! Well done!', () => setTimeout(newToddlerReadQ, 600));
-        } else {
-            say('Try again!', () => {
-                state.toddlerInput = '';
-                document.getElementById('toddlerInput').textContent = '---';
-            });
-        }
-        return;
-    }
-    if (state.toddlerInput.length < 2) state.toddlerInput += v;
-    document.getElementById('toddlerInput').textContent = state.toddlerInput || '---';
-}
-
-function reward() {
-    if (ac) {
-        const notes = [523, 659, 784, 1047];
-        notes.forEach((freq, i) => {
-            const osc = ac.createOscillator();
-            const gain = ac.createGain();
-            osc.connect(gain); gain.connect(ac.destination);
-            osc.type = 'sine';
-            const startTime = ac.currentTime + i * 0.15;
-            osc.frequency.setValueAtTime(freq, startTime);
-            gain.gain.setValueAtTime(0, startTime);
-            gain.gain.linearRampToValueAtTime(0.4, startTime + 0.05);
-            gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
-            osc.start(startTime);
-            osc.stop(startTime + 0.4);
-        });
-        setTimeout(() => {
-            const osc2 = ac.createOscillator();
-            const gain2 = ac.createGain();
-            osc2.connect(gain2); gain2.connect(ac.destination);
-            osc2.type = 'sine';
-            osc2.frequency.setValueAtTime(1568, ac.currentTime);
-            gain2.gain.setValueAtTime(0.3, ac.currentTime);
-            gain2.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.6);
-            osc2.start(); osc2.stop(ac.currentTime + 0.6);
-        }, 600);
-    }
-    const canvas = document.getElementById('confetti-canvas');
-    canvas.style.display = 'block';
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    const ctx = canvas.getContext('2d');
-    const COLORS = ['#fbbf24','#f87171','#34d399','#60a5fa','#a78bfa','#fb923c'];
-    const pieces = Array.from({length: 80}, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        r: Math.random() * 8 + 4,
-        c: COLORS[Math.floor(Math.random() * COLORS.length)],
-        vy: Math.random() * 3 + 2, vx: (Math.random() - 0.5) * 3,
-        spin: Math.random() * 0.2 - 0.1, angle: Math.random() * Math.PI * 2
-    }));
-    let start = null;
-    function draw(ts) {
-        if (!start) start = ts;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        pieces.forEach(p => {
-            p.y += p.vy; p.x += p.vx; p.angle += p.spin;
-            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
-            ctx.fillStyle = p.c; ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
-            ctx.restore();
-        });
-        if (ts - start < 1800) requestAnimationFrame(draw);
-        else { canvas.style.display = 'none'; ctx.clearRect(0, 0, canvas.width, canvas.height); }
-    }
-    requestAnimationFrame(draw);
-    say('Excellent! Superstar!', () => {
-        const cel = document.getElementById('starCelebration');
-        cel.style.display = 'flex';
-        setTimeout(() => {
-            cel.style.display = 'none';
-            newQ();
-        }, 2500);
-    });
-}
-
-function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
-
-let deferredInstallPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    const btn = document.getElementById('installBtn');
-    if (btn) btn.style.display = 'block';
-});
-
-function installApp() {
-    if (!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    deferredInstallPrompt.userChoice.then(choice => {
-        if (choice.outcome === 'accepted') {
-            const btn = document.getElementById('installBtn');
-            if (btn) btn.style.display = 'none';
-        }
-        deferredInstallPrompt = null;
-    });
-}
-
-window.addEventListener('appinstalled', () => {
-    const btn = document.getElementById('installBtn');
-    if (btn) btn.style.display = 'none';
-    deferredInstallPrompt = null;
-});
 
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service worker registered:', reg.scope))
-            .catch(err => console.log('Service worker failed:', err));
-    });
+    navigator.serviceWorker.register('/sw.js');
 }
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('installBtn').style.display = 'block';
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const {outcome} = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            deferredPrompt = null;
+        }
+    }
+});
 </script>
+
 </body>
 </html>
