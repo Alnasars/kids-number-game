@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>123 Number Game: Kids Learning</title>
 
-    <!-- OG TAGS: controls the preview card (logo, title, description) when your link is shared anywhere -->
     <meta property="og:title" content="123 Number Game - Fun Math for Kids">
     <meta property="og:description" content="Learn numbers, addition & subtraction with voice-guided fun! Free for kids 3-7.">
     <meta property="og:image" content="https://kids-number-game.vercel.app/icon-512.png">
@@ -42,9 +41,6 @@
             overflow-y: auto;
         }
         #fb-wall.show { display: flex; }
-        #fb-wall .fb-emoji { font-size: 4rem; margin-bottom: 1rem; }
-        #fb-wall h1 { font-size: 1.8rem; font-weight: 900; color: #fbbf24; margin-bottom: 1rem; text-transform: uppercase; }
-        #fb-wall p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1.5rem; max-width: 320px; }
         .portal {
             position: fixed; inset: 0; background: #0f172a; z-index: 9999;
             display: flex; flex-direction: column; align-items: center;
@@ -81,47 +77,12 @@
             position: relative; z-index: 10;
         }
         .close-trigger { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 3px solid white; cursor: pointer; z-index: 100; font-size: 0.85rem; }
-        .tab-row { display: flex; gap: 4px; margin-bottom: 8px; }
-        .tab-btn { flex: 1; padding: 8px 4px; border-radius: 8px; font-size: 9px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .tab-active { background: #0ea5e9; color: white; }
-        .tab-inactive { background: #e2e8f0; color: #334155; }
-        .util-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        .util-btn { flex: 1; height: 34px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 900; background: #f8fafc; cursor: pointer; color: #1e293b; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
-        .mode-row { display: flex; gap: 4px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
-        .mode-btn { flex: 1; padding: 7px 2px; border-radius: 6px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 36px; }
-        .m-active { background: #0ea5e9; color: white; }
-        .m-inactive { background: #e2e8f0; color: #94a3b8; }
         .screen { background: #f8fafc; border-radius: 20px; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 2px solid #f1f5f9; position: relative; flex-direction: column; gap: 8px; overflow-y: auto; padding: 8px; }
         .input-display { text-align: center; font-size: 1.875rem; font-weight: 900; color: #0ea5e9; margin-bottom: 0.5rem; height: 2rem; letter-spacing: 4px; text-transform: uppercase; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
         .numpad button { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; height: 50px; font-size: 1.6rem; font-weight: 700; color: #1e293b; box-shadow: 0 3px 0 #f1f5f9; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .ok-btn { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #065f46 !important; font-size: 1.1rem !important; }
-        .table-line { font-size: 1.1rem; font-weight: 700; color: #1e293b; font-family: monospace; padding: 2px 0; border-bottom: 1px solid #f1f5f9; width: 100%; text-align: center; }
         .toddler-instruction { font-size: 0.75rem; color: #94a3b8; text-align: center; margin-bottom: 6px; font-style: italic; padding: 0 8px; }
-        .global-modal { position: fixed; inset: 0; background: white; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
-        .modal-transparent { background: transparent !important; padding: 0 !important; }
-        .policy-container { width: 100%; max-width: 400px; background: white; border: 4px solid #0ea5e9; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; max-height: 80vh; }
-        .policy-container h2 { font-size: 1.25rem; font-weight: 900; color: #1e293b; text-transform: uppercase; margin-bottom: 0.5rem; }
-        .policy-container h2.sky { color: #0ea5e9; }
-        .policy-scroll { overflow-y: auto; text-align: left; font-size: 11px; color: #64748b; line-height: 1.5; padding-right: 10px; margin-bottom: 20px; }
-        .policy-scroll b { color: #1e293b; display: block; margin-top: 12px; }
-        .policy-p { color: #64748b; font-size: 0.875rem; margin-bottom: 1.5rem; line-height: 1.6; padding: 0 1rem; }
-        .modal-emoji { font-size: 3rem; margin-bottom: 1rem; }
-        .modal-emoji-lg { font-size: 3.75rem; margin-bottom: 1rem; }
-        .btn-full { width: 100%; padding: 1rem; border-radius: 12px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
-        .btn-dark { background: #1e293b; color: white; box-shadow: 0 4px 0 #0f172a; }
-        .btn-sky { background: #0ea5e9; color: white; box-shadow: 0 4px 0 #0369a1; }
-        .btn-back { background: none; border: none; color: #94a3b8; font-weight: 900; font-size: 12px; text-decoration: underline; cursor: pointer; text-transform: uppercase; margin-top: 0.5rem; }
-        .lvl-btn { width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 1rem; -webkit-tap-highlight-color: transparent; }
-        .lvl-sky { background: #f0f9ff; border: 2px solid #bae6fd; color: #0ea5e9; }
-        .lvl-gray { background: #f8fafc; border: 2px solid #e2e8f0; color: #94a3b8; }
-        .table-input-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
-        .table-prompt { font-size: 1rem; font-weight: 700; color: #475569; margin-bottom: 12px; text-align: center; }
-        .table-range-hint { font-size: 0.75rem; color: #94a3b8; margin-bottom: 16px; text-align: center; }
-        #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 9998; width: 100%; height: 100%; display: none; }
-        .hidden { display: none !important; }
-        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        .bounce { animation: bounce 0.6s ease infinite; }
         #firstOpenPopup { position: fixed; inset: 0; z-index: 99995; background: rgba(15,23,42,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
         #firstOpenPopup .fo-box { background: white; border-radius: 24px; padding: 28px 24px; max-width: 320px; width: 100%; }
         #firstOpenPopup .fo-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
@@ -133,23 +94,21 @@
         #starCelebration .star-emoji { font-size: 5rem; animation: bounce 0.5s ease infinite; }
         #starCelebration .star-text { font-size: 2rem; font-weight: 900; color: #fbbf24; text-transform: uppercase; margin-top: 1rem; letter-spacing: 2px; }
         #starCelebration .star-sub { font-size: 1rem; color: #cbd5e1; margin-top: 0.5rem; font-weight: 700; }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .bounce { animation: bounce 0.6s ease infinite; }
     </style>
 </head>
 <body>
 
 <div id="fb-wall">
     <div style="font-size:4rem;margin-bottom:1.5rem;">🎧</div>
-    
     <h1 style="font-size:1.8rem;font-weight:900;color:#fbbf24;margin-bottom:1rem;text-transform:uppercase;">Your Child Deserves Better Learning!</h1>
-    
     <p style="color:#e2e8f0;font-size:1rem;margin-bottom:2rem;max-width:320px;line-height:1.8;font-weight:500;">
         Facebook's browser blocks the voice that makes learning work. Your child learns NUMBERS by HEARING them. Research shows kids retain 65% better with voice guidance. Open in Chrome to unlock the full learning experience.
     </p>
-    
     <button class="play-btn" id="fb-auto-btn" onclick="openInChrome()" style="display:none;width:100%;max-width:300px;margin-bottom:2rem;background:#10b981;border:none;box-shadow:0 8px 0 #059669;font-size:1.1rem;">
         🚀 UNLOCK FULL EXPERIENCE
     </button>
-
     <div id="fb-ios-steps" style="display:none;text-align:left;background:#1e293b;border-radius:16px;padding:24px;margin-bottom:2rem;width:100%;max-width:300px;">
         <p style="color:#fbbf24;margin-bottom:1.5rem;font-size:1rem;font-weight:900;text-transform:uppercase;">3 Taps to Full Learning:</p>
         <div style="display:flex;gap:16px;margin-bottom:1.5rem;">
@@ -165,11 +124,9 @@
             <p style="color:#e2e8f0;font-size:1rem;margin-top:4px;">Voice guides every question! 🎧</p>
         </div>
     </div>
-
     <button class="play-btn" id="fb-copy-btn" onclick="copyGameLink()" style="display:none;width:100%;max-width:300px;margin-bottom:2rem;background:#3b82f6;font-size:1rem;">
         📋 COPY LINK TO SAFARI
     </button>
-    
     <p style="color:#64748b;font-size:0.9rem;max-width:280px;">
         This is a Facebook browser limitation, not our game. Chrome gives your child the best learning experience with voice.
     </p>
@@ -186,7 +143,7 @@
         <div class="fo-item"><span class="fo-icon">➕</span><span>M+ and M- missing number modes!</span></div>
         <div class="fo-item"><span class="fo-icon">💡</span><span>Faster hints on harder levels!</span></div>
         <div class="fo-item"><span class="fo-icon">🚀</span><span>Easy start — builds confidence!</span></div>
-        <button onclick="closeFirstOpen()" class="btn-full btn-sky" style="margin-top:1.5rem;">Let's Play! 🚀</button>
+        <button onclick="closeFirstOpen()" class="play-btn" style="margin-top:1.5rem;background:#0ea5e9;box-shadow:0 6px 0 #0369a1;">Let's Play! 🚀</button>
     </div>
 </div>
 
@@ -200,19 +157,16 @@
     <div class="portal-emoji">🚀</div>
     <h1>123 Number Game</h1>
     <div class="portal-hint">Kids aged 3-7 LOVE learning numbers through play!</div>
-    
     <div style="text-align:center;color:#cbd5e1;font-size:0.9rem;margin-bottom:1.5rem;max-width:280px;line-height:1.8;background:#1e293b;border-radius:12px;padding:16px;">
         <div style="margin-bottom:8px;">✅ <strong>No ads</strong> — just pure learning</div>
         <div style="margin-bottom:8px;">✅ <strong>Voice guides</strong> — kids hear answers read aloud</div>
         <div style="margin-bottom:8px;">✅ <strong>100% safe</strong> — no tracking, parent-approved</div>
         <div>✅ <strong>Confidence boost</strong> — kids get confident in 5 minutes</div>
     </div>
-    
     <div class="portal-buttons">
         <button class="play-btn" onclick="setMode('addition')">🎮 START LEARNING</button>
         <button class="toddler-btn" onclick="setMode('toddler')">👶 TODDLER MODE</button>
     </div>
-    
     <button class="install-btn" id="installBtn">📱 SAVE TO PHONE</button>
     <button class="privacy-link" onclick="window.open('/privacy')">PRIVACY POLICY</button>
 </div>
@@ -224,13 +178,11 @@
             <div id="streakDisplay"></div>
             <button class="close-trigger" onclick="resetAndShowWelcome()">✕</button>
         </div>
-
         <div id="gameContent"></div>
     </div>
 </div>
 
 <script>
-// FB DETECTION - Store but DON'T show wall on landing page
 (function() {
     var ua = navigator.userAgent || '';
     window.isFB = ua.indexOf('FBAN') > -1 || ua.indexOf('FBAV') > -1 ||
@@ -240,7 +192,6 @@
     window.isIOS = /iPhone|iPad|iPod/.test(ua);
 })();
 
-// SHOW FB WALL - Only when user clicks PLAY GAME
 function showFbWallIfNeeded() {
     if (window.isFB) {
         document.getElementById('fb-wall').classList.add('show');
@@ -324,32 +275,48 @@ function resetAndShowWelcome() {
 
 function setMode(m) {
     showFbWallIfNeeded();
+    openPlayGame();
     state.mode = m;
-    ['m-add','m-sub','m-mplus','m-mminus','m-table'].forEach(id => {
-        const b = document.getElementById(id);
-        if (!b) return;
-        const map = {
-            'm-add':'addition',
-            'm-sub':'subtraction',
-            'm-mplus':'missing-add',
-            'm-mminus':'missing-sub',
-            'm-table':'tables'
-        };
-        b.className = 'mode-btn ' + (map[id] === m ? 'm-active' : 'm-inactive');
-    });
-    if (m === 'tables') {
-        showTableInput();
+    
+    if (m === 'toddler') {
+        showToddlerMode();
     } else {
         showNumpad(true);
         newQ();
     }
 }
 
+function showToddlerMode() {
+    let html = `<div class="screen" id="gameScreen" style="flex-direction:row;align-items:center;justify-content:center;gap:8px;">
+        <button style="flex:1;height:100%;border:none;background:#0ea5e9;color:white;font-weight:900;font-size:1rem;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="setToddlerTab('tap')">👆 TAP & LEARN</button>
+        <button style="flex:1;height:100%;border:none;background:#e2e8f0;color:#334155;font-weight:900;font-size:1rem;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="setToddlerTab('read')">📖 READ NUMBERS</button>
+    </div>`;
+    document.getElementById('gameContent').innerHTML = html;
+    setToddlerTab('tap');
+}
+
+function setToddlerTab(tab) {
+    state.toddlerTab = tab;
+    let html = `<div class="screen" id="gameScreen">
+        <div class="toddler-instruction">Tap any number to hear it!</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:auto;width:100%;">`;
+    
+    for (let i = 0; i <= 9; i++) {
+        html += `<button onclick="toddlerTapNumber(${i})" style="background:#ffffff;border:2px solid #e2e8f0;border-radius:16px;height:60px;font-size:2rem;font-weight:900;color:#1e293b;cursor:pointer;-webkit-tap-highlight-color:transparent;">` + i + `</button>`;
+    }
+    html += `</div></div>`;
+    
+    document.getElementById('gameContent').innerHTML = html;
+}
+
+function toddlerTapNumber(n) {
+    say(n.toString());
+}
+
 function newQ() {
     let n1, n2, html = '', speech = '';
     const r = state.range;
     
-    // FIRST QUESTION: Make it 1+1 for easy start (only first question)
     if (state.score === 0 && state.mode === 'addition') {
         n1 = 1;
         n2 = 1;
@@ -423,7 +390,6 @@ function newQ() {
     }
 
     updateStreakDisplay();
-
     state.input = '';
     document.getElementById('input').textContent = '---';
     if (speech) say(speech);
@@ -468,22 +434,7 @@ function showNumpad(isNew) {
     for (let i = 1; i <= 9; i++) html += `<button onclick="digit(${i})">${i}</button>`;
     html += `<button onclick="digit(0)">0</button><button onclick="clear()" style="grid-column:1;">C</button><button onclick="check()" class="ok-btn">OK</button></div></div>`;
     document.getElementById('gameContent').innerHTML = html;
-    document.getElementById('gameScreen').innerHTML = document.getElementById('gameScreen').innerHTML.replace('</div></div>', `${mathBox(2,'+',3)}</div></div>`);
     newQ();
-}
-
-function showTableInput() {
-    document.getElementById('gameContent').innerHTML = `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8fafc;border-radius:20px;margin-bottom:8px;">
-        <div class="table-prompt">Choose which times table:</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%;max-width:300px;">
-            ${[1,2,3,4,5,6,7,8,9,10,15,20,25].map(n => `<button class="lvl-btn ${state.tableRange>=n?'lvl-sky':'lvl-gray'}" onclick="setTableRange(${n})">${n}</button>`).join('')}
-        </div>
-    </div>`;
-}
-
-function setTableRange(n) {
-    state.tableRange = n;
-    showNumpad(true);
 }
 
 function digit(n) {
@@ -501,10 +452,10 @@ function check() {
     if (state.input === state.ans) {
         if (hintTimer) clearTimeout(hintTimer);
         state.score++;
+        state.streak++;
         document.getElementById('score').textContent = 'Score: ' + state.score;
         flashScreen('#d1fae5');
         updateStreakDisplay();
-        state.streak++;
         
         if (!state.firstCorrectFired) {
             state.firstCorrectFired = true;
@@ -568,10 +519,10 @@ function resetGame() {
     state.streak = 0;
     state.range = 10;
     state.tableRange = 3;
+    state.firstCorrectFired = false;
     if (hintTimer) clearTimeout(hintTimer);
     document.getElementById('score').textContent = 'Score: 0';
     updateStreakDisplay();
-    newQ();
 }
 
 function say(text, callback) {
