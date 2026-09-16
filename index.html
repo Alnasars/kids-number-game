@@ -462,22 +462,26 @@ function setMode(m) {
 function newQ() {
     let n1, n2, html = '', speech = '';
     const r = state.range;
-    if (state.score === 0 && state.mode === 'addition') { n1 = 1; n2 = 1; }
-    else { n1 = Math.floor(Math.random() * r) + 1; }
+    const easy = state.score < 5;
+    n1 = easy ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * r) + 1;
     state.fullEq = '';
 
     if (state.mode === 'addition') {
         const n2Max = state.range <= 10 ? 9 : state.range <= 20 ? 18 : 50;
-        if (state.score > 0) n2 = Math.floor(Math.random() * n2Max) + 1;
-        if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
-        if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
+        n2 = easy ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * n2Max) + 1;
+        if (!easy) {
+            if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
+            if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
+        }
         state.ans = (n1 + n2).toString();
         html = mathBox(n1, '+', n2);
         speech = n1 + ' plus ' + n2;
 
     } else if (state.mode === 'subtraction') {
-        if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
-        if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
+        if (!easy) {
+            if (state.range >= 100 && n1 < 20) n1 = Math.floor(Math.random() * 80) + 20;
+            if (state.range >= 20 && n1 < 5) n1 = Math.floor(Math.random() * 15) + 5;
+        }
         if (n1 < 2) n1 = 2;
         n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
         state.ans = (n1 - n2).toString();
@@ -554,7 +558,7 @@ function newQ() {
                     say('The answer is... ' + digitWords.join('... '));
                 }
             }, 5000);
-        }, 5500);
+        }, 10000);
     }
 }
 
