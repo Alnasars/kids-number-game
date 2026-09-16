@@ -1,4 +1,4 @@
-const cacheName = 'math-v14';
+const cacheName = 'math-v15';
 const assets = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));
