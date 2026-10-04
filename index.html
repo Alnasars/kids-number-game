@@ -291,6 +291,11 @@
         <button id="t-read" onclick="setToddlerTab('read')" class="tab-btn tab-inactive">👀 Read Numbers</button>
     </div>
 
+    <div class="mode-row">
+        <button id="tl-1" onclick="setToddlerLevel(1)" class="mode-btn m-active">Level 1 (1-10)</button>
+        <button id="tl-2" onclick="setToddlerLevel(2)" class="mode-btn m-inactive">🔒 Level 2 (11-20)</button>
+    </div>
+
     <div class="toddler-instruction" id="toddlerInstruction">Tap any number button!</div>
 
     <div id="toddlerScreen" class="screen"></div>
@@ -300,7 +305,7 @@
         <button onclick="toddlerTap('1')">1</button><button onclick="toddlerTap('2')">2</button><button onclick="toddlerTap('3')">3</button>
         <button onclick="toddlerTap('4')">4</button><button onclick="toddlerTap('5')">5</button><button onclick="toddlerTap('6')">6</button>
         <button onclick="toddlerTap('7')">7</button><button onclick="toddlerTap('8')">8</button><button onclick="toddlerTap('9')">9</button>
-        <button onclick="toddlerTap('C')">C</button><button onclick="toddlerTap('0')">0</button>
+        <button onclick="toddlerTap('10')">10</button><button onclick="toddlerTap('C')">C</button>
         <button onclick="toddlerTap('OK')" class="ok-btn">OK</button>
     </div>
 </div>
@@ -350,6 +355,8 @@ let state = {
     tableRange: 3, tableNum: 0, tableStep: 0,
     tablePhase: 'input',
     toddlerTab: 'tap', toddlerInput: '', toddlerAns: '',
+    toddlerLevel: 1, toddlerLevel1Correct: 0, toddlerLevel2Unlocked: false,
+    toddlerReadQCount: 0,
     firstCorrectFired: false,
     streak: 0, levelStreak: 0,
     fullEq: ''
@@ -738,36 +745,59 @@ function setToddlerTab(tab) {
         rebuildToddlerNumpad(false);
         say('Welcome to Tap and Learn! Tap any number button to learn it!');
     } else {
-        instrEl.textContent = 'Look at the number, then type it!';
+        instrEl.textContent = 'Look at the number, then tap it below!';
         inputEl.classList.remove('hidden');
         inputEl.textContent = '---';
+        state.toddlerReadQCount = 0;
         rebuildToddlerNumpad(true);
         newToddlerReadQ();
-        say('Welcome to Read Numbers! Look at the number on screen, then type it using the buttons!');
+        say('Welcome to Read Numbers! Look at the number on screen, then tap the matching button, then press OK!');
     }
+}
+
+function getToddlerRange() {
+    return state.toddlerLevel === 2 ? { min: 11, max: 20 } : { min: 1, max: 10 };
+}
+
+function setToddlerLevel(lvl) {
+    if (lvl === 2 && !state.toddlerLevel2Unlocked) {
+        say('Get 3 correct in Level 1 to unlock Level 2!');
+        return;
+    }
+    state.toddlerLevel = lvl;
+    document.getElementById('tl-1').className = 'mode-btn ' + (lvl === 1 ? 'm-active' : 'm-inactive');
+    document.getElementById('tl-2').className = 'mode-btn ' + (lvl === 2 ? 'm-active' : 'm-inactive');
+    setToddlerTab(state.toddlerTab);
+}
+
+function unlockToddlerLevel2() {
+    const btn = document.getElementById('tl-2');
+    if (btn) btn.textContent = '🔓 Level 2 (11-20)';
 }
 
 function rebuildToddlerNumpad(showOK) {
     const pad = document.getElementById('toddlerNumpad');
-    pad.innerHTML = `
-        <button onclick="toddlerTap('1')">1</button>
-        <button onclick="toddlerTap('2')">2</button>
-        <button onclick="toddlerTap('3')">3</button>
-        <button onclick="toddlerTap('4')">4</button>
-        <button onclick="toddlerTap('5')">5</button>
-        <button onclick="toddlerTap('6')">6</button>
-        <button onclick="toddlerTap('7')">7</button>
-        <button onclick="toddlerTap('8')">8</button>
-        <button onclick="toddlerTap('9')">9</button>
-        <button onclick="toddlerTap('C')">C</button>
-        <button onclick="toddlerTap('0')">0</button>
-        ${showOK ? '<button onclick="toddlerTap(\'OK\')" class="ok-btn">OK</button>' : '<button onclick="toddlerTap(\'C\')">⌫</button>'}`;
+    const r = getToddlerRange();
+    let html = '';
+    for (let i = r.min; i <= r.max; i++) {
+        html += `<button onclick="toddlerTap('${i}')">${i}</button>`;
+    }
+    html += `<button onclick="toddlerTap('C')">C</button>`;
+    html += showOK
+        ? `<button onclick="toddlerTap('OK')" class="ok-btn">OK</button>`
+        : `<button onclick="toddlerTap('C')">⌫</button>`;
+    pad.innerHTML = html;
 }
 
 function newToddlerReadQ() {
-    const n = Math.floor(Math.random() * 10) + 1;
+    const easy = state.toddlerReadQCount < 5;
+    const r = state.toddlerLevel === 2
+        ? (easy ? { min: 11, max: 15 } : { min: 11, max: 20 })
+        : (easy ? { min: 1, max: 5 }  : { min: 1, max: 10 });
+    const n = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
     state.toddlerAns = n.toString();
     state.toddlerInput = '';
+    state.toddlerReadQCount++;
     document.getElementById('toddlerScreen').innerHTML =
         `<div style="font-size:6rem;font-weight:900;color:#334155;">${n}</div>`;
     document.getElementById('toddlerInput').textContent = '---';
@@ -791,6 +821,13 @@ function toddlerTap(v) {
     if (v === 'OK') {
         if (state.toddlerInput === state.toddlerAns) {
             say('Correct! Well done!', () => setTimeout(newToddlerReadQ, 600));
+            if (state.toddlerLevel === 1) {
+                state.toddlerLevel1Correct++;
+                if (state.toddlerLevel1Correct >= 3 && !state.toddlerLevel2Unlocked) {
+                    state.toddlerLevel2Unlocked = true;
+                    unlockToddlerLevel2();
+                }
+            }
         } else {
             say('Try again!', () => {
                 state.toddlerInput = '';
@@ -799,8 +836,8 @@ function toddlerTap(v) {
         }
         return;
     }
-    if (state.toddlerInput.length < 2) state.toddlerInput += v;
-    document.getElementById('toddlerInput').textContent = state.toddlerInput || '---';
+    state.toddlerInput = v;
+    document.getElementById('toddlerInput').textContent = v;
 }
 
 function reward(chainLevelUp) {
