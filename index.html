@@ -423,6 +423,12 @@ function playHelpAudio() { say("Look at the math problem, type your answer, and 
 function setLvl(l) {
     state.range = l;
     state.levelStreak = 0;
+    const lvlEvtMap = { 1: 'main_level_1_25', 2: 'main_level_26_50', 3: 'main_level_51_75', 4: 'main_level_76_100' };
+    const mainLvlEvt = lvlEvtMap[l];
+    if (mainLvlEvt) {
+        if (window.va) window.va('event', { name: mainLvlEvt });
+        if (window.gtag) gtag('event', mainLvlEvt);
+    }
     ['lvl-1','lvl-2','lvl-3','lvl-4'].forEach((id, i) => {
         const b = document.getElementById(id);
         if (!b) return;
@@ -434,10 +440,32 @@ function setLvl(l) {
     if (state.mode === 'tables') showTableInput();
     else newQ();
 }
-function setTableRange(r) { state.tableRange = r; toggleModal('setMenu'); if(state.mode === 'tables') setMode('tables'); }
+function setTableRange(r) {
+    state.tableRange = r;
+    const tblEvtMap = { 3: 'table_range_3', 5: 'table_range_5', 10: 'table_range_10', 25: 'table_range_25' };
+    const tblEvt = tblEvtMap[r];
+    if (tblEvt) {
+        if (window.va) window.va('event', { name: tblEvt });
+        if (window.gtag) gtag('event', tblEvt);
+    }
+    toggleModal('setMenu');
+    if(state.mode === 'tables') setMode('tables');
+}
 
 function setMode(m) {
     state.mode = m;
+    const modeEventMap = {
+        'addition': 'mode_addition',
+        'subtraction': 'mode_subtraction',
+        'missing-add': 'mode_missing_add',
+        'missing-sub': 'mode_missing_sub',
+        'tables': 'mode_tables'
+    };
+    const modeEvt = modeEventMap[m];
+    if (modeEvt) {
+        if (window.va) window.va('event', { name: modeEvt });
+        if (window.gtag) gtag('event', modeEvt);
+    }
     ['m-add','m-sub','m-mplus','m-mminus','m-table'].forEach(id => {
         const b = document.getElementById(id);
         if (!b) return;
@@ -731,6 +759,10 @@ function setToddlerTab(tab) {
     state.toddlerTab = tab;
     state.toddlerInput = '';
 
+    const tabEvt = tab === 'tap' ? 'toddler_tab_tap' : 'toddler_tab_read';
+    if (window.va) window.va('event', { name: tabEvt });
+    if (window.gtag) gtag('event', tabEvt);
+
     document.getElementById('t-tap').className  = 'tab-btn ' + (tab === 'tap'  ? 'tab-active' : 'tab-inactive');
     document.getElementById('t-read').className = 'tab-btn ' + (tab === 'read' ? 'tab-active' : 'tab-inactive');
 
@@ -765,6 +797,9 @@ function setToddlerLevel(lvl) {
         return;
     }
     state.toddlerLevel = lvl;
+    const lvlEvt = lvl === 2 ? 'toddler_level2_selected' : 'toddler_level1_selected';
+    if (window.va) window.va('event', { name: lvlEvt });
+    if (window.gtag) gtag('event', lvlEvt);
     document.getElementById('tl-1').className = 'mode-btn ' + (lvl === 1 ? 'm-active' : 'm-inactive');
     document.getElementById('tl-2').className = 'mode-btn ' + (lvl === 2 ? 'm-active' : 'm-inactive');
     setToddlerTab(state.toddlerTab);
@@ -826,6 +861,8 @@ function toddlerTap(v) {
                 if (state.toddlerLevel1Correct >= 3 && !state.toddlerLevel2Unlocked) {
                     state.toddlerLevel2Unlocked = true;
                     unlockToddlerLevel2();
+                    if (window.va) window.va('event', { name: 'toddler_level2_unlocked' });
+                    if (window.gtag) gtag('event', 'toddler_level2_unlocked');
                 }
             }
         } else {
