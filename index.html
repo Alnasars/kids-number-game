@@ -141,6 +141,25 @@
         #levelUpCelebration .lvlup-emoji { font-size: 5rem; animation: bounce 0.5s ease infinite; }
         #levelUpCelebration .lvlup-text { font-size: 2rem; font-weight: 900; color: #38bdf8; text-transform: uppercase; margin-top: 1rem; letter-spacing: 2px; }
         #levelUpCelebration .lvlup-sub { font-size: 1rem; color: #cbd5e1; margin-top: 0.5rem; font-weight: 700; }
+
+        #certPopup { position: fixed; inset: 0; z-index: 99996; background: rgba(15,23,42,0.95); display: none; align-items: flex-start; justify-content: center; padding: 20px 14px; overflow-y: auto; }
+        #certPopup .cert-box { background: #ffffff; border-radius: 24px; padding: 22px 18px; width: 100%; max-width: 340px; text-align: center; margin: auto; }
+        #certPopup h2 { font-size: 1.2rem; font-weight: 900; color: #0ea5e9; text-transform: uppercase; margin-bottom: 0.5rem; }
+        #certPopup .cert-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
+        #certPopup .cert-text { font-size: 0.85rem; color: #64748b; line-height: 1.5; margin-bottom: 1rem; }
+        #certPopup .cert-outline { width: 100%; padding: 0.8rem; margin-top: 0.6rem; border-radius: 12px; border: 2px solid #0ea5e9; background: #ffffff; color: #0ea5e9; font-weight: 900; font-size: 0.9rem; text-transform: uppercase; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        #certName { width: 100%; padding: 12px; border: 2px solid #bae6fd; border-radius: 12px; font-size: 16px; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px; outline: none; -webkit-user-select: text; user-select: text; }
+        #certPreview { display: block; width: 100%; max-width: 230px; margin: 0 auto 12px auto; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .cert-actions { display: flex; gap: 6px; margin-bottom: 12px; }
+        .cert-act { flex: 1; padding: 11px 4px; border-radius: 10px; border: none; background: #0ea5e9; color: #ffffff; font-weight: 900; font-size: 0.78rem; text-transform: uppercase; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .cert-act-gray { background: #64748b; }
+        #certPrintArea { display: none; }
+        @media print {
+            body > * { display: none !important; }
+            body > #certPrintArea { display: block !important; }
+            #certPrintArea img { display: block; width: 100%; max-width: 640px; margin: 0 auto; }
+            body { display: block; background: #ffffff; overflow: visible; min-height: 0; }
+        }
     </style>
 </head>
 <body>
@@ -182,6 +201,31 @@
     <div class="lvlup-text">Getting Harder!</div>
     <div class="lvlup-sub">You're doing great, let's step it up!</div>
 </div>
+
+<div id="certPopup">
+    <div class="cert-box">
+        <div id="certStep1">
+            <div class="cert-emoji">🏅</div>
+            <h2>Certificate Ready!</h2>
+            <p class="cert-text">5 correct answers! A parent can add a name, then save, share or print a certificate. Tap the 🏅 button at the top any time to get it again.</p>
+            <button onclick="certClose(true)" class="btn-full btn-sky">Keep Playing</button>
+            <button onclick="certOpenEditor()" class="cert-outline">Get Certificate</button>
+        </div>
+        <div id="certStep2" style="display:none;">
+            <h2>Your Certificate</h2>
+            <input id="certName" type="text" maxlength="20" placeholder="Child's name (optional)" autocomplete="off" oninput="renderCert()" onkeydown="if(event.key==='Enter')this.blur()">
+            <img id="certPreview" alt="Certificate preview">
+            <div class="cert-actions">
+                <button class="cert-act" onclick="certSave()">Save</button>
+                <button id="certShareBtn" class="cert-act" onclick="certShare()">Share</button>
+                <button class="cert-act cert-act-gray" onclick="certPrint()">Print</button>
+            </div>
+            <button onclick="certClose(false)" class="btn-full btn-sky">Keep Playing</button>
+        </div>
+    </div>
+</div>
+
+<div id="certPrintArea"><img id="certPrintImg" alt="Certificate"></div>
 
 <div id="welcome" class="portal">
     <div class="portal-emoji">🚀</div>
@@ -258,6 +302,7 @@
         <button onclick="toggleModal('helpModal'); playHelpAudio();" class="util-btn">❓</button>
         <button onclick="toggleModal('setMenu')" class="util-btn">⚙️</button>
         <button onclick="resetGame()" class="util-btn">🔄</button>
+        <button id="certBtn" onclick="certOpenFromButton()" class="util-btn" style="display:none;">🏅</button>
     </div>
 
     <div class="mode-row">
@@ -357,6 +402,7 @@ let state = {
     toddlerTab: 'tap', toddlerInput: '', toddlerAns: '',
     toddlerLevel: 1, toddlerLevel1Correct: 0, toddlerLevel2Unlocked: false,
     toddlerReadQCount: 0,
+    certShown: false, certNext: null, certScore: 0, certMode: '', certRange: 1,
     firstCorrectFired: false,
     streak: 0, levelStreak: 0,
     fullEq: ''
@@ -878,6 +924,11 @@ function toddlerTap(v) {
 }
 
 function reward(chainLevelUp) {
+    state.certScore = state.score;
+    state.certMode = state.mode;
+    state.certRange = state.range;
+    const cb = document.getElementById('certBtn');
+    if (cb) cb.style.display = '';
     if (ac) {
         const bufferSize = ac.sampleRate * 0.3;
         const buffer = ac.createBuffer(1, bufferSize, ac.sampleRate);
@@ -959,8 +1010,16 @@ function reward(chainLevelUp) {
         cel.style.display = 'flex';
         setTimeout(() => {
             cel.style.display = 'none';
-            if (chainLevelUp) showLevelUpScreen();
-            else newQ();
+            const afterReward = () => {
+                if (chainLevelUp) showLevelUpScreen();
+                else newQ();
+            };
+            if (state.score >= 5 && !state.certShown && state.mode !== 'tables') {
+                state.certShown = true;
+                showCertPopup(afterReward);
+            } else {
+                afterReward();
+            }
         }, 2500);
     });
 }
@@ -974,6 +1033,196 @@ function showLevelUpScreen() {
             newQ();
         }, 2200);
     });
+}
+
+/* ===== CERTIFICATE: shareable / printable achievement card (drawn on the device, nothing is sent or stored) ===== */
+const CERT_LOGO_SRC = 'data:image/png;base64,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';
+const CERT_FONT = "Roboto, 'Segoe UI', Helvetica, Arial, sans-serif";
+const CERT_MODE_NAMES = {
+    'addition': 'Addition',
+    'subtraction': 'Subtraction',
+    'missing-add': 'Missing Addition (M+)',
+    'missing-sub': 'Missing Subtraction (M-)'
+};
+const CERT_LEVEL_NAMES = { 1: '1-25', 2: '26-50', 3: '51-75', 4: '76-100' };
+let certLogoImg = null;
+
+function trk(name) {
+    if (window.va) window.va('event', { name: name });
+    if (window.gtag) gtag('event', name);
+}
+
+function certLoadLogo(cb) {
+    if (certLogoImg) { cb(); return; }
+    const im = new Image();
+    im.onload = () => { certLogoImg = im; cb(); };
+    im.onerror = () => { cb(); };
+    im.src = CERT_LOGO_SRC;
+}
+
+function certRoundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+function certStar(ctx, cx, cy, ro, ri, fill) {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+        const a = (-90 + i * 36) * Math.PI / 180;
+        const r = i % 2 === 0 ? ro : ri;
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+}
+
+function certPill(ctx, cx, cy, text, bg, fg) {
+    ctx.font = 'bold 22px ' + CERT_FONT;
+    const w = ctx.measureText(text).width + 44;
+    certRoundRect(ctx, cx - w / 2, cy - 24, w, 48, 24);
+    ctx.fillStyle = bg;
+    ctx.fill();
+    ctx.fillStyle = fg;
+    ctx.fillText(text, cx, cy + 1);
+}
+
+function renderCert() {
+    const W = 800, H = 1000;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 4;
+    ctx.strokeRect(30, 30, W - 60, H - 60);
+    ctx.strokeStyle = '#0ea5e9'; ctx.lineWidth = 2;
+    ctx.strokeRect(44, 44, W - 88, H - 88);
+
+    if (certLogoImg) ctx.drawImage(certLogoImg, W / 2 - 60, 80, 120, 120);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = 'bold 22px ' + CERT_FONT;
+    ctx.fillText('CERTIFICATE OF ACHIEVEMENT', W / 2, 228);
+
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(W / 2 - 90, 258); ctx.lineTo(W / 2 + 90, 258); ctx.stroke();
+
+    ctx.fillStyle = '#475569';
+    ctx.font = '22px ' + CERT_FONT;
+    ctx.fillText('This certifies that', W / 2, 306);
+
+    const raw = (document.getElementById('certName').value || '').trim();
+    const name = raw || 'A Superstar';
+    let size = 60;
+    ctx.font = 'bold ' + size + 'px ' + CERT_FONT;
+    while (ctx.measureText(name).width > 640 && size > 28) {
+        size -= 2;
+        ctx.font = 'bold ' + size + 'px ' + CERT_FONT;
+    }
+    ctx.fillStyle = '#1e293b';
+    ctx.fillText(name, W / 2, 372);
+
+    ctx.fillStyle = '#475569';
+    ctx.font = '24px ' + CERT_FONT;
+    ctx.fillText('answered ' + state.certScore + ' questions correctly', W / 2, 442);
+
+    const modeName = CERT_MODE_NAMES[state.certMode || state.mode] || 'Math';
+    const lvlName = CERT_LEVEL_NAMES[state.certRange || state.range] || '1-25';
+    certPill(ctx, W / 2, 510, 'Mode: ' + modeName, '#0ea5e9', '#ffffff');
+    certPill(ctx, W / 2, 573, 'Level: ' + lvlName, '#fbbf24', '#78350f');
+
+    for (let i = -2; i <= 2; i++) certStar(ctx, W / 2 + i * 50, 660, 20, 9, '#fbbf24');
+
+    ctx.fillStyle = '#0ea5e9';
+    ctx.font = 'bold 24px ' + CERT_FONT;
+    ctx.fillText('in 123 Number Game', W / 2, 749);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '18px ' + CERT_FONT;
+    ctx.fillText('Free Math Fun for Kids 3-7', W / 2, 890);
+    ctx.fillText('tinyurl.com/NumberFunGame', W / 2, 920);
+
+    document.getElementById('certPreview').src = c.toDataURL('image/png');
+}
+
+function showCertPopup(next) {
+    state.certNext = next;
+    state.certScore = state.score;
+    certLoadLogo(() => {});
+    document.getElementById('certStep1').style.display = 'block';
+    document.getElementById('certStep2').style.display = 'none';
+    document.getElementById('certPopup').style.display = 'flex';
+    trk('cert_popup_shown');
+}
+
+function certOpenFromButton() {
+    trk('cert_button_tapped');
+    if (hintTimer) clearTimeout(hintTimer);
+    state.certNext = null;
+    document.getElementById('certPopup').style.display = 'flex';
+    certOpenEditor();
+}
+
+function certOpenEditor() {
+    trk('cert_opened');
+    document.getElementById('certStep1').style.display = 'none';
+    document.getElementById('certStep2').style.display = 'block';
+    document.getElementById('certShareBtn').style.display = navigator.share ? '' : 'none';
+    certLoadLogo(renderCert);
+}
+
+function certClose(fromPrompt) {
+    if (fromPrompt) trk('cert_skipped');
+    document.getElementById('certPopup').style.display = 'none';
+    const n = state.certNext;
+    state.certNext = null;
+    if (n) n();
+}
+
+function certDownload() {
+    const a = document.createElement('a');
+    a.href = document.getElementById('certPreview').src;
+    a.download = '123-number-game-certificate.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function certSave() {
+    trk('cert_saved');
+    certDownload();
+}
+
+function certShare() {
+    trk('cert_shared');
+    const d = document.getElementById('certPreview').src;
+    const bin = atob(d.split(',')[1]);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    const file = new File([arr], '123-number-game-certificate.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: '123 Number Game', text: 'Play 123 Number Game! https://tinyurl.com/NumberFunGame' }).catch(() => {});
+    } else {
+        certDownload();
+    }
+}
+
+function certPrint() {
+    trk('cert_printed');
+    document.getElementById('certPrintImg').src = document.getElementById('certPreview').src;
+    setTimeout(() => window.print(), 150);
 }
 
 function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
