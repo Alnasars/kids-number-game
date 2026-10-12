@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>123 Number Game: Kids Learning</title>
+    <title>123 Number Fun Game - Free Math Game for Kids 3-7</title>
+    <meta name="description" content="123 Number Fun Game (NumberFunGame): free kids math game with voice guidance. Counting, addition, subtraction, missing numbers, tables. Ages 3-7.">
+    <link rel="canonical" href="https://kids-number-game.vercel.app/">
 
     <!-- OG TAGS: controls the preview card (logo, title, description) when your link is shared anywhere -->
-    <meta property="og:title" content="123 Number Game - Fun Math for Kids">
+    <meta property="og:title" content="123 Number Fun Game - Fun Math for Kids">
     <meta property="og:description" content="Learn numbers, addition & subtraction with voice-guided fun! Free for kids 3-7.">
     <meta property="og:image" content="https://kids-number-game.vercel.app/icon-512.png">
     <meta property="og:url" content="https://kids-number-game.vercel.app">
@@ -167,7 +169,7 @@
 <div id="fb-wall">
     <div class="fb-emoji">🔇</div>
     <h1>Your Child Deserves Better Learning!</h1>
-    <p>Facebook's browser blocks the voice that makes learning work. Your child learns NUMBERS by HEARING them. Research shows kids retain 65% better with voice guidance. Open in Chrome to unlock the full learning experience.</p>
+    <p>Facebook's browser blocks the voice that makes learning work. Your child learns NUMBERS by HEARING them. Open in Chrome to unlock the full learning experience.</p>
 
     <button id="fb-auto-btn" class="action-btn" onclick="openInChrome()">🚀 Open in Chrome Now</button>
 
@@ -236,18 +238,37 @@
         <button onclick="openToddler()" class="toddler-btn">👶 Toddler Mode</button>
     </div>
     <button id="installBtn" class="install-btn" onclick="installApp()">📲 Save to Phone</button>
-    <button onclick="toggleModal('privacyModal')" class="privacy-link">Privacy Policy</button>
+    <div style="display:flex; gap:18px; justify-content:center;">
+        <button onclick="toggleModal('aboutModal')" class="privacy-link" style="width:auto; padding-left:6px; padding-right:6px;">About</button>
+        <button onclick="toggleModal('privacyModal')" class="privacy-link" style="width:auto; padding-left:6px; padding-right:6px;">Privacy Policy</button>
+    </div>
+</div>
+
+<div id="aboutModal" class="global-modal hidden">
+    <div class="policy-container">
+        <h2>About the Game</h2>
+        <div class="policy-scroll">
+            <p>123 Number Fun Game (also called NumberFunGame) is a free math game for children aged 3 to 7. It helps young kids learn to count, read numbers, add and subtract, with a friendly voice that reads each question aloud.</p>
+            <b>Toddler Mode</b> Tap &amp; Learn lets a child tap any number and hear it. Read Numbers shows a number and the child taps the matching button. Level 1 covers numbers 1 to 10 and Level 2 covers 11 to 20.
+            <b>Add and Sub</b> Addition and subtraction practice with four number ranges, from 1-25 up to 76-100. The questions get harder as the child keeps answering correctly.
+            <b>M+ and M-</b> Missing-number questions, where the child finds the missing part of an addition or subtraction.
+            <b>Tables</b> Multiplication tables for numbers up to 25.
+            <b>Certificate</b> After 5 correct answers, a parent can add the child's name and save, share or print a certificate.
+            <b>Play anywhere</b> It works in a web browser on a phone, tablet or computer, and can be saved to the home screen like an app.
+        </div>
+        <button onclick="toggleModal('aboutModal')" class="btn-full btn-dark">Close</button>
+    </div>
 </div>
 
 <div id="privacyModal" class="global-modal hidden">
     <div class="policy-container">
         <h2>Privacy Policy</h2>
         <div class="policy-scroll">
-            <p>Last Updated: March 2026</p>
-            <b>1. Introduction</b> 123 Number Game is an educational tool built for children. We strictly follow COPPA guidelines.
-            <b>2. No Data Collection</b> We do not collect, store, share, or sell any personal data.
+            <p>Last Updated: October 2026</p>
+            <b>1. Introduction</b> 123 Number Fun Game is an educational tool built for children. We aim to follow child-privacy guidelines such as COPPA.
+            <b>2. Personal Information</b> We do not ask for or collect names, emails or other personal details. If a parent types a child's name to make a certificate, it stays on the device and is never sent to us.
             <b>3. Safe Advertisements</b> Any ads are family-appropriate and follow Google Play/App Store policies.
-            <b>4. Anonymous Analytics</b> We use basic Vercel Analytics. This data is fully anonymous.
+            <b>4. Analytics</b> We use Vercel Analytics and Google Analytics to count visits and see which parts of the game are used, such as which mode is played. These tools may use cookies or similar identifiers and collect approximate location and device information. We use this only to understand how the game is used and to improve it.
             <b>5. Parental Guidance</b> We encourage parents to use the "Open in Browser" option for the best audio experience.
         </div>
         <button onclick="toggleModal('privacyModal')" class="btn-full btn-dark">Close Policy</button>
