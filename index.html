@@ -1390,25 +1390,35 @@ function openAlbum() {
     document.getElementById('albumModal').classList.remove('hidden');
 }
 
-let welcomeSpoken = false;
+let welcomeStarted = false;
 function speakWelcomeBack() {
-    if (welcomeSpoken || !profile.name) return;
-    welcomeSpoken = true;
-    say('Welcome back, ' + profile.name + '! Welcome to 123 Number Game!');
+    if (welcomeStarted || !profile.name) return;
+    const u = new SpeechSynthesisUtterance('Welcome back, ' + profile.name + '! Welcome to 123 Number Game!');
+    if (voice) u.voice = voice;
+    u.onstart = () => { welcomeStarted = true; };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
 }
 
 window.addEventListener('load', () => {
     renderWelcome();
     if (profile.name) {
         trk('welcome_back');
-        // Browsers only allow voice after the first tap, so the welcome speaks on the first touch
-        const onFirstTouch = () => {
+        // Speak as soon as the landing page opens. Phones may block this until the first touch,
+        // so the first touch (except on the Play buttons) also starts it.
+        speakWelcomeBack();
+        const onFirstTouch = (e) => {
+            if (welcomeStarted) {
+                ['pointerdown', 'touchstart', 'click'].forEach(t => document.removeEventListener(t, onFirstTouch));
+                return;
+            }
+            if (e.target && e.target.closest && e.target.closest('.play-btn, .toddler-btn')) return;
             speakWelcomeBack();
-            ['pointerdown', 'touchstart', 'click'].forEach(t => document.removeEventListener(t, onFirstTouch));
         };
         ['pointerdown', 'touchstart', 'click'].forEach(t => document.addEventListener(t, onFirstTouch));
     }
 });
+
 
 function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
 
