@@ -162,6 +162,14 @@
             #certPrintArea img { display: block; width: 100%; max-width: 640px; margin: 0 auto; }
             body { display: block; background: #ffffff; overflow: visible; min-height: 0; }
         }
+        .welcome-back { color: #fbbf24; font-size: 14px; font-weight: 900; margin-bottom: 14px; min-height: 1em; }
+        .profile-row { display: flex; gap: 18px; justify-content: center; margin-top: 6px; }
+        .album-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+        .album-slot { aspect-ratio: 1 / 1; border-radius: 12px; border: 2px dashed #cbd5e1; background: #f8fafc; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: #cbd5e1; }
+        .album-slot.got { border: 2px solid #fbbf24; background: #fef9c3; }
+        .big-btn { display: inline-block; border: none; border-radius: 99px; padding: 10px 18px; font-size: 14px; font-weight: 900; color: #ffffff; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.25); -webkit-tap-highlight-color: transparent; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sticker-btn { background: #f97316; }
+        .name-btn { background: #8b5cf6; }
     </style>
 </head>
 <body>
@@ -229,15 +237,42 @@
 
 <div id="certPrintArea"><img id="certPrintImg" alt="Certificate"></div>
 
+<div id="nameModal" class="global-modal hidden">
+    <div class="policy-container">
+        <div class="modal-emoji">👋</div>
+        <h2 id="nameTitle">What's your name?</h2>
+        <p class="policy-p" style="margin-bottom:0.75rem;">So the game can say welcome back next time. You can skip this.</p>
+        <input id="nameInput" type="text" maxlength="20" placeholder="Child's name" autocomplete="off" style="width:100%; padding:12px; border:2px solid #bae6fd; border-radius:12px; font-size:16px; font-weight:700; text-align:center; margin-bottom:12px;" onkeydown="if(event.key==='Enter')finishName(true)">
+        <button onclick="finishName(true)" class="btn-full btn-sky">Save and Play</button>
+        <button onclick="finishName(false)" class="btn-back">Skip</button>
+    </div>
+</div>
+
+<div id="albumModal" class="global-modal hidden">
+    <div class="policy-container">
+        <h2>My Stickers</h2>
+        <p id="albumSub" class="policy-p" style="margin-bottom:0.75rem;"></p>
+        <div id="albumGrid" class="album-grid"></div>
+        <button onclick="toggleModal('albumModal')" class="btn-full btn-sky">Close</button>
+    </div>
+</div>
+
+<div id="stickerToast" style="display:none; position:fixed; top:18px; left:50%; transform:translateX(-50%); background:#fbbf24; color:#78350f; padding:10px 18px; border-radius:99px; font-weight:900; font-size:0.95rem; z-index:99997; white-space:nowrap;"></div>
+
 <div id="welcome" class="portal">
     <div class="portal-emoji">🚀</div>
     <h1>123 Number Game</h1>
     <p class="portal-hint">Tap 3 dots (⋮) &amp; choose "Open in Browser"</p>
+    <p id="welcomeBack" class="welcome-back"></p>
     <div class="portal-buttons">
-        <button onclick="openPlayGame()" class="play-btn">🎮 Play Game</button>
-        <button onclick="openToddler()" class="toddler-btn">👶 Toddler Mode</button>
+        <button onclick="gatedPlay()" class="play-btn">🎮 Play Game</button>
+        <button onclick="gatedToddler()" class="toddler-btn">👶 Toddler Mode</button>
     </div>
     <button id="installBtn" class="install-btn" onclick="installApp()">📲 Save to Phone</button>
+    <div class="profile-row">
+        <button onclick="openAlbum()" class="big-btn sticker-btn">⭐ My Stickers</button>
+        <button id="changeNameBtn" onclick="showNameModal(false)" class="big-btn name-btn" style="display:none;">✏️ Change name</button>
+    </div>
     <div style="display:flex; gap:18px; justify-content:center;">
         <button onclick="toggleModal('aboutModal')" class="privacy-link" style="width:auto; padding-left:6px; padding-right:6px;">About</button>
         <button onclick="toggleModal('privacyModal')" class="privacy-link" style="width:auto; padding-left:6px; padding-right:6px;">Privacy Policy</button>
@@ -266,7 +301,7 @@
         <div class="policy-scroll">
             <p>Last Updated: October 2026</p>
             <b>1. Introduction</b> 123 Number Fun Game is an educational tool built for children. We aim to follow child-privacy guidelines such as COPPA.
-            <b>2. Personal Information</b> We do not ask for or collect names, emails or other personal details. If a parent types a child's name to make a certificate, it stays on the device and is never sent to us.
+            <b>2. Personal Information</b> We do not ask for emails or other personal details. A child's name, stickers and progress are saved only on the device the game is played on, for the welcome back message and certificates. They are never sent to us.
             <b>3. Safe Advertisements</b> Any ads are family-appropriate and follow Google Play/App Store policies.
             <b>4. Analytics</b> We use Vercel Analytics and Google Analytics to count visits and see which parts of the game are used, such as which mode is played. These tools may use cookies or similar identifiers and collect approximate location and device information. We use this only to understand how the game is used and to improve it.
             <b>5. Parental Guidance</b> We encourage parents to use the "Open in Browser" option for the best audio experience.
@@ -473,6 +508,7 @@ function openPlayGame() {
     document.getElementById('welcome').style.transform = 'translateY(-100%)';
     document.getElementById('playCard').classList.remove('hidden');
     state.active = true;
+    state.levelStreak = 0;
     setMode('addition');
 }
 
@@ -641,7 +677,7 @@ function newQ() {
     if (state.range >= 2 && state.mode !== 'tables') {
         hintTimer = setTimeout(() => {
             if (state.input === '') {
-                say('Take your time... think carefully!');
+                say('Take your time... keep thinking, you can do it!');
             }
             hintTimer = setTimeout(() => {
                 if (state.input === '') {
@@ -653,7 +689,7 @@ function newQ() {
                     say('The answer is... ' + digitWords.join('... '));
                 }
             }, 5000);
-        }, 10000);
+        }, 20000);
     }
 }
 
@@ -923,6 +959,7 @@ function toddlerTap(v) {
     if (v === 'OK') {
         if (state.toddlerInput === state.toddlerAns) {
             say('Correct! Well done!', () => setTimeout(newToddlerReadQ, 600));
+            profileToddlerRight();
             if (state.toddlerLevel === 1) {
                 state.toddlerLevel1Correct++;
                 if (state.toddlerLevel1Correct >= 3 && !state.toddlerLevel2Unlocked) {
@@ -945,6 +982,7 @@ function toddlerTap(v) {
 }
 
 function reward(chainLevelUp) {
+    earnSticker();
     state.certScore = state.score;
     state.certMode = state.mode;
     state.certRange = state.range;
@@ -1197,6 +1235,8 @@ function certOpenFromButton() {
 }
 
 function certOpenEditor() {
+    const ni = document.getElementById('certName');
+    if (ni && !ni.value && profile.name) ni.value = profile.name;
     trk('cert_opened');
     document.getElementById('certStep1').style.display = 'none';
     document.getElementById('certStep2').style.display = 'block';
@@ -1245,6 +1285,113 @@ function certPrint() {
     document.getElementById('certPrintImg').src = document.getElementById('certPreview').src;
     setTimeout(() => window.print(), 150);
 }
+
+/* ===== PROFILE: name, welcome back, stickers (saved only on this device) ===== */
+const PROFILE_KEY = '123ng_profile';
+const STICKER_EMOJI = ['⭐', '🌟', '🎈', '🦁', '🐱', '🚀', '🍎', '🌈', '🐸', '🎨', '🏆', '🦄'];
+const ALBUM_SIZE = 12;
+let profile = loadProfile();
+let pendingAfterName = null;
+
+function loadProfile() {
+    const base = { name: '', asked: false, stickers: 0, toddlerRight: 0 };
+    try {
+        const raw = localStorage.getItem(PROFILE_KEY);
+        if (raw) return Object.assign(base, JSON.parse(raw));
+    } catch (e) {}
+    return base;
+}
+
+function saveProfile() {
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch (e) {}
+}
+
+function renderWelcome() {
+    const wb = document.getElementById('welcomeBack');
+    if (wb) wb.textContent = profile.name ? 'Welcome back, ' + profile.name + '! 👋' : '';
+    const cn = document.getElementById('changeNameBtn');
+    if (cn) cn.style.display = profile.name ? '' : 'none';
+}
+
+function gateThen(fn) {
+    if (!profile.asked) {
+        pendingAfterName = fn;
+        showNameModal(true);
+    } else {
+        fn();
+    }
+}
+
+function gatedPlay() { gateThen(openPlayGame); }
+function gatedToddler() { gateThen(openToddler); }
+
+function showNameModal(first) {
+    document.getElementById('nameInput').value = profile.name || '';
+    document.getElementById('nameTitle').textContent = first ? "What's your name?" : 'Change name';
+    document.getElementById('nameModal').classList.remove('hidden');
+    if (!first) pendingAfterName = null;
+}
+
+function finishName(saveIt) {
+    const v = (document.getElementById('nameInput').value || '').trim().slice(0, 20);
+    if (saveIt && v) {
+        profile.name = v;
+        trk('name_saved');
+    }
+    profile.asked = true;
+    saveProfile();
+    document.getElementById('nameModal').classList.add('hidden');
+    renderWelcome();
+    const f = pendingAfterName;
+    pendingAfterName = null;
+    if (f) f();
+}
+
+function earnSticker() {
+    profile.stickers += 1;
+    saveProfile();
+    trk('sticker_earned');
+    if (profile.stickers % ALBUM_SIZE === 0) trk('album_completed');
+    showStickerToast(profile.stickers);
+}
+
+function profileToddlerRight() {
+    profile.toddlerRight = (profile.toddlerRight || 0) + 1;
+    saveProfile();
+    if (profile.toddlerRight % 5 === 0) earnSticker();
+}
+
+let stickerToastTimer = null;
+function showStickerToast(n) {
+    const el = document.getElementById('stickerToast');
+    el.textContent = 'Sticker earned! ' + STICKER_EMOJI[(n - 1) % ALBUM_SIZE];
+    el.style.display = 'block';
+    clearTimeout(stickerToastTimer);
+    stickerToastTimer = setTimeout(() => { el.style.display = 'none'; }, 2200);
+}
+
+function openAlbum() {
+    const total = profile.stickers;
+    const done = total ? ((total - 1) % ALBUM_SIZE) + 1 : 0;
+    const albumNo = total ? Math.floor((total - 1) / ALBUM_SIZE) + 1 : 1;
+    document.getElementById('albumSub').textContent = done === ALBUM_SIZE
+        ? 'Album ' + albumNo + ' complete! 🎉 The next sticker starts album ' + (albumNo + 1) + '.'
+        : 'Album ' + albumNo + ': ' + done + ' of ' + ALBUM_SIZE + ' stickers collected.';
+    const grid = document.getElementById('albumGrid');
+    grid.innerHTML = '';
+    for (let i = 1; i <= ALBUM_SIZE; i++) {
+        const d = document.createElement('div');
+        d.className = 'album-slot' + (i <= done ? ' got' : '');
+        d.textContent = i <= done ? STICKER_EMOJI[i - 1] : '?';
+        grid.appendChild(d);
+    }
+    document.getElementById('albumModal').classList.remove('hidden');
+}
+
+window.addEventListener('load', () => {
+    renderWelcome();
+    if (profile.name) trk('welcome_back');
+});
 
 function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
 
