@@ -596,7 +596,7 @@ function newQ() {
     const third = Math.floor((zoneMax - zoneMin + 1) / 3);
     const stage = state.levelStreak < 5 ? 1 : state.levelStreak < 10 ? 2 : 3;
     let n1Min, n1Max;
-    if (stage === 1) { n1Min = zoneMin; n1Max = zoneMin + third - 1; }
+    if (stage === 1) { n1Min = zoneMin; n1Max = zoneMin + 4; }
     else if (stage === 2) { n1Min = zoneMin + third; n1Max = zoneMin + third * 2 - 1; }
     else { n1Min = zoneMin + third * 2; n1Max = zoneMax; }
     n1 = Math.floor(Math.random() * (n1Max - n1Min + 1)) + n1Min;
@@ -604,7 +604,7 @@ function newQ() {
 
     const fullN2Max = zoneMax <= 25 ? 9 : zoneMax <= 50 ? 18 : zoneMax <= 75 ? 30 : 50;
     const mediumN2Cap = Math.max(6, Math.round(fullN2Max / 2));
-    const n2Max = stage === 1 ? 5 : stage === 2 ? mediumN2Cap : fullN2Max;
+    const n2Max = stage === 1 ? 3 : stage === 2 ? mediumN2Cap : fullN2Max;
 
     if (state.mode === 'addition') {
         n2 = Math.floor(Math.random() * n2Max) + 1;
@@ -615,6 +615,7 @@ function newQ() {
     } else if (state.mode === 'subtraction') {
         if (n1 < 2) n1 = 2;
         n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
+        if (stage === 1) n2 = Math.min(n2, 3);
         state.ans = (n1 - n2).toString();
         html = mathBox(n1, '-', n2);
         speech = n1 + ' minus ' + n2;
@@ -643,6 +644,7 @@ function newQ() {
     } else if (state.mode === 'missing-sub') {
         if (n1 < 2) n1 = 2;
         n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
+        if (stage === 1) n2 = Math.min(n2, 3);
         const diff = n1 - n2;
         const whichMissing = Math.floor(Math.random() * 3);
         if (whichMissing === 0) {
