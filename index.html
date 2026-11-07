@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>123 Number Fun Game - Free Math Game for Kids 2-8</title>
-    <meta name="description" content="123 Number Fun Game (NumberFunGame): free kids math game with voice guidance. Counting, addition, subtraction, missing numbers, tables. Ages 3-7.">
+    <meta name="description" content="123 Number Fun Game (NumberFunGame): free kids math game with voice guidance. Counting, addition, subtraction, missing numbers, tables. Ages 2-8.">
     <link rel="canonical" href="https://kids-number-game.vercel.app/">
 
     <!-- OG TAGS: controls the preview card (logo, title, description) when your link is shared anywhere -->
@@ -283,7 +283,7 @@
     <div class="policy-container">
         <h2>About the Game</h2>
         <div class="policy-scroll">
-            <p>123 Number Fun Game (also called NumberFunGame) is a free math game for children aged 3 to 7. It helps young kids learn to count, read numbers, add and subtract, with a friendly voice that reads each question aloud.</p>
+            <p>123 Number Fun Game (also called NumberFunGame) is a free math game for children aged 2 to 8. It helps young kids learn to count, read numbers, add and subtract, with a friendly voice that reads each question aloud.</p>
             <b>Toddler Mode</b> Tap &amp; Learn lets a child tap any number and hear it. Read Numbers shows a number and the child taps the matching button. Level 1 covers numbers 1 to 10 and Level 2 covers 11 to 20.
             <b>Add and Sub</b> Addition and subtraction practice with four number ranges, from 1-25 up to 76-100. The questions get harder as the child keeps answering correctly.
             <b>M+ and M-</b> Missing-number questions, where the child finds the missing part of an addition or subtraction.
@@ -1212,7 +1212,7 @@ function renderCert() {
 
     ctx.fillStyle = '#94a3b8';
     ctx.font = '18px ' + CERT_FONT;
-    ctx.fillText('Free Math Fun for Kids 3-7', W / 2, 890);
+    ctx.fillText('Free Math Fun for Kids 2-8', W / 2, 890);
     ctx.fillText('tinyurl.com/NumberFunGame', W / 2, 920);
 
     document.getElementById('certPreview').src = c.toDataURL('image/png');
@@ -1400,7 +1400,7 @@ function speakWelcomeBack() {
     window.speechSynthesis.speak(u);
 }
 
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
     renderWelcome();
     if (profile.name) {
         trk('welcome_back');
