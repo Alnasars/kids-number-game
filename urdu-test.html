@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Urdu voice test</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 16px; color: #1e293b; background: #f8fafc; }
+  h1 { font-size: 1.3rem; margin: 0 0 4px; }
+  p.small { font-size: 0.85rem; color: #64748b; margin: 4px 0 12px; }
+  .box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+  button { display: block; width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 10px; background: #0ea5e9; color: #fff; font-size: 1rem; font-weight: bold; }
+  button.gray { background: #64748b; }
+  select { width: 100%; padding: 10px; font-size: 1rem; border-radius: 8px; border: 1px solid #cbd5e1; }
+  .ok { color: #15803d; font-weight: bold; }
+  .bad { color: #b91c1c; font-weight: bold; }
+  #log { font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; background: #0f172a; color: #e2e8f0; border-radius: 8px; padding: 10px; min-height: 70px; }
+  .urdu { font-size: 1.2rem; direction: rtl; text-align: right; color: #334155; }
+</style>
+</head>
+<body>
+
+<h1>Urdu voice test</h1>
+<p class="small">Open this page on each phone or computer. Tap the buttons, listen, then take a screenshot of the whole page and send it to Claude.</p>
+
+<div class="box">
+  <div><strong>Device:</strong> <span id="device"></span></div>
+  <div><strong>Voices on this device:</strong> <span id="count">checking...</span></div>
+  <div><strong>Urdu voice listed:</strong> <span id="urdu">checking...</span></div>
+  <p class="small">Note: some Android phones list Urdu even when it is not installed. What matters is what you hear.</p>
+</div>
+
+<div class="box">
+  <label for="voiceSel"><strong>Voice to test</strong></label>
+  <select id="voiceSel"><option value="auto">Automatic (Urdu if available)</option></select>
+</div>
+
+<div class="box">
+  <button onclick="speak('ایک، دو، تین، چار، پانچ، چھ، سات، آٹھ، نو، دس')">1. Count 1 to 10</button>
+  <div class="urdu">ایک، دو، تین، چار، پانچ، چھ، سات، آٹھ، نو، دس</div>
+  <button onclick="speak('تین جمع چار کتنے ہوئے؟')">2. Question: 3 plus 4</button>
+  <div class="urdu">تین جمع چار کتنے ہوئے؟</div>
+  <button onclick="speak('پانچ منفی دو کتنے ہوئے؟')">3. Question: 5 minus 2</button>
+  <div class="urdu">پانچ منفی دو کتنے ہوئے؟</div>
+  <button onclick="speak('شاباش! بہت خوب!')">4. Praise</button>
+  <div class="urdu">شاباش! بہت خوب!</div>
+  <button onclick="speak('دوبارہ خوش آمدید!')">5. Welcome back</button>
+  <div class="urdu">دوبارہ خوش آمدید!</div>
+  <button class="gray" onclick="speechSynthesis.cancel()">Stop</button>
+</div>
+
+<div class="box">
+  <strong>What happened (log)</strong>
+  <div id="log">Tap a button above.</div>
+  <p class="small">Heard clear Urdu = good. Silent, or Urdu read with an English accent = this device cannot speak Urdu well.</p>
+</div>
+
+<script>
+var voices = [];
+var timer = null;
+
+function isUrdu(v) { return /^ur([-_]|$)/i.test(v.lang || ''); }
+
+function log(msg) {
+  var el = document.getElementById('log');
+  var t = new Date().toLocaleTimeString();
+  el.textContent = (el.textContent === 'Tap a button above.' ? '' : el.textContent + '\n') + t + '  ' + msg;
+}
+
+function loadVoices() {
+  if (!('speechSynthesis' in window)) {
+    document.getElementById('count').innerHTML = '<span class="bad">No voice support in this browser</span>';
+    document.getElementById('urdu').innerHTML = '<span class="bad">No</span>';
+    return;
+  }
+  voices = speechSynthesis.getVoices() || [];
+  document.getElementById('count').textContent = voices.length;
+  var ur = voices.filter(isUrdu);
+  document.getElementById('urdu').innerHTML = ur.length
+    ? '<span class="ok">Yes: ' + ur.map(function (v) { return v.name + ' (' + v.lang + ')'; }).join(', ') + '</span>'
+    : '<span class="bad">None listed</span>';
+
+  var sel = document.getElementById('voiceSel');
+  var keep = sel.value;
+  sel.innerHTML = '<option value="auto">Automatic (Urdu if available)</option>';
+  voices.forEach(function (v) {
+    var o = document.createElement('option');
+    o.value = v.name + '|' + v.lang;
+    o.textContent = v.name + ' (' + v.lang + ')' + (isUrdu(v) ? '  - URDU' : '');
+    sel.appendChild(o);
+  });
+  sel.value = keep || 'auto';
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) { log('This browser has no voice support.'); return; }
+  speechSynthesis.cancel();
+  clearTimeout(timer);
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ur-PK';
+  u.rate = 0.9;
+  var sel = document.getElementById('voiceSel').value;
+  if (sel !== 'auto') {
+    var v = voices.filter(function (x) { return (x.name + '|' + x.lang) === sel; })[0];
+    if (v) { u.voice = v; u.lang = v.lang; }
+  } else {
+    var ur = voices.filter(isUrdu)[0];
+    if (ur) { u.voice = ur; }
+  }
+  var started = false;
+  var t0 = Date.now();
+  u.onstart = function () { started = true; clearTimeout(timer); log('Started speaking after ' + (Date.now() - t0) + ' ms'); };
+  u.onend = function () { log('Finished.'); };
+  u.onerror = function (e) { log('Error: ' + (e.error || 'unknown')); };
+  log('Trying: ' + (u.voice ? u.voice.name + ' (' + u.voice.lang + ')' : 'default voice, lang ur-PK'));
+  speechSynthesis.speak(u);
+  timer = setTimeout(function () {
+    if (!started) log('No sound started within 3 seconds. This device probably cannot speak Urdu.');
+  }, 3000);
+}
+
+document.getElementById('device').textContent = (navigator.userAgent || '').slice(0, 110);
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+loadVoices();
+setTimeout(loadVoices, 800);
+setTimeout(loadVoices, 2500);
+</script>
+
+</body>
+</html>
