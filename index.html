@@ -354,7 +354,7 @@
     </div>
 
     <div class="util-row">
-        <button onclick="share()" class="util-btn util-btn-wa">WA</button>
+        <button onclick="share()" class="util-btn util-btn-wa">Share</button>
         <button onclick="toggleModal('helpModal'); playHelpAudio();" class="util-btn">❓</button>
         <button onclick="toggleModal('setMenu')" class="util-btn">⚙️</button>
         <button onclick="resetGame()" class="util-btn">🔄</button>
@@ -1420,7 +1420,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-function share() { window.open('https://api.whatsapp.com/send?text=Play 123 Number Game! https://tinyurl.com/NumberFunGame'); }
+function share() {
+    const data = { title: '123 Number Fun Game', text: 'Play 123 Number Fun Game free! Math for kids aged 2 to 8.', url: 'https://kids-number-game.vercel.app/' };
+    trk('share_tapped');
+    if (navigator.share) {
+        navigator.share(data).catch(() => {});
+    } else {
+        window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(data.text + ' ' + data.url));
+    }
+}
 
 let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
