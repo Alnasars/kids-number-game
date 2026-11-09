@@ -1443,7 +1443,6 @@ function renderTrail() {
         if (i === pos) html += '<span class="cell now">⭐</span>';
         else html += '<span class="cell' + (isStop ? ' stop' : '') + '">' + (isStop ? '◉' : '·') + '</span>';
     }
-    html += '<span class="trail-label">' + pos + '/' + TRAIL_LEN + '</span>';
     document.querySelectorAll('.trail').forEach(el => { el.innerHTML = html; });
 }
 
