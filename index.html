@@ -520,7 +520,6 @@ function backToHome() {
 }
 
 function openPlayGame() {
-    showFbWallIfNeeded();
     initAudio(); findVoice();
     if (window.va) window.va('event', { name: 'play_game_opened' });
     if (window.gtag) gtag('event', 'play_game_opened');
